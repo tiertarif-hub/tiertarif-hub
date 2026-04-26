@@ -1,5 +1,22 @@
 import { useMemo, useRef } from "react";
-import { ChevronLeft, ChevronRight, Trophy, Star, TrendingUp, Zap, Globe, Shield, Heart, Gamepad2, Bot, Briefcase, ShoppingCart, GraduationCap } from "lucide-react";
+import {
+  ArrowRight,
+  Bot,
+  Briefcase,
+  CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+  Gamepad2,
+  Globe,
+  GraduationCap,
+  Heart,
+  Shield,
+  ShoppingCart,
+  Star,
+  TrendingUp,
+  Trophy,
+  Zap,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import { useHomeContent } from "@/hooks/useSettings";
 import { useCategories, type Category } from "@/hooks/useCategories";
@@ -8,41 +25,30 @@ import { getCategoriesRoute, normalizeNavigableHref } from "@/lib/routes";
 // Icon Mapping für Admin-Typen
 const getIcon = (type: string | undefined) => {
   switch (type) {
-    case 'trending': return <TrendingUp className="w-6 h-6 text-white" />;
-    case 'trophy': return <Trophy className="w-6 h-6 text-white" />;
-    case 'star': return <Star className="w-6 h-6 text-white" />;
-    case 'zap': return <Zap className="w-6 h-6 text-white" />;
-    case 'globe': return <Globe className="w-6 h-6 text-white" />;
-    case 'shield': return <Shield className="w-6 h-6 text-white" />;
-    case 'heart': return <Heart className="w-6 h-6 text-white" />;
-    case 'game': return <Gamepad2 className="w-6 h-6 text-white" />;
-    case 'bot': return <Bot className="w-6 h-6 text-white" />;
-    case 'briefcase': return <Briefcase className="w-6 h-6 text-white" />;
-    case 'cart': return <ShoppingCart className="w-6 h-6 text-white" />;
-    case 'edu': return <GraduationCap className="w-6 h-6 text-white" />;
-    default: return <TrendingUp className="w-6 h-6 text-white" />;
+    case "trending": return <TrendingUp className="h-6 w-6" />;
+    case "trophy": return <Trophy className="h-6 w-6" />;
+    case "star": return <Star className="h-6 w-6" />;
+    case "zap": return <Zap className="h-6 w-6" />;
+    case "globe": return <Globe className="h-6 w-6" />;
+    case "shield": return <Shield className="h-6 w-6" />;
+    case "heart": return <Heart className="h-6 w-6" />;
+    case "game": return <Gamepad2 className="h-6 w-6" />;
+    case "bot": return <Bot className="h-6 w-6" />;
+    case "briefcase": return <Briefcase className="h-6 w-6" />;
+    case "cart": return <ShoppingCart className="h-6 w-6" />;
+    case "edu": return <GraduationCap className="h-6 w-6" />;
+    default: return <Shield className="h-6 w-6" />;
   }
 };
 
-// --- KYRA PREMIUM IMAGES (Elite-Fallback falls Admin-Feld leer ist) ---
+// Helle TierTarif-Fallbacks, falls Admin-Feld leer ist.
 const CATEGORY_IMAGES: Record<string, string> = {
-  "Finanzen & Krypto": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?q=80&w=1200&auto=format&fit=crop",
-  "Love & Dating": "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?q=80&w=1200&auto=format&fit=crop",
-  "Apps & Gaming": "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1200&auto=format&fit=crop",
-  "KI & Software": "https://images.unsplash.com/photo-1620712943543-bcc4628c9759?q=80&w=1200&auto=format&fit=crop",
-  "Dienstleistungen": "https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=1200&auto=format&fit=crop",
-  "Produkttests": "https://images.unsplash.com/photo-1526170315873-3a56162820cf?q=80&w=1200&auto=format&fit=crop",
-  "Haus & Energie": "https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?q=80&w=1200&auto=format&fit=crop",
-  "Wissen & Karriere": "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?q=80&w=1200&auto=format&fit=crop"
-};
-
-const getThemeClasses = (theme: string | undefined) => {
-  switch (theme) {
-    case 'gold': return { gradient: "from-amber-500 to-amber-700", border: "group-hover:border-amber-500/50" };
-    case 'dark': return { gradient: "from-slate-700 to-slate-900", border: "group-hover:border-slate-500/50" };
-    case 'blue':
-    default: return { gradient: "from-blue-600 to-blue-800", border: "group-hover:border-blue-500/50" };
-  }
+  "Versicherungen": "/big-threes/tiertarif-versicherungen-startseitenbild.webp",
+  "Hundekrankenversicherung": "/big-threes/tiertarif-tierversicherung-startseitenbild.webp",
+  "Katzenversicherung": "/big-threes/tiertarif-tierversicherung-startseitenbild.webp",
+  "Hunde-OP-Versicherung": "/big-threes/tiertarif-tierversicherung-startseitenbild.webp",
+  "Katzen-OP-Versicherung": "/big-threes/tiertarif-tierversicherung-startseitenbild.webp",
+  "Forum": "/big-threes/tiertarif-forum-magazin-hero.webp",
 };
 
 type BigThreeItem = {
@@ -57,9 +63,36 @@ type BigThreeItem = {
 };
 
 const fallbackItems: BigThreeItem[] = [
-  { id: "v1", title: "Versicherungen", desc: "Tarife, Leistungen und Policen im Überblick.", link: getCategoriesRoute(), button_text: "Vergleichen", theme: "blue", image_url: "", icon: "shield" },
-  { id: "f1", title: "Finanzen & Krypto", desc: "Broker, Kredite und Finanzthemen im Überblick.", link: getCategoriesRoute(), button_text: "Vergleichen", theme: "gold", image_url: "", icon: "trending" },
-  { id: "s1", title: "KI & Software", desc: "Tools und Softwarelösungen im Überblick.", link: getCategoriesRoute(), button_text: "Tools finden", theme: "dark", image_url: "", icon: "bot" }
+  {
+    id: "v1",
+    title: "Tierversicherungen",
+    desc: "Leistungen, Kosten und Erstattung für Hund und Katze sachlich prüfen.",
+    link: getCategoriesRoute(),
+    button_text: "Vergleiche ansehen",
+    theme: "tiertarif",
+    image_url: "/big-threes/tiertarif-versicherungen-startseitenbild.webp",
+    icon: "shield",
+  },
+  {
+    id: "h1",
+    title: "Hundeschutz",
+    desc: "Krankenversicherung, OP-Schutz und Selbstbeteiligung übersichtlich einordnen.",
+    link: getCategoriesRoute(),
+    button_text: "Hundetarife prüfen",
+    theme: "tiertarif",
+    image_url: "/big-threes/tiertarif-tierversicherung-startseitenbild.webp",
+    icon: "heart",
+  },
+  {
+    id: "k1",
+    title: "Katzenschutz",
+    desc: "FORL, Zahn-OP, Wartezeiten und Erstattungsgrenzen besser verstehen.",
+    link: getCategoriesRoute(),
+    button_text: "Katzentarife prüfen",
+    theme: "tiertarif",
+    image_url: "/big-threes/tiertarif-tierversicherung-startseitenbild.webp",
+    icon: "star",
+  },
 ];
 
 const toCleanSlug = (value: string | null | undefined) => {
@@ -130,6 +163,24 @@ const getOptimizedImageUrl = (url: string | undefined, title: string, width = 72
   return finalUrl;
 };
 
+const getChecklistItems = (item: BigThreeItem) => {
+  const haystack = `${item.title} ${item.desc ?? ""}`.toLowerCase();
+
+  if (haystack.includes("katze") || haystack.includes("forl")) {
+    return ["Zahn-OP & FORL prüfen", "Wartezeiten beachten", "Erstattung einordnen"];
+  }
+
+  if (haystack.includes("hund")) {
+    return ["OP-Kosten prüfen", "Selbstbeteiligung beachten", "Nachsorge einordnen"];
+  }
+
+  if (haystack.includes("op")) {
+    return ["Narkose & OP-Leistung prüfen", "Grenzen beachten", "Nachsorge vergleichen"];
+  }
+
+  return ["Leistungsumfang prüfen", "Kosten transparent einordnen", "Ausschlüsse beachten"];
+};
+
 export const BigThreeSection = () => {
   const { content } = useHomeContent();
   const { data: categories = [], isLoading: isCategoriesLoading, isError: isCategoriesError } = useCategories();
@@ -181,7 +232,7 @@ export const BigThreeSection = () => {
 
       slider.scrollTo({
         left: isAtEnd ? 0 : Math.min(slider.scrollLeft + distance, maxScrollLeft),
-        behavior: "smooth"
+        behavior: "smooth",
       });
       return;
     }
@@ -189,12 +240,12 @@ export const BigThreeSection = () => {
     const isAtStart = slider.scrollLeft <= tolerance;
     slider.scrollTo({
       left: isAtStart ? maxScrollLeft : Math.max(slider.scrollLeft - distance, 0),
-      behavior: "smooth"
+      behavior: "smooth",
     });
   };
 
   return (
-    <section id="bereiche" className="py-24 md:py-28 relative overflow-hidden bg-white">
+    <section id="bereiche" className="relative overflow-hidden bg-white py-20 md:py-28">
       <style>{`
         .standard-portal-category-slider {
           scrollbar-width: none;
@@ -206,7 +257,7 @@ export const BigThreeSection = () => {
         }
 
         .standard-portal-category-card {
-          flex: 0 0 84%;
+          flex: 0 0 86%;
         }
 
         @media (min-width: 640px) {
@@ -228,75 +279,108 @@ export const BigThreeSection = () => {
         }
       `}</style>
 
-      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
-      
-      <div className="container px-4 mx-auto relative z-10">
-        <div className="text-center mb-14 md:mb-16 max-w-3xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-display font-bold text-primary mb-6 tracking-tight">
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+        <div className="absolute right-[-8rem] top-10 h-80 w-80 rounded-full bg-[#F8F5EE] blur-3xl" />
+        <div className="absolute left-[-8rem] bottom-10 h-72 w-72 rounded-full bg-[#D8E5E1]/45 blur-3xl" />
+      </div>
+
+      <div className="container relative z-10 mx-auto px-4">
+        <div className="mx-auto mb-12 max-w-3xl text-center md:mb-16">
+          <div className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-primary/10 bg-[#EFF6F3] px-4 py-2 text-xs font-extrabold uppercase tracking-[0.2em] text-primary">
+            <Shield className="h-4 w-4" />
+            Vergleichsbereiche
+          </div>
+          <h2 className="text-4xl font-display font-extrabold tracking-tight text-primary md:text-5xl">
             {content.big_three.headline}
           </h2>
-          <div className="w-24 h-1.5 bg-secondary mx-auto rounded-full" />
+          <p className="mx-auto mt-5 max-w-2xl text-base font-medium leading-relaxed text-muted-foreground">
+            Wähle den passenden Bereich und prüfe Leistungen, Kostenpunkte und Bedingungen strukturiert.
+          </p>
         </div>
 
         <div className="relative -mx-4 px-4 md:mx-0 md:px-0">
           <button
             type="button"
             onClick={() => scrollSlider("prev")}
-            className="hidden lg:flex absolute -left-5 top-1/2 z-20 -translate-y-1/2 w-11 h-11 items-center justify-center rounded-full border border-slate-200 bg-white text-primary shadow-lg shadow-slate-900/10 transition-all duration-300 hover:-translate-x-0.5 hover:bg-secondary hover:text-white hover:border-secondary focus:outline-none focus:ring-2 focus:ring-secondary/40"
+            className="absolute -left-5 top-1/2 z-20 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-white text-primary shadow-lg shadow-primary/10 transition-all duration-300 hover:-translate-x-0.5 hover:bg-primary hover:text-primary-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 lg:flex"
             aria-label="Vorherige Vergleichskategorie anzeigen"
           >
-            <ChevronLeft className="w-5 h-5" />
+            <ChevronLeft className="h-5 w-5" />
           </button>
 
           <div
             ref={sliderRef}
-            className="standard-portal-category-slider flex gap-6 overflow-x-auto pb-2 scroll-smooth snap-x snap-mandatory overscroll-x-contain"
+            className="standard-portal-category-slider flex snap-x snap-mandatory gap-6 overflow-x-auto pb-2 scroll-smooth overscroll-x-contain"
             aria-label="Vergleichskategorien"
           >
             {items.map((item) => {
-              const theme = getThemeClasses(item.theme);
-              const imageUrl = getOptimizedImageUrl(item.image_url, item.title, 960, 78);
+              const imageUrl = getOptimizedImageUrl(item.image_url, item.title, 700, 76);
+              const checklistItems = getChecklistItems(item);
 
               return (
-                <Link 
-                  key={item.id} 
+                <Link
+                  key={item.id}
                   to={normalizeNavigableHref(item.link)}
-                  className={`standard-portal-category-card group relative aspect-[16/9] min-h-[370px] sm:min-h-[388px] md:min-h-[400px] lg:min-h-[368px] xl:min-h-[388px] flex flex-col justify-between bg-slate-900 rounded-3xl p-6 md:p-7 border border-slate-200 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-1.5 overflow-hidden snap-start ${theme.border}`}
+                  className="standard-portal-category-card group relative flex min-h-[460px] snap-start flex-col overflow-hidden rounded-[1.75rem] border border-[#D8E5E1] bg-white p-5 pt-7 shadow-lg shadow-primary/5 transition-all duration-500 hover:-translate-y-1.5 hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/12"
                 >
-                  <div
-                    className="absolute inset-0 z-0 overflow-hidden rounded-3xl transform-gpu"
-                    style={{
-                      clipPath: "inset(0 round 1.5rem)",
-                      WebkitClipPath: "inset(0 round 1.5rem)",
-                      backfaceVisibility: "hidden",
-                      WebkitBackfaceVisibility: "hidden"
-                    }}
-                  >
-                    <div
-                      className="absolute inset-0 bg-cover bg-center opacity-90 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700 transform-gpu"
-                      style={imageUrl ? { backgroundImage: `url(${imageUrl})` } : undefined}
-                      aria-hidden="true"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/48 to-slate-900/12" />
-                    <div className={`absolute inset-0 opacity-10 mix-blend-overlay bg-gradient-to-br ${theme.gradient}`} />
+                  <div className="absolute inset-x-0 top-0 h-1.5 bg-primary" />
+                  <div className="mb-5 flex items-start justify-between gap-4">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#EFF6F3] text-primary ring-1 ring-[#D8E5E1] transition-all duration-300 group-hover:bg-primary group-hover:text-primary-foreground">
+                      {getIcon(item.icon)}
+                    </div>
+                    <div className="rounded-full bg-[#EFF6F3] px-3 py-1 text-xs font-extrabold uppercase tracking-wider text-primary ring-1 ring-[#D8E5E1]">
+                      Prüfen
+                    </div>
                   </div>
 
-                  <div className="relative z-10 w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-500">
-                    {getIcon(item.icon)}
-                  </div>
+                  {imageUrl && (
+                    <div className="relative mb-5 h-32 overflow-hidden rounded-2xl bg-[#F8F5EE] ring-1 ring-[#D8E5E1]">
+                      <img
+                        src={imageUrl}
+                        alt=""
+                        loading="lazy"
+                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-primary/25 via-transparent to-transparent" />
+                    </div>
+                  )}
 
-                  <div className="relative z-10 space-y-3">
-                    <h3 className="text-xl md:text-2xl font-display font-bold text-white group-hover:text-secondary transition-colors drop-shadow-md">
+                  <div className="flex flex-1 flex-col">
+                    <h3 className="text-2xl font-display font-extrabold leading-tight text-primary transition-colors">
                       {item.title}
                     </h3>
-                    <p className="text-white text-sm leading-relaxed font-semibold drop-shadow-md line-clamp-2">
+                    <p className="mt-3 line-clamp-3 text-sm font-medium leading-relaxed text-muted-foreground">
                       {item.desc}
                     </p>
-                    
-                    <div className="pt-2 flex items-center gap-3 text-xs md:text-sm font-bold text-white uppercase tracking-wider group-hover:gap-4 transition-all">
-                      <span>{item.button_text}</span>
-                      <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center group-hover:bg-secondary transition-colors border border-white/20">
-                          <ChevronRight className="w-4 h-4" />
+
+                    <div className="mt-5 grid grid-cols-3 gap-2">
+                      {["Leistung", "Kosten", "Bedingung"].map((metric) => (
+                        <span key={metric} className="rounded-xl border border-[#D8E5E1] bg-[#F8F5EE] px-2 py-2 text-center text-[10px] font-extrabold uppercase tracking-wider text-primary">
+                          {metric}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div className="mt-5 space-y-3">
+                      {checklistItems.map((point) => (
+                        <div key={point} className="flex items-center gap-3 text-sm font-bold text-foreground">
+                          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#EFF6F3] text-primary">
+                            <CheckCircle2 className="h-4 w-4" />
+                          </span>
+                          <span>{point}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="mt-auto pt-7">
+                      <div className="flex items-center justify-between rounded-2xl bg-primary px-5 py-4 text-primary-foreground transition-all duration-300 group-hover:bg-[#063A36]">
+                        <span className="text-sm font-extrabold uppercase tracking-wider">
+                          {item.button_text}
+                        </span>
+                        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/15 transition-all group-hover:translate-x-1 group-hover:bg-white/25">
+                          <ArrowRight className="h-4 w-4" />
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -308,10 +392,10 @@ export const BigThreeSection = () => {
           <button
             type="button"
             onClick={() => scrollSlider("next")}
-            className="hidden lg:flex absolute -right-5 top-1/2 z-20 -translate-y-1/2 w-11 h-11 items-center justify-center rounded-full border border-slate-200 bg-white text-primary shadow-lg shadow-slate-900/10 transition-all duration-300 hover:translate-x-0.5 hover:bg-secondary hover:text-white hover:border-secondary focus:outline-none focus:ring-2 focus:ring-secondary/40"
+            className="absolute -right-5 top-1/2 z-20 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-white text-primary shadow-lg shadow-primary/10 transition-all duration-300 hover:translate-x-0.5 hover:bg-primary hover:text-primary-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 lg:flex"
             aria-label="Nächste Vergleichskategorie anzeigen"
           >
-            <ChevronRight className="w-5 h-5" />
+            <ChevronRight className="h-5 w-5" />
           </button>
 
           <div className="pointer-events-none absolute inset-y-0 right-4 w-10 bg-gradient-to-l from-white to-transparent md:right-0 md:w-14" />

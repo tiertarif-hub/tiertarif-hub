@@ -55,13 +55,11 @@ const queryClient = new QueryClient();
 // --- THEME MANAGER ---
 const ThemeManager = () => {
   const { data: settings, isLoading } = useSettings();
-  const activeTheme = settings?.active_theme as string;
+  const activeTheme = (settings?.active_theme as string) || "tiertarif";
 
   useLayoutEffect(() => {
-    const cachedTheme = localStorage.getItem("app-theme");
-    if (cachedTheme) {
-      document.documentElement.setAttribute("data-theme", cachedTheme);
-    }
+    const cachedTheme = localStorage.getItem("app-theme") || "tiertarif";
+    document.documentElement.setAttribute("data-theme", cachedTheme);
   }, []);
 
   useEffect(() => {

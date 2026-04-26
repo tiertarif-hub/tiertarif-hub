@@ -1,18 +1,47 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Magnifer, GraphUp, ShieldCheck, UsersGroupTwoRounded, Star } from '@solar-icons/react';
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "sonner";
 import { useHomeContent } from "@/hooks/useSettings";
 import { useGlobalSearch } from "@/hooks/useGlobalSearch";
-import { Loader2, ExternalLink } from "lucide-react";
+import {
+  Activity,
+  ArrowRight,
+  CheckCircle2,
+  ClipboardCheck,
+  ExternalLink,
+  Heart,
+  Loader2,
+  Search,
+  ShieldCheck,
+} from "lucide-react";
+
+const calculatorFields = [
+  { label: "Tierart", value: "Hund oder Katze", icon: Heart },
+  { label: "Alter", value: "Welpe, erwachsen, Senior", icon: Activity },
+  { label: "Schutzart", value: "Kranken- oder OP-Schutz", icon: ShieldCheck },
+  { label: "Prüffokus", value: "Wartezeit, Erstattung, Selbstbeteiligung", icon: ClipboardCheck },
+];
+
+const trustItems = [
+  "Tarife sachlich prüfen",
+  "Keine Anbieter-Versprechen",
+  "Wartezeiten & Selbstbeteiligung beachten",
+  "Für Hunde & Katzen",
+];
+
+const isLegacyHeroText = (value: string | undefined, legacyNeedles: string[]) => {
+  const normalized = String(value ?? "").toLowerCase();
+
+  return !normalized || legacyNeedles.some((needle) => normalized.includes(needle.toLowerCase()));
+};
 
 export const HeroSection = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
-  
+
   const navigate = useNavigate();
   const { content } = useHomeContent();
   const { data: searchResults = [], isLoading: isSearching } = useGlobalSearch(searchQuery);
@@ -23,6 +52,7 @@ export const HeroSection = () => {
         setIsSearchFocused(false);
       }
     }
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
@@ -31,176 +61,260 @@ export const HeroSection = () => {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+
     if (searchQuery.trim()) {
-        navigate(`/kategorien?search=${encodeURIComponent(searchQuery)}`);
-        setIsSearchFocused(false);
-    } else {
-      toast.error("Bitte gib einen Suchbegriff ein.");
+      navigate(`/kategorien?search=${encodeURIComponent(searchQuery)}`);
+      setIsSearchFocused(false);
+      return;
     }
+
+    toast.error("Bitte gib einen Suchbegriff ein.");
   };
 
-  const newTitle = content.hero?.title || "Vergleiche, Rechner und Ratgeber im Überblick.";
-  const newSubtitle = content.hero?.subtitle || "Wir strukturieren zahlreiche Anbieter, damit du in Sekunden die richtige Wahl triffst. Spare Zeit, Geld und Nerven.";
-  const badgeText = content.hero?.badge || "Update 2026";
-  const searchPlaceholder = content.hero?.search_placeholder || "Was möchtest du vergleichen?";
-  const searchButtonLabel = content.hero?.search_label || "Vergleichen";
+  const heroTitle = isLegacyHeroText(content.hero?.title, [
+    "Vergleiche, Rechner",
+    "zentraler Vergleichs-Hub",
+    "Tools",
+    "Software",
+  ])
+    ? "Tierversicherung vergleichen"
+    : content.hero?.title;
+
+  const heroSubtitle = isLegacyHeroText(content.hero?.subtitle, [
+    "zahlreiche Anbieter",
+    "Tools",
+    "Software",
+    "Lifestyle",
+    "Erfolg",
+  ])
+    ? "Prüfe Leistungen, Kosten, Wartezeiten und Erstattung sachlich für Hund, Katze und OP-Schutz."
+    : content.hero?.subtitle;
+
+  const badgeText = content.hero?.badge || "TierTarif Vergleichsportal";
+  const searchPlaceholder = content.hero?.search_placeholder || "Hund, Katze oder OP-Versicherung suchen";
+  const searchButtonLabel = content.hero?.search_label || "Vergleich starten";
 
   const showDropdown = isSearchFocused && searchQuery.length >= 2;
   const heroStats = Array.isArray(content.hero?.stats) && content.hero.stats.length > 0
     ? content.hero.stats.slice(0, 3)
     : [
-        { title: "Viele", label: "Kategorien" },
-        { title: "Aktive", label: "Community" },
-        { title: "Laufend", label: "Aktualisiert" },
+        { title: "Transparent", label: "Leistungen prüfen" },
+        { title: "Sachlich", label: "Kosten einordnen" },
+        { title: "Sicher", label: "Wartezeiten beachten" },
       ];
 
   return (
-    <section className="relative pt-32 pb-20 md:pt-48 md:pb-10 bg-[#0a0f1c] selection:bg-secondary/30 z-40">
-      
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <img
-            src="/big-threes/tiertarif-forum-magazin-hero.webp"
-            alt=""
-            aria-hidden="true"
-            fetchPriority="high"
-            loading="eager"
-            decoding="async"
-            className="absolute inset-0 z-0 h-full w-full object-cover object-center opacity-100"
-            style={{
-              maskImage: "linear-gradient(to bottom, black 85%, transparent 100%)",
-              WebkitMaskImage: "linear-gradient(to bottom, black 85%, transparent 100%)",
-            }}
-          />
-
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0a0f1c]/5 to-[#0a0f1c] md:from-[#0a0f1c]/5 md:via-[#0a0f1c]/15 z-0" />
-
-          <div className="absolute inset-0 z-0 opacity-80" 
-               style={{ maskImage: 'linear-gradient(to bottom, black 50%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to bottom, black 50%, transparent 100%)' }}>
-            <div className="absolute inset-0 animate-[pulse_4s_ease-in-out_infinite]"
-                 style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Ccircle cx='3' cy='3' r='0.5'/%3E%3Ccircle cx='33' cy='21' r='0.5'/%3E%3Ccircle cx='48' cy='48' r='0.5'/%3E%3Ccircle cx='18' cy='52' r='0.5'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")` }} />
-            <div className="absolute inset-0 animate-[pulse_2.5s_ease-in-out_infinite] [animation-delay:1s]"
-                 style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.8'%3E%3Ccircle cx='15' cy='15' r='1'/%3E%3Ccircle cx='75' cy='45' r='1'/%3E%3Ccircle cx='105' cy='105' r='1'/%3E%3Ccircle cx='45' cy='85' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")` }} />
-            <div className="absolute inset-0 animate-[pulse_3.5s_ease-in-out_infinite] [animation-delay:0.5s]"
-                 style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='240' height='240' viewBox='0 0 240 240' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Ccircle cx='50' cy='50' r='1.5'/%3E%3Ccircle cx='180' cy='90' r='1.5'/%3E%3Ccircle cx='120' cy='200' r='1.5'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")` }} />
-          </div>
-
-          <div className="absolute top-[-20%] right-[-10%] w-[1000px] h-[1000px] bg-secondary/20 rounded-full blur-[120px] mix-blend-screen" />
-          <div className="absolute bottom-[-20%] left-[-10%] w-[800px] h-[800px] bg-blue-500/20 rounded-full blur-[100px]" />
+    <section className="relative overflow-hidden bg-[#F8F5EE] pt-28 md:pt-40">
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute inset-0 opacity-[0.55] [background-image:linear-gradient(rgba(11,75,69,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(11,75,69,0.045)_1px,transparent_1px)] [background-size:34px_34px]" />
+        <div className="absolute left-[-8rem] top-24 h-72 w-72 rounded-full bg-[#D8E5E1]/50 blur-3xl" />
+        <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-white to-transparent" />
       </div>
 
-      <div className="container px-4 mx-auto relative z-30">
-        <div className="max-w-4xl mx-auto text-center">
-          
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/80 border border-white/20 backdrop-blur-md mb-8 shadow-lg animate-fade-in hover:bg-white/5 transition-colors cursor-default group">
-            <span className="relative flex items-center justify-center">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
-                <Star weight="Bold" className="relative w-3.5 h-3.5 text-secondary" />
-            </span>
-            <span className="text-sm font-medium text-slate-100 tracking-wide group-hover:text-white transition-colors">{badgeText}</span>
-          </div>
+      <div className="container relative z-10 mx-auto px-4 pb-14 md:pb-20">
+        <div className="grid items-center gap-10 lg:grid-cols-[1.02fr_0.98fr] lg:gap-14">
+          <div className="max-w-3xl">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/10 bg-white px-4 py-2 text-sm font-bold text-primary shadow-sm">
+              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#D8E5E1] text-primary">
+                <ShieldCheck className="h-4 w-4" />
+              </span>
+              {badgeText}
+            </div>
 
-          <h1 className="text-3xl md:text-5xl lg:text-6xl font-display font-bold text-white mb-6 tracking-tight leading-[1.1] animate-fade-in animation-delay-100 drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)] [text-shadow:0_2px_4px_rgba(0,0,0,0.5)]">
-            {newTitle}
-          </h1>
-          
-          <p className="text-lg md:text-xl text-white/95 mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-in animation-delay-200 font-medium drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)] [text-shadow:0_1px_2px_rgba(0,0,0,0.5)]">
-            {newSubtitle}
-          </p>
+            <h1 className="max-w-3xl text-4xl font-display font-extrabold leading-[1.04] tracking-tight text-primary md:text-6xl lg:text-7xl">
+              {heroTitle}
+            </h1>
 
-          <div ref={searchRef} className="relative group max-w-2xl mx-auto animate-fade-in animation-delay-300 z-[100]">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-secondary/40 to-blue-500/40 rounded-full blur opacity-30 group-hover:opacity-60 transition duration-500"></div>
+            <p className="mt-6 max-w-2xl text-lg font-medium leading-relaxed text-muted-foreground md:text-xl">
+              {heroSubtitle}
+            </p>
 
-            
-            <form onSubmit={handleSearch} className="relative flex flex-col sm:flex-row gap-2 p-2 bg-primary/95 border border-white/20 backdrop-blur-xl rounded-2xl sm:rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.5)] transition-all duration-300 focus-within:border-white/40 hover:border-white/30">
-              <div className="flex-grow flex items-center px-4 h-14">
-                <Magnifer weight="Bold" className="w-5 h-5 text-slate-300 mr-3 shrink-0" />
-                <Input 
-                  type="text" 
-                  placeholder={searchPlaceholder} 
-                  className="bg-transparent border-none h-full w-full text-white placeholder:text-slate-400 focus-visible:ring-0 focus-visible:ring-offset-0 text-lg p-0 font-medium"
-                  value={searchQuery}
-                  onChange={(e) => {
+            <div ref={searchRef} className="relative z-30 mt-8 max-w-2xl">
+              <form
+                onSubmit={handleSearch}
+                className="group relative flex flex-col gap-3 rounded-[1.7rem] border border-border bg-white p-2 shadow-xl shadow-primary/10 transition-all duration-300 focus-within:border-primary/30 focus-within:shadow-2xl focus-within:shadow-primary/15 sm:flex-row"
+              >
+                <div className="flex h-14 flex-1 items-center px-4">
+                  <Search className="mr-3 h-5 w-5 shrink-0 text-primary/60" />
+                  <Input
+                    type="text"
+                    placeholder={searchPlaceholder}
+                    className="h-full border-none bg-transparent p-0 text-base font-semibold text-foreground placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 md:text-lg"
+                    value={searchQuery}
+                    onChange={(e) => {
                       setSearchQuery(e.target.value);
                       setIsSearchFocused(true);
-                  }}
-                  onFocus={() => setIsSearchFocused(true)}
-                />
-                {isSearching && <Loader2 className="w-5 h-5 text-secondary animate-spin ml-2" />}
-              </div>
-              <Button type="submit" size="lg" className="rounded-xl sm:rounded-full h-14 px-8 bg-secondary hover:bg-secondary/90 text-white font-bold text-base shadow-lg shadow-secondary/20 hover:shadow-secondary/40 transition-all shrink-0">
-                {searchButtonLabel}
-              </Button>
-            </form>
+                    }}
+                    onFocus={() => setIsSearchFocused(true)}
+                  />
+                  {isSearching && <Loader2 className="ml-2 h-5 w-5 animate-spin text-primary" />}
+                </div>
 
-            {showDropdown && (
-              <div className="absolute top-full left-0 right-0 mt-4 bg-white rounded-2xl shadow-2xl overflow-hidden border border-slate-100 animate-in fade-in slide-in-from-top-4 duration-200 text-left z-[100]">
-                {searchResults.length > 0 ? (
-                  <div className="max-h-[60vh] overflow-y-auto p-2 scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
-                    {searchResults.map((result) => (
-                      <Link
-                        key={result.id}
-                        to={result.url}
-                        onClick={() => setIsSearchFocused(false)}
-                        className="flex items-center gap-4 p-3 hover:bg-slate-50 rounded-xl transition-all group"
-                      >
-                        <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-slate-100 text-slate-500 group-hover:bg-orange-50 group-hover:text-secondary transition-colors shrink-0 text-xl">
-                          {result.icon || "🔍"}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h4 className="font-bold text-slate-800 truncate group-hover:text-secondary transition-colors text-sm">
-                            {result.title}
-                          </h4>
-                          {result.subtitle && (
-                            <p className="text-xs text-slate-500 truncate mt-0.5">
-                              {result.subtitle}
-                            </p>
-                          )}
-                        </div>
-                        <ExternalLink className="w-4 h-4 text-slate-300 group-hover:text-secondary shrink-0" />
-                      </Link>
-                    ))}
-                  </div>
-                ) : !isSearching && searchQuery.length >= 2 ? (
-                  <div className="p-8 text-center">
-                    <p className="text-slate-500 text-sm">Keine Treffer im Netzwerk für "<span className="font-bold text-slate-800">{searchQuery}</span>"</p>
-                  </div>
-                ) : null}
-              </div>
-            )}
-          </div>
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="h-14 rounded-2xl bg-primary px-7 text-base font-extrabold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:-translate-y-0.5 hover:bg-[#063A36] hover:shadow-primary/30 sm:rounded-[1.25rem]"
+                >
+                  {searchButtonLabel}
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </form>
 
-          <div className="mt-12 flex flex-wrap justify-center gap-8 md:gap-16 animate-fade-in animation-delay-500 relative z-0">
-            {heroStats.map((stat, index) => {
-              const icon = index === 0 ? (
-                <GraphUp weight="Bold" className="w-5 h-5 text-blue-200" />
-              ) : index === 1 ? (
-                <UsersGroupTwoRounded weight="Bold" className="w-5 h-5 text-blue-200" />
-              ) : (
-                <ShieldCheck weight="Bold" className="w-5 h-5 text-green-400" />
-              );
+              {showDropdown && (
+                <div className="absolute left-0 right-0 top-full z-[100] mt-4 overflow-hidden rounded-2xl border border-border bg-white text-left shadow-2xl animate-in fade-in slide-in-from-top-4 duration-200">
+                  {searchResults.length > 0 ? (
+                    <div className="max-h-[60vh] overflow-y-auto p-2">
+                      {searchResults.map((result) => (
+                        <Link
+                          key={result.id}
+                          to={result.url}
+                          onClick={() => setIsSearchFocused(false)}
+                          className="group flex items-center gap-4 rounded-xl p-3 transition-all hover:bg-muted"
+                        >
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted text-xl text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                            {result.icon || "🔍"}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <h4 className="truncate text-sm font-bold text-foreground transition-colors group-hover:text-primary">
+                              {result.title}
+                            </h4>
+                            {result.subtitle && (
+                              <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                                {result.subtitle}
+                              </p>
+                            )}
+                          </div>
+                          <ExternalLink className="h-4 w-4 shrink-0 text-muted-foreground group-hover:text-primary" />
+                        </Link>
+                      ))}
+                    </div>
+                  ) : !isSearching && searchQuery.length >= 2 ? (
+                    <div className="p-8 text-center">
+                      <p className="text-sm text-muted-foreground">
+                        Keine Treffer für <span className="font-bold text-foreground">"{searchQuery}"</span>
+                      </p>
+                    </div>
+                  ) : null}
+                </div>
+              )}
+            </div>
 
-              return (
-                <div key={`${stat.title}-${stat.label}-${index}`} className="flex items-center gap-3 group select-none">
-                  <div className="p-2 rounded-lg bg-white/10 group-hover:bg-white/20 transition-colors border border-white/10 shadow-sm">
-                    {icon}
-                  </div>
-                  <div className="text-left">
-                    <div className="text-white font-bold leading-none">{stat.title}</div>
-                    <div className="text-slate-300 text-xs font-medium uppercase tracking-wider mt-1">{stat.label}</div>
+            <div className="mt-8 grid max-w-2xl gap-3 sm:grid-cols-3">
+              {heroStats.map((stat, index) => (
+                <div
+                  key={`${stat.title}-${stat.label}-${index}`}
+                  className="rounded-2xl border border-[#D8E5E1] bg-white p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-md"
+                >
+                  <div className="text-sm font-extrabold text-primary">{stat.title}</div>
+                  <div className="mt-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    {stat.label}
                   </div>
                 </div>
-              );
-            })}
+              ))}
+            </div>
+          </div>
+
+          <div className="relative">
+            <div className="absolute -inset-4 rounded-[2.4rem] bg-[#D8E5E1]/55 blur-2xl" />
+
+            <div className="relative overflow-hidden rounded-[2rem] border border-[#D8E5E1] bg-white p-5 shadow-2xl shadow-primary/10 md:p-7">
+              <div className="mb-6 flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.22em] text-primary">Vergleichsrechner</p>
+                  <h2 className="mt-2 text-2xl font-display font-extrabold text-primary md:text-3xl">
+                    Schutz passend eingrenzen
+                  </h2>
+                </div>
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-muted text-primary">
+                  <ClipboardCheck className="h-6 w-6" />
+                </div>
+              </div>
+
+              <div className="mb-4 grid grid-cols-3 gap-2 rounded-2xl bg-[#F8F5EE] p-2">
+                {["1. Tier", "2. Schutz", "3. Ergebnis"].map((step) => (
+                  <div key={step} className="rounded-xl border border-[#D8E5E1] bg-white px-3 py-2 text-center text-[11px] font-extrabold uppercase tracking-wider text-primary">
+                    {step}
+                  </div>
+                ))}
+              </div>
+
+              <div className="space-y-3">
+                {calculatorFields.map((field) => {
+                  const Icon = field.icon;
+
+                  return (
+                    <button
+                      key={field.label}
+                      type="button"
+                      className="group flex w-full items-center gap-4 rounded-2xl border border-border bg-background/60 p-4 text-left transition-all hover:-translate-y-0.5 hover:border-primary/25 hover:bg-muted hover:shadow-md"
+                      aria-label={`${field.label}: ${field.value}`}
+                    >
+                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-primary shadow-sm ring-1 ring-border transition-all group-hover:bg-primary group-hover:text-primary-foreground">
+                        <Icon className="h-5 w-5" />
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                          {field.label}
+                        </span>
+                        <span className="mt-1 block text-sm font-extrabold text-foreground md:text-base">
+                          {field.value}
+                        </span>
+                      </span>
+                      <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-primary" />
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="mt-5 rounded-2xl border border-[#D8E5E1] bg-[#F8F5EE] p-4">
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <div className="text-xs font-extrabold uppercase tracking-wider text-primary/70">Simulation</div>
+                    <p className="mt-1 text-lg font-display font-extrabold text-primary">
+                      3 passende Prüfbereiche gefunden
+                    </p>
+                  </div>
+                  <div className="rounded-full bg-white px-3 py-1 text-xs font-extrabold text-primary shadow-sm">
+                    neutral
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-5 rounded-2xl bg-[#063A36] p-5 text-primary-foreground">
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <div className="text-sm font-extrabold">Nächster Schritt</div>
+                    <p className="mt-1 text-sm text-primary-foreground/75">
+                      Kategorie wählen und Leistungsdetails prüfen.
+                    </p>
+                  </div>
+                  <Button asChild className="bg-white text-primary hover:bg-[#F8F5EE]">
+                    <Link to="/kategorien">Starten</Link>
+                  </Button>
+                </div>
+              </div>
+
+              <div className="mt-5 flex items-center gap-3 rounded-2xl border border-border bg-muted/60 p-4">
+                <CheckCircle2 className="h-5 w-5 shrink-0 text-primary" />
+                <p className="text-sm font-semibold leading-relaxed text-foreground">
+                  Fokus auf Leistungen, Ausschlüsse, Wartezeiten und Kosten — ohne reißerische Versprechen.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-10 rounded-[1.5rem] border border-primary/10 bg-white p-4 shadow-lg shadow-primary/5 md:mt-14">
+          <div className="grid gap-3 md:grid-cols-4">
+            {trustItems.map((item) => (
+              <div key={item} className="flex items-center gap-3 rounded-2xl bg-[#EFF6F3] px-4 py-3 text-sm font-bold text-primary">
+                <CheckCircle2 className="h-4 w-4 shrink-0 text-primary" />
+                <span>{item}</span>
+              </div>
+            ))}
           </div>
         </div>
       </div>
-
-      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-[0] transform translate-y-[1px] z-20 pointer-events-none">
-          <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none" className="relative block w-[calc(100%+1.3px)] h-[60px]">
-              <path d="M600,112.77C268.63,112.77,0,65.52,0,7.23V120H1200V7.23C1200,65.52,931.37,112.77,600,112.77Z" className="fill-background"></path>
-          </svg>
-      </div>
-
     </section>
   );
 };

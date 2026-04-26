@@ -48,44 +48,12 @@ export const Header = ({ transparent = false }: HeaderProps) => {
   }, [location.pathname]);
 
   const getHeaderStyle = () => {
-    if (isMobileMenuOpen) {
-      return {
-        wrapper: "bg-primary border-b border-white/10 shadow-md",
-        rankText: "text-white",        
-        scoutText: "text-secondary",   
-        toggleBtn: "text-white hover:bg-white/10",
-        navLink: "text-slate-200"
-      };
-    }
-
-    if (isScrolled) {
-      return {
-        wrapper: "bg-white/95 backdrop-blur-xl border-b border-primary/10 shadow-sm",
-        rankText: "text-primary",      
-        scoutText: "text-secondary",   
-        toggleBtn: "text-primary hover:bg-slate-100",
-        navLink: "text-slate-600 hover:text-primary"
-      };
-    }
-
-    const isTransparentPage = location.pathname === "/" || transparent;
-
-    if (isTransparentPage) {
-      return {
-        wrapper: "bg-transparent border-b border-white/5",
-        rankText: "text-white",        
-        scoutText: "text-secondary",   
-        toggleBtn: "text-white hover:bg-white/10",
-        navLink: "text-slate-200 hover:text-white"
-      };
-    }
-
     return {
-      wrapper: "bg-white border-b border-slate-100",
-      rankText: "text-primary",      
-      scoutText: "text-secondary",   
-      toggleBtn: "text-slate-900 hover:bg-slate-100",
-      navLink: "text-slate-600 hover:text-primary"
+      wrapper: "bg-white/95 backdrop-blur-md border-b border-[#D8E5E1] shadow-sm shadow-primary/5",
+      rankText: "text-primary",
+      scoutText: "text-[#7DAA9B]",
+      toggleBtn: "text-primary hover:bg-[#EFF6F3]",
+      navLink: "text-[#173D3A] hover:text-primary"
     };
   };
 
@@ -98,7 +66,7 @@ export const Header = ({ transparent = false }: HeaderProps) => {
     >
       {isMobileMenuOpen && (
         <div 
-          className="absolute inset-0 z-0 pointer-events-none opacity-20"
+          className="absolute inset-0 z-0 pointer-events-none opacity-[0.05]"
           style={{
               backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)',
               backgroundSize: '16px 16px'
@@ -126,7 +94,7 @@ export const Header = ({ transparent = false }: HeaderProps) => {
                   <div key={idx} className="relative group h-full flex items-center">
                     <Link to={normalizeNavigableHref(link.url)} className={`flex items-center gap-1.5 text-sm font-bold transition-colors py-2 ${style.navLink}`}>
                       {link.label}
-                      <ChevronDown className="w-4 h-4 text-secondary transition-transform duration-200 group-hover:rotate-180" />
+                      <ChevronDown className="w-4 h-4 text-[#7DAA9B] transition-transform duration-200 group-hover:rotate-180" />
                     </Link>
                     
                     {/* RICH MEGA MENU DROPDOWN */}
@@ -156,7 +124,7 @@ export const Header = ({ transparent = false }: HeaderProps) => {
                               <div className="flex-1">
                                 <div className="font-bold text-sm text-slate-800 group-hover/item:text-primary transition-colors flex items-center justify-between">
                                     {sub.label}
-                                    <span className="opacity-0 -translate-x-2 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all text-secondary">→</span>
+                                    <span className="opacity-0 -translate-x-2 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all text-[#7DAA9B]">→</span>
                                 </div>
                                 {sub.description ? (
                                     <p className="text-xs text-slate-500 mt-0.5 line-clamp-1 group-hover/item:text-slate-600">{sub.description}</p>
@@ -180,13 +148,13 @@ export const Header = ({ transparent = false }: HeaderProps) => {
                   className={`text-sm font-medium transition-colors relative group py-2 ${style.navLink}`}
                 >
                   {link.label}
-                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-secondary transition-all duration-300 group-hover:w-full" />
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
                 </Link>
               );
             })}
             
             <Link to={normalizeNavigableHref(config.button_url)}>
-              <Button className="bg-secondary hover:bg-secondary/90 text-white font-bold shadow-lg shadow-secondary/20 transition-all hover:-translate-y-0.5 hover:shadow-secondary/40 px-6">
+              <Button className="bg-primary hover:bg-primary/90 text-white font-bold shadow-lg shadow-primary/15 transition-all hover:-translate-y-0.5 hover:shadow-primary/25 px-6">
                 {config.button_text}
               </Button>
             </Link>
@@ -219,7 +187,7 @@ export const Header = ({ transparent = false }: HeaderProps) => {
                   return (
                     <div key={link.label} className="relative">
                       {isComingSoon && (
-                        <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-orange-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md z-10 whitespace-nowrap">
+                        <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-[#C7A76C] text-[#102B29] text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md z-10 whitespace-nowrap">
                           Bald verfügbar
                         </div>
                       )}
@@ -235,11 +203,11 @@ export const Header = ({ transparent = false }: HeaderProps) => {
                           className={`flex flex-col items-center justify-center p-4 bg-slate-50 rounded-xl border border-slate-100 transition-all group shadow-sm duration-200 h-full
                             ${isComingSoon 
                               ? "opacity-60 grayscale cursor-default" 
-                              : "hover:border-secondary/50 hover:bg-white active:scale-95"
+                              : "hover:border-primary/30 hover:bg-white active:scale-95"
                             }
                           `}
                       >
-                          <div className={`mb-2 transition-transform ${isComingSoon ? "text-slate-400" : "text-secondary group-hover:scale-110"}`}>
+                          <div className={`mb-2 transition-transform ${isComingSoon ? "text-slate-400" : "text-[#7DAA9B] group-hover:scale-110"}`}>
                              <Icon className="w-6 h-6" />
                           </div>
                           <span className={`text-xs font-bold uppercase tracking-wide text-center ${isComingSoon ? "text-slate-500" : "text-slate-700"}`}>
@@ -263,9 +231,9 @@ export const Header = ({ transparent = false }: HeaderProps) => {
                         key={`${link.label}-${idx}`}
                         to={normalizeNavigableHref(link.url)}
                         onClick={() => setIsMobileMenuOpen(false)}
-                        className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 hover:border-secondary/40 hover:text-primary transition-all"
+                        className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 hover:border-primary/30 hover:text-primary transition-all"
                       >
-                        <Icon className="w-4 h-4 text-secondary" />
+                        <Icon className="w-4 h-4 text-[#7DAA9B]" />
                         <span>{link.label}</span>
                       </Link>
                     );
@@ -287,13 +255,13 @@ export const Header = ({ transparent = false }: HeaderProps) => {
                             {link.label}
                           </AccordionTrigger>
                           <AccordionContent>
-                             <div className="flex flex-col space-y-1 pl-4 pb-4 border-l-2 border-secondary/20 ml-1">
+                             <div className="flex flex-col space-y-1 pl-4 pb-4 border-l-2 border-primary/20 ml-1">
                                 {link.items.map((sub: any, sIdx: number) => (
                                   <Link
                                     key={sIdx}
                                     to={normalizeNavigableHref(sub.url)}
                                     onClick={() => setIsMobileMenuOpen(false)}
-                                    className="py-2 text-base font-medium text-slate-600 hover:text-secondary block"
+                                    className="py-2 text-base font-medium text-slate-600 hover:text-primary block"
                                   >
                                     {sub.label}
                                   </Link>
@@ -312,7 +280,7 @@ export const Header = ({ transparent = false }: HeaderProps) => {
                         className="text-lg font-bold text-slate-800 hover:text-primary py-4 border-b border-slate-100 flex justify-between items-center group"
                       >
                         {link.label}
-                        <span className="text-slate-300 group-hover:text-secondary group-hover:translate-x-1 transition-all">→</span>
+                        <span className="text-slate-300 group-hover:text-primary group-hover:translate-x-1 transition-all">→</span>
                       </Link>
                     );
                   })}
@@ -320,7 +288,7 @@ export const Header = ({ transparent = false }: HeaderProps) => {
             </div>
 
             <Link to={normalizeNavigableHref(config.button_url)} onClick={() => setIsMobileMenuOpen(false)} className="mt-4">
-              <Button className="w-full bg-secondary hover:bg-secondary/90 text-white font-bold h-14 text-lg rounded-xl shadow-xl shadow-secondary/20">
+              <Button className="w-full bg-primary hover:bg-primary/90 text-white font-bold h-14 text-lg rounded-xl shadow-xl shadow-primary/15">
                 {config.button_text}
               </Button>
             </Link>

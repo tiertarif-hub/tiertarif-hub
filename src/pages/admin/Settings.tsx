@@ -175,7 +175,7 @@ export default function AdminSettings() {
   const [isUploadingLogo, setIsUploadingLogo] = useState(false);
 
   // --- THEME STATES ---
-  const [activeTheme, setActiveTheme] = useState("electric");
+  const [activeTheme, setActiveTheme] = useState("tiertarif");
   const [dashboardTheme, setDashboardTheme] = useState("dark");
 
   // --- MARKETING STATES ---
@@ -298,7 +298,7 @@ export default function AdminSettings() {
     text_checked: "Redaktionell geprüft",
     text_update: "Aktualisiert: 2026",
     text_description: "Unsere Vergleiche basieren auf echten Daten, Nutzer-Feedback und Experten-Analysen.", 
-    copyright_text: "© 2026 Rank-Scout. Alle Rechte vorbehalten.",
+    copyright_text: "© 2026 TierTarif. Alle Rechte vorbehalten.",
     made_with_text: "Made with",
     made_in_text: "in Germany", 
     disclaimer: "*Werbehinweis: Wir finanzieren uns über sogenannte Affiliate-Links. Wenn Sie über einen Link auf dieser Seite einkaufen, erhalten wir möglicherweise eine Provision. Der Preis für Sie ändert sich dabei nicht. Unsere redaktionelle Unabhängigkeit bleibt davon unberührt.",
@@ -339,7 +339,7 @@ export default function AdminSettings() {
   useEffect(() => {
     if (!settings) return;
 
-    setSiteTitle((settings.site_title as string) || "Rank-Scout");
+    setSiteTitle((settings.site_title as string) || "TierTarif");
     setSiteLogoUrl((settings.site_logo_url as string) || "");
     setSiteDescription((settings.site_description as string) || "");
     setTopBarText((settings.top_bar_text as string) || "");
@@ -348,7 +348,7 @@ export default function AdminSettings() {
     setAdsEnabled((settings.ads_enabled as boolean) || false);
     
     // Theme & Marketing Init
-    setActiveTheme((settings.active_theme as string) || "electric");
+    setActiveTheme((settings.active_theme as string) || "tiertarif");
     setDashboardTheme((settings.dashboard_theme as string) || "dark");
     setNewsletterActive((settings.newsletter_active as boolean) ?? true);
     setPopupActive((settings.popup_active as boolean) ?? false);
@@ -792,7 +792,7 @@ export default function AdminSettings() {
             Navi & Footer
           </TabsTrigger>
           <TabsTrigger value="home" className="py-3 rounded-lg data-[state=active]:bg-secondary data-[state=active]:text-white data-[state=active]:shadow-md transition-all font-medium">
-            Startseite {hasUnsavedChanges && <span className="ml-2 w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>}
+            Startseite {hasUnsavedChanges && <span className="ml-2 w-2 h-2 rounded-full bg-[#C7A76C] animate-pulse"></span>}
           </TabsTrigger>
         </TabsList>
 
@@ -867,7 +867,8 @@ export default function AdminSettings() {
                     <Select value={activeTheme} onValueChange={setActiveTheme}>
                       <SelectTrigger><SelectValue placeholder="Theme auswählen" /></SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="electric">Electric (Default)</SelectItem>
+                        <SelectItem value="tiertarif">TierTarif · Trust Vet Teal</SelectItem>
+                        <SelectItem value="electric">Electric</SelectItem>
                         <SelectItem value="dark">Dark Mode</SelectItem>
                         <SelectItem value="light">Light Mode</SelectItem>
                       </SelectContent>
@@ -974,7 +975,7 @@ export default function AdminSettings() {
 
               <div className="space-y-4 pt-4 border-t border-border">
                 <h4 className="font-medium flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                  <span className="w-1.5 h-1.5 rounded-full bg-orange-500"/> Native Amazon Banner
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#C7A76C]"/> Native Amazon Banner
                 </h4>
                 <div className="space-y-3">
                   <div className="grid md:grid-cols-2 gap-4">
@@ -1049,7 +1050,7 @@ export default function AdminSettings() {
               <div className="space-y-2">
                 <Label>URLs (Eine pro Zeile)</Label>
                 <Textarea 
-                  placeholder="https://rank-scout.com/kategorie/..." 
+                  placeholder="https://deine-domain.at/kategorie/..." 
                   className="font-mono text-xs min-h-[150px] bg-slate-50 dark:bg-slate-900"
                   value={indexingUrls}
                   onChange={(e) => setIndexingUrls(e.target.value)}
@@ -1170,7 +1171,7 @@ export default function AdminSettings() {
                        
                     <div className="flex items-center gap-4 justify-end pb-2 px-2 mt-2 md:mt-0">
                       <div className="flex flex-col items-center space-y-2">
-                        <Label className="text-xs text-orange-600 font-bold whitespace-nowrap">Bald verfügbar</Label>
+                        <Label className="text-xs text-primary font-bold whitespace-nowrap">Bald verfügbar</Label>
                         <Switch checked={link.isComingSoon === true} onCheckedChange={() => toggleHubLinkComingSoon(idx)} />
                       </div>
                       <div className="flex flex-col items-center space-y-2 border-l border-slate-200 pl-4">
@@ -1248,7 +1249,7 @@ export default function AdminSettings() {
 
           <Card className="bg-card border-border shadow-sm">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2"><MessageSquare className="w-5 h-5 text-orange-500" /> Footer Inhalte</CardTitle>
+              <CardTitle className="flex items-center gap-2"><MessageSquare className="w-5 h-5 text-primary" /> Footer Inhalte</CardTitle>
               <CardDescription>Texte im unteren Bereich der Seite.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -1279,7 +1280,7 @@ export default function AdminSettings() {
               <h3 className="font-bold text-lg">Startseiten Editor</h3>
               <p className="text-xs text-muted-foreground">Struktur und Live-Texte der Homepage.</p>
             </div>
-            <Button onClick={saveContentManually} size="lg" className={hasUnsavedChanges ? 'bg-orange-600 animate-pulse' : 'bg-primary'}>
+            <Button onClick={saveContentManually} size="lg" className={hasUnsavedChanges ? 'bg-primary animate-pulse' : 'bg-primary'}>
               <Save className="w-4 h-4 mr-2" /> Alle Änderungen Speichern
             </Button>
           </div>

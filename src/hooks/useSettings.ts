@@ -220,7 +220,7 @@ export function useUpdateSetting() {
 
 // --- THEME HOOK ---
 export function useActiveTheme() {
-  return useSetting<string>("active_theme", "navy");
+  return useSetting<string>("active_theme", "tiertarif");
 }
 
 // --- CMS DEFAULTS ---
@@ -258,18 +258,18 @@ export const defaultHomeContent = {
   seo_description: "",
   
   hero: {
-  badge: "NEU: Das Portal ist live",
-  headline: "Dein zentraler Vergleichs-Hub",
-  title: "Dein zentraler Vergleichs-Hub",
-  subtitle: "Suche & finde passende Tools für deinen Erfolg.",
-  subheadline: "Suche & finde passende Tools für deinen Erfolg. Vergleiche, entdecke und nutze etablierte Angebote aus KI, Software und Lifestyle. Transparent eingeordnet.",
-  search_placeholder: "Was suchst du heute? (z.B. 'KI Tools', 'Dating')",
-  search_label: "Finden",
+  badge: "TierTarif Vergleichsportal",
+  headline: "Tierversicherung vergleichen",
+  title: "Tierversicherung vergleichen",
+  subtitle: "Prüfe Leistungen, Kosten, Wartezeiten und Erstattung sachlich für Hund, Katze und OP-Schutz.",
+  subheadline: "Strukturiere Tierversicherungen nach Leistungen, Kostenpunkten, Wartezeiten und Erstattungslogik.",
+  search_placeholder: "Hund, Katze oder OP-Versicherung suchen",
+  search_label: "Vergleich starten",
   button_text: "Jetzt vergleichen",
   stats: [
-    { title: "Viele", label: "Kategorien" },
-    { title: "Aktive", label: "Community" },
-    { title: "Laufend", label: "Aktualisiert" }
+    { title: "Transparent", label: "Leistungen prüfen" },
+    { title: "Sachlich", label: "Kosten einordnen" },
+    { title: "Sicher", label: "Wartezeiten beachten" }
   ]
 },
   how_it_works: {
@@ -288,15 +288,15 @@ export const defaultHomeContent = {
     subheadline: "Top Apps & Deals"
   },
   big_three: { 
-    headline: "Wähle deinen Bereich", 
+    headline: "Tierversicherung gezielt prüfen", 
     items: [
-        { id: "1", title: "Versicherungen", desc: "Tarife, Leistungen und Policen im Überblick.", link: getCategoriesRoute(), button_text: "Vergleichen", theme: "blue", image_url: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85" },
-        { id: "2", title: "Finanzen & Krypto", desc: "Broker, Kredite & Geschäftskonten im Überblick.", link: getCategoriesRoute(), button_text: "Vergleichen", theme: "gold", image_url: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab" },
-        { id: "3", title: "KI & Software", desc: "Tools und Softwarelösungen im Überblick.", link: getCategoriesRoute(), button_text: "Tools finden", theme: "dark", image_url: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b" }
+        { id: "1", title: "Tierversicherungen", desc: "Leistungen, Kosten und Erstattung für Hund und Katze sachlich prüfen.", link: getCategoriesRoute(), button_text: "Vergleiche ansehen", theme: "tiertarif", image_url: "/big-threes/tiertarif-versicherungen-startseitenbild.webp", icon: "shield" },
+        { id: "2", title: "Hundeschutz", desc: "Krankenversicherung, OP-Schutz und Selbstbeteiligung übersichtlich einordnen.", link: getCategoriesRoute(), button_text: "Hundetarife prüfen", theme: "tiertarif", image_url: "/big-threes/tiertarif-tierversicherung-startseitenbild.webp", icon: "heart" },
+        { id: "3", title: "Katzenschutz", desc: "FORL, Zahn-OP, Wartezeiten und Erstattungsgrenzen besser verstehen.", link: getCategoriesRoute(), button_text: "Katzentarife prüfen", theme: "tiertarif", image_url: "/big-threes/tiertarif-tierversicherung-startseitenbild.webp", icon: "star" }
     ],
-    finance_title: "Finanzen & Krypto", finance_desc: "Broker, Kredite & Geschäftskonten im Überblick.", finance_link: getCategoriesRoute(), finance_button: "Jetzt vergleichen", 
-    software_title: "KI & Software", software_desc: "Tools und Softwarelösungen im Überblick.", software_link: getCategoriesRoute(), software_button: "Tools finden", 
-    services_title: "Versicherungen", services_desc: "Tarife, Leistungen und Policen im Überblick.", services_link: getCategoriesRoute(), services_button: "Zum Vergleich" 
+    finance_title: "Hundekrankenversicherung", finance_desc: "Leistungen, Erstattung und Kosten für Hunde prüfen.", finance_link: getCategoriesRoute(), finance_button: "Hundeschutz prüfen", 
+    software_title: "Katzenversicherung", software_desc: "OP-Schutz, Zahn-OP und Wartezeiten für Katzen einordnen.", software_link: getCategoriesRoute(), software_button: "Katzenschutz prüfen", 
+    services_title: "Tierversicherungen", services_desc: "Tarife, Leistungen und Bedingungen für Haustiere sachlich prüfen.", services_link: getCategoriesRoute(), services_button: "Zum Vergleich" 
   },
   why_us: {
     headline: "Warum dieses Vergleichsportal?",
