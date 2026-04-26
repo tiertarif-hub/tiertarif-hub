@@ -27,7 +27,7 @@ const KEYWORD_MATCHERS: Array<{ test: RegExp; slug: string }> = [
   { test: /kredit|baufinanz/i, slug: "kredit-vergleich" },
 ];
 
-function img(category: Category) { return category.card_image_url || category.hero_image_url || "/big-threes/forum_magazin_herobild_rank-scout.webp"; }
+function img(category: Category) { return category.card_image_url || category.hero_image_url || "/big-threes/tiertarif-forum-magazin-hero.webp"; }
 function teaser(category: Category) { return String(category.description || category.meta_description || category.comparison_title || "Tarife und Leistungen prüfen.").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim(); }
 function chunkArray<T>(arr: T[], size: number) { return Array.from({ length: Math.ceil(arr.length / size) }, (_, i) => arr.slice(i*size, i*size + size)); }
 

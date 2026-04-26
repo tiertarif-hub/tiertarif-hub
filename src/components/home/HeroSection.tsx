@@ -59,7 +59,7 @@ export const HeroSection = () => {
       
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <img
-            src="/big-threes/forum_magazin_herobild_standard-portal.webp"
+            src="/big-threes/tiertarif-forum-magazin-hero.webp"
             alt=""
             aria-hidden="true"
             fetchPriority="high"

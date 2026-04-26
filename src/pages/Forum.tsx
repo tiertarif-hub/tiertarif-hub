@@ -470,7 +470,7 @@ export default function Forum() {
         <section className="relative overflow-hidden border-b border-white/10 bg-[#0A0F1C] text-white">
           <div className="absolute inset-0">
             <img
-              src="/big-threes/forum_magazin_herobild_standard-portal.webp"
+              src="/big-threes/tiertarif-forum-magazin-hero.webp"
               alt=""
               aria-hidden="true"
               className="h-full w-full object-cover object-center"

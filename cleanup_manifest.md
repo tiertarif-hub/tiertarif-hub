@@ -1,42 +1,57 @@
-# TierTarif Rank-Scout Cleanup Manifest
+# TierTarif Cleanup Manifest – Paket A
 
-## Geänderte Dateien
+## Ziel
 
-- `src/components/layout/Header.tsx`
-- `src/components/layout/Footer.tsx`
-- `src/components/ui/LoadingScreen.tsx`
-- `src/hooks/useSettings.ts`
-- `src/components/home/HomeSEOText.tsx`
-- `src/components/home/NewsSection.tsx`
-- `src/components/home/SEOContentSection.tsx`
-- `src/components/home/HowItWorksSection.tsx`
-- `src/components/home/BigThreeSection.tsx`
-- `src/components/home/HomeComparisonSlider.tsx`
-- `src/components/forum/RelatedForumThreads.tsx`
-- `src/components/forum/ForumSEO.tsx`
-- `src/components/layout/CookieBanner.tsx`
-- `src/components/templates/ComparisonTemplate.tsx`
-- `src/components/templates/HubTemplate.tsx`
-- `src/components/admin/HomeFAQEditor.tsx`
+Sichere Entfernung der technischen Rank-Scout-Datei-Altlasten aus dem TierTarif-Repository, ohne Routen, Slugs oder bestehende Vergleichsseiten zu ändern.
+
+## Geänderte/neu angelegte Asset-Pfade
+
+- `public/brand/tiertarif-logo.webp`
+- `public/big-threes/tiertarif-forum-magazin-hero.webp`
+- `public/big-threes/tiertarif-versicherungen-startseitenbild.webp`
+- `public/big-threes/tiertarif-tierversicherung-startseitenbild.webp`
+
+## Entfernte Altlasten
+
+- `Rank-Scout-Logo.webp`
+- `public/rank-scout-logo.webp`
+- `public/big-threes/rank-scout-logo.webp`
+- `public/big-threes/forum_magazin_herobild_rank-scout.webp`
+- `public/big-threes/versicherungen_vergleich_rank-scout_startseitenbild.webp`
+- `public/big-threes/versicherungen_vergleich_rank-scout_startseitenbild1.webp`
+- `supabase/functions/rank-scout-ai/`
+- `rank_scout_db.sql`
+
+## Neue/umbenannte technische Pfade
+
+- `supabase/functions/tiertarif-ai/`
+- `tiertarif_db.sql`
+
+## Angepasste Code-Referenzen
+
+- `src/components/forum/ForumComparisonSlider.tsx`
+- `src/components/home/HeroSection.tsx`
+- `src/pages/Forum.tsx`
 - `src/hooks/useGenerateCategoryContent.ts`
-- `src/hooks/useSeoRedirects.ts`
-- `src/lib/constants.ts`
-- `src/lib/schemas.ts`
-- `src/lib/aboutContent.ts`
-- `src/pages/About.tsx`
-- `src/pages/admin/Layout.tsx`
-- `src/pages/admin/MultiPublisher.tsx`
-- `src/pages/admin/Login.tsx`
-- `src/pages/admin/Forum.tsx`
-- `src/pages/admin/About.tsx`
-- `src/pages/admin/Categories.tsx`
-- `fix_tiertarif_brand_settings.sql`
+- `supabase/functions/tiertarif-ai/index.ts`
 
-## Nicht geändert
+## Bewusst nicht geändert
 
-- `dsl-vergleich-rank-scout` Slugs in Forum-Sidebar/-Slider wurden bewusst nicht geändert, weil das URL-/Slug-Änderungen wären und ohne Redirect 404-Risiko erzeugen.
-- `rank-scout-ai` Edge-Function-Name wurde bewusst nicht geändert, weil das ein technischer Funktionsname ist und sonst die Supabase Function brechen kann.
+- `dsl-vergleich-rank-scout` Slugs in `ForumComparisonSidebar.tsx` und `ForumComparisonSlider.tsx` bleiben unverändert, weil Slug-/URL-Änderungen ohne Redirect-Konzept 404-Risiko erzeugen.
+- `dist/` wurde bewusst nicht manuell angepasst. Der Ordner muss durch `npm run build` neu erzeugt werden.
+- Historische Dokumente wie `CHANGELOG.md` oder `MIGRATION_LOG.md` können noch alte Projektnamen enthalten. Diese sind nicht runtime-relevant.
 
 ## Build-Hinweis
 
-Der hochgeladene ZIP-Auszug enthält nur `src/` und nicht das vollständige Projekt mit `package.json`. Daher konnte kein kompletter `npm run build` ausgeführt werden.
+Nach Deployment-Vorbereitung bitte lokal ausführen:
+
+```bash
+npm run build
+```
+
+Danach im Browser-Netzwerk prüfen:
+
+- keine Requests auf `rank-scout-logo.webp`
+- keine Requests auf `forum_magazin_herobild_rank-scout.webp`
+- keine Requests auf `forum_magazin_herobild_standard-portal.webp`
+- keine Function Calls auf `rank-scout-ai`

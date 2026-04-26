@@ -111,7 +111,7 @@ export const useGenerateCategoryContent = () => {
 
     try {
       // Wir schießen den Payload direkt sicher an unsere Edge Function
-      const { data, error } = await supabase.functions.invoke("rank-scout-ai", {
+      const { data, error } = await supabase.functions.invoke("tiertarif-ai", {
         body: { 
           topic: finalTopic,
           systemPrompt: systemPrompt
