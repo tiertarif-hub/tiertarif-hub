@@ -1,0 +1,17 @@
+providers = ["node"]
+
+[variables]
+NIXPACKS_NODE_VERSION = "22"
+NODE_ENV = "production"
+
+[phases.setup]
+nixPkgs = ["nodejs_22", "nginx", "gettext"]
+
+[phases.install]
+cmds = ["npm ci"]
+
+[phases.build]
+cmds = ["npm run build"]
+
+[start]
+cmd = "set -eu; export OLLAMA_AUTH_KEY=\"${OLLAMA_AUTH_KEY:-__DISABLED__}\"; export PRERENDER_TOKEN=\"${PRERENDER_TOKEN:-}\"; export PRERENDER_HOST=\"${PRERENDER_HOST:-service.prerender.io}\"; if [ -n \"${PRERENDER_TOKEN}\" ]; then export PRERENDER_ENABLED=\"1\"; else export PRERENDER_ENABLED=\"0\"; fi; envsubst '${OLLAMA_AUTH_KEY} ${PRERENDER_TOKEN} ${PRERENDER_HOST} ${PRERENDER_ENABLED}' < /app/nginx.conf > /app/nginx.runtime.conf && exec nginx -c /app/nginx.runtime.conf -g 'daemon off;'"

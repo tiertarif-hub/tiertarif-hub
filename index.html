@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Standard Portal - Vergleichsportal</title>
+
+    <link rel="preload" href="/fonts/inter-v20-latin-regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/inter-v20-latin-700.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preconnect" href="https://oeshjjvhtmebjwbouayc.supabase.co" crossorigin />
+    <link rel="dns-prefetch" href="https://oeshjjvhtmebjwbouayc.supabase.co" />
+
+    <meta property="og:image" content="/og-image.png">
+    <meta name="theme-color" content="#ffffff">
+    <script>
+      window.prerenderReady = false;
+      window.__RS_PRERENDER_BOOTSTRAP_TIMEOUT_ID__ = window.setTimeout(function () {
+        window.prerenderReady = true;
+      }, 12000);
+    </script>
+    <script>
+      (function () {
+        var ua = navigator.userAgent || "";
+        var botPattern = /(googlebot|googleother|google-inspectiontool|apis-google|adsbot-google|mediapartners-google|bingbot|applebot|duckduckbot|baiduspider|yandex|facebookexternalhit|twitterbot|linkedinbot|slackbot|whatsapp|discordbot|redditbot|semrushbot|ahrefsbot|mj12bot|dotbot|rogerbot|embedly|quora link preview|pinterestbot|petalbot|sogou|prerender)/i;
+        var isBot = botPattern.test(ua);
+
+        window.__RS_IS_BOT__ = isBot;
+        window.__RS_IS_PRERENDER__ = /prerender/i.test(ua);
+
+        if (isBot) {
+          document.documentElement.setAttribute("data-rs-bot", "1");
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

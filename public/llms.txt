@@ -1,0 +1,3 @@
+# Standard Portal - KI-Zusammenfassung
+Title: Standard Portal
+Description: Modulares redaktionelles Vergleichsportal fuer Ratgeber, Rechner und Angebotsuebersichten.

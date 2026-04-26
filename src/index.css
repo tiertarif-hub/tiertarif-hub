@@ -1,0 +1,295 @@
+/* --- LOKALE FONTS (Kyra-Performance Fix) --- */
+
+/* Inter (Body) - v20 */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/inter-v20-latin-regular.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/inter-v20-latin-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/inter-v20-latin-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/inter-v20-latin-700.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('/fonts/inter-v20-latin-800.woff2') format('woff2');
+}
+
+/* Outfit (Headlines) - BRIDGE FIX
+   Wir nutzen Inter-Dateien für den Namen 'Outfit', damit keine 404-Fehler entstehen,
+   bis du die echten Outfit-Files hinzufügst.
+*/
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/inter-v20-latin-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/inter-v20-latin-600.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/inter-v20-latin-700.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url('/fonts/inter-v20-latin-800.woff2') format('woff2');
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 20% 98%;
+    --foreground: 229 88% 13%;
+    --primary: 225 71% 19%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 20 90% 55%;
+    --secondary-foreground: 0 0% 100%;
+    --card: 0 0% 100%;
+    --card-foreground: 229 88% 13%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 229 88% 13%;
+    --muted: 210 40% 94%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 210 40% 94%;
+    --accent-foreground: 229 88% 13%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 225 71% 19%;
+    --radius: 0.75rem;
+
+    /* Admin Sidebar (Default) */
+    --sidebar-background: 225 71% 13%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 20 90% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 225 71% 17%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 225 50% 25%;
+    --sidebar-ring: 20 100% 55%;
+  }
+
+  /* --- THEME PRESETS --- */
+  [data-theme="royal"] {
+    --primary: 224 76% 28%;
+    --ring: 224 76% 28%;
+    --sidebar-background: 224 76% 20%;
+    --sidebar-border: 224 60% 30%;
+    --sidebar-accent: 224 76% 25%;
+  }
+
+  [data-theme="electric"] {
+    --primary: 237 95% 23%;
+    --ring: 237 95% 23%;
+    --sidebar-background: 237 95% 15%;
+    --sidebar-border: 237 60% 30%;
+    --sidebar-accent: 237 95% 20%;
+  }
+
+  [data-theme="midnight"] {
+    --primary: 240 100% 18%;
+    --ring: 240 100% 18%;
+    --sidebar-background: 240 80% 12%;
+    --sidebar-border: 240 60% 25%;
+    --sidebar-accent: 240 80% 18%;
+  }
+
+  [data-theme="obsidian"] {
+    --primary: 0 0% 9%;
+    --secondary: 25 95% 53%;
+    --ring: 25 95% 53%;
+    --sidebar-background: 0 0% 5%;
+    --sidebar-border: 0 0% 20%;
+    --sidebar-accent: 0 0% 15%;
+    --sidebar-primary: 25 95% 53%;
+  }
+
+  [data-theme="crimson"] {
+    --primary: 0 0% 0%;
+    --secondary: 346 84% 61%;
+    --ring: 346 84% 61%;
+    --sidebar-background: 0 0% 0%;
+    --sidebar-border: 346 84% 30%;
+    --sidebar-accent: 346 84% 10%;
+    --sidebar-primary: 346 84% 61%;
+  }
+
+  [data-theme="emerald"] {
+    --primary: 160 100% 15%;
+    --secondary: 160 60% 45%;
+    --ring: 160 60% 45%;
+    --sidebar-background: 160 100% 5%;
+    --sidebar-border: 160 60% 20%;
+    --sidebar-accent: 160 60% 10%;
+    --sidebar-primary: 160 60% 45%;
+  }
+
+  [data-theme="slate"] {
+    --primary: 215 25% 27%;
+    --secondary: 215 16% 47%;
+    --ring: 215 25% 27%;
+    --sidebar-background: 215 25% 20%;
+    --sidebar-border: 215 16% 30%;
+    --sidebar-accent: 215 25% 25%;
+    --sidebar-primary: 210 40% 98%;
+  }
+
+  [data-theme="gold"] {
+    --primary: 0 0% 5%;
+    --secondary: 43 74% 49%;
+    --ring: 43 74% 49%;
+    --sidebar-background: 0 0% 0%;
+    --sidebar-border: 43 74% 25%;
+    --sidebar-accent: 43 74% 10%;
+    --sidebar-primary: 43 74% 49%;
+  }
+
+  .dark {
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+    --primary: 225 71% 60%;
+    --secondary: 20 90% 55%;
+    --secondary-foreground: 0 0% 100%;
+    --card: 222 47% 15%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 15%;
+    --popover-foreground: 210 40% 98%;
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 217 33% 17%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 217 33% 25%;
+    --input: 217 33% 25%;
+    --ring: 225 71% 60%;
+    --sidebar-background: 225 40% 10%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 20 90% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 225 40% 15%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 225 30% 20%;
+    --sidebar-ring: 20 100% 55%;
+  }
+
+  .dark[data-theme="royal"] { --primary: 224 76% 60%; --ring: 224 76% 60%; }
+  .dark[data-theme="electric"] { --primary: 237 95% 65%; --ring: 237 95% 65%; }
+  .dark[data-theme="midnight"] { --primary: 240 100% 65%; --ring: 240 100% 65%; }
+  .dark[data-theme="obsidian"] { --primary: 0 0% 80%; --ring: 25 95% 53%; }
+  .dark[data-theme="crimson"] { --primary: 346 84% 61%; --ring: 346 84% 61%; }
+  .dark[data-theme="emerald"] { --primary: 160 60% 45%; --ring: 160 60% 45%; }
+  .dark[data-theme="slate"] { --primary: 215 20% 65%; --ring: 215 20% 65%; }
+  .dark[data-theme="gold"] { --primary: 43 74% 49%; --ring: 43 74% 49%; }
+}
+
+@layer base {
+  * { @apply border-border; }
+  body {
+    @apply text-foreground font-body antialiased;
+    background-color: hsl(var(--background));
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-bold tracking-tight text-foreground;
+  }
+}
+
+@layer components {
+  .dots-white {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+    background-size: 30px 30px;
+  }
+  .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+  .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+  .custom-scrollbar::-webkit-scrollbar-thumb { background: hsl(var(--muted-foreground) / 0.3); border-radius: 3px; }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: hsl(var(--muted-foreground) / 0.5); }
+}
+
+/* --- ANIMATIONEN --- */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in { animation: fade-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+
+.animation-delay-100 { animation-delay: 100ms; }
+.animation-delay-200 { animation-delay: 200ms; }
+.animation-delay-300 { animation-delay: 300ms; }
+.animation-delay-500 { animation-delay: 500ms; }
+
+/* --- APP TICKER ANIMATION --- */
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-scroll {
+  animation: scroll 40s linear infinite;
+}
+
+.hover\:pause:hover {
+  animation-play-state: paused;
+}
+
+.mask-gradient-x {
+  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+/* --- FIX FÜR BUTTONS IM FORUM --- */
+.prose a.text-white {
+  color: #ffffff !important;
+  text-decoration: none !important;
+}
+
+.prose a.text-white:hover {
+  color: #ffffff !important;
+}
+
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}

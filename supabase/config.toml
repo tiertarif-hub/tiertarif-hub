@@ -1,0 +1,19 @@
+project_id = "oeshjjvhtmebjwbouayc"
+
+[functions.go-redirect]
+verify_jwt = false
+
+[functions.newsletter-subscribe]
+verify_jwt = false
+
+[functions.generate-city-content]
+verify_jwt = false
+
+[functions.page-pulse]
+verify_jwt = false
+
+[functions.github-pulse]
+verify_jwt = false
+
+[functions.generate-sitemap]
+verify_jwt = false
