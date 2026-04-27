@@ -1840,7 +1840,42 @@ export default function AdminSettings() {
                             <div className="space-y-2"><Label>Titel</Label><Input value={item.title} onChange={e => updateBigThreeItem(idx, "title", e.target.value)} /></div>
                             <div className="space-y-2"><Label>Link URL</Label><Input value={item.link} onChange={e => updateBigThreeItem(idx, "link", e.target.value)} /></div>
                             <div className="space-y-2"><Label>Button Text</Label><Input value={item.button_text} onChange={e => updateBigThreeItem(idx, "button_text", e.target.value)} /></div>
-                            <div className="space-y-2"><Label>Bild URL</Label><Input value={item.image_url} onChange={e => updateBigThreeItem(idx, "image_url", e.target.value)} /></div>
+                            <div className="space-y-2 md:col-span-2">
+                              <Label>Bild-URL / Bild-Link</Label>
+                              <Input
+                                value={item.image_url || ""}
+                                placeholder="https://.../bild.webp oder /big-threes/dateiname.webp"
+                                onChange={e => updateBigThreeItem(idx, "image_url", e.target.value)}
+                              />
+                              <p className="text-xs leading-relaxed text-muted-foreground">
+                                Empfohlen für die Schwerpunkt-Karten: 900 × 520 px, 16:9, WebP/AVIF, ideal unter 180 KB. Feld leer lassen nutzt das TierTarif-Fallbackbild.
+                              </p>
+                              {item.image_url && (
+                                <div className="flex flex-col gap-3 rounded-xl border border-border bg-background p-3 sm:flex-row sm:items-center sm:justify-between">
+                                  <div className="flex items-center gap-3">
+                                    <img
+                                      src={item.image_url}
+                                      alt=""
+                                      className="h-16 w-24 rounded-lg border border-border object-cover"
+                                      loading="lazy"
+                                    />
+                                    <div>
+                                      <p className="text-sm font-semibold text-foreground">Bildvorschau</p>
+                                      <p className="max-w-[26rem] truncate text-xs text-muted-foreground">{item.image_url}</p>
+                                    </div>
+                                  </div>
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => updateBigThreeItem(idx, "image_url", "")}
+                                  >
+                                    <X className="mr-2 h-3.5 w-3.5" />
+                                    Bild entfernen
+                                  </Button>
+                                </div>
+                              )}
+                            </div>
                             <div className="space-y-2 md:col-span-2"><Label>Beschreibung</Label><Input value={item.desc} onChange={e => updateBigThreeItem(idx, "desc", e.target.value)} /></div>
                           </div>
                         </div>

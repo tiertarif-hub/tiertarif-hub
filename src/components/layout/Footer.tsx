@@ -36,22 +36,22 @@ export const Footer = () => {
   }
 
   return (
-    <footer className="relative bg-[#063A36] pt-20 pb-12 overflow-hidden border-t border-secondary/20 mt-0">
+    <footer className="relative bg-secondary pt-20 pb-12 overflow-hidden border-t border-secondary mt-0">
       
       {/* --- BACKGROUND EFFECTS --- */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-t from-primary/10 via-transparent to-white/10 pointer-events-none" />
       
       <div 
         className="absolute inset-0 z-0 opacity-[0.06]" 
         style={{
-          backgroundImage: `radial-gradient(rgba(248,245,238,0.55) 1px, transparent 1px)`,
+          backgroundImage: `radial-gradient(hsl(var(--primary) / 0.22) 1px, transparent 1px)`,
           backgroundSize: '24px 24px',
           maskImage: 'linear-gradient(to top, black 40%, transparent 100%)', 
           WebkitMaskImage: 'linear-gradient(to top, black 40%, transparent 100%)'
         }}
       />
 
-      <div className="absolute bottom-[-20%] left-[-10%] w-[600px] h-[600px] bg-secondary/10 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-[-20%] left-[-10%] w-[600px] h-[600px] bg-white/18 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="container mx-auto px-4 relative z-10">
         
@@ -61,25 +61,25 @@ export const Footer = () => {
           {/* 1. BRANDING (CONSISTENT) */}
           <div className="space-y-6 sm:col-span-2 lg:col-span-1">
             <Link to="/" className="block w-fit group">
-               <span className="text-3xl font-display font-extrabold tracking-tight text-white">
+               <span className="text-3xl font-display font-extrabold tracking-tight text-primary">
                   {brandName}
                   <span className="text-secondary">.</span>
                </span>
             </Link>
-            <p className="text-[#DDEBE7] text-sm leading-relaxed max-w-xs">
+            <p className="text-primary/75 text-sm leading-relaxed max-w-xs">
               {config.text_description || "Sachliche Vergleiche und Ratgeber rund um Tierversicherungen, OP-Schutz und wichtige Leistungsbedingungen."}
             </p>
           </div>
 
           {/* 2. Links: Vergleiche */}
           <div>
-            <h4 className="font-bold text-base text-secondary mb-6 uppercase tracking-wider">Vergleiche</h4>
+            <h4 className="font-bold text-base text-primary mb-6 uppercase tracking-wider">Vergleiche</h4>
             <ul className="space-y-3">
               {popularLinks.map((link: any, i: number) => (
                 <li key={i}>
                   <Link 
                     to={normalizeNavigableHref(link.url)} 
-                    className="text-[#DDEBE7] hover:text-white text-sm transition-all duration-200 flex items-center group"
+                    className="text-primary/75 hover:text-primary text-sm transition-all duration-200 flex items-center group"
                   >
                     <span className="w-0 group-hover:w-2 transition-all duration-200 overflow-hidden h-[1px] bg-secondary mr-0 group-hover:mr-2"></span>
                     {link.label}
@@ -91,14 +91,14 @@ export const Footer = () => {
 
           {/* 3. Links: Rechtliches */}
           <div>
-            <h4 className="font-bold text-base text-secondary mb-6 uppercase tracking-wider">Rechtliches</h4>
+            <h4 className="font-bold text-base text-primary mb-6 uppercase tracking-wider">Rechtliches</h4>
             <ul className="space-y-3">
               {/* Dynamische Links aus der Datenbank */}
               {legalLinks.map((link: any, i: number) => (
                 <li key={i}>
                   <Link
                     to={normalizeNavigableHref(String(link?.url ?? "").trim())}
-                    className="text-[#DDEBE7] hover:text-white text-sm transition-all duration-200 flex items-center group"
+                    className="text-primary/75 hover:text-primary text-sm transition-all duration-200 flex items-center group"
                   >
                     <span className="w-0 group-hover:w-2 transition-all duration-200 overflow-hidden h-[1px] bg-secondary mr-0 group-hover:mr-2"></span>
                     {String(link?.label ?? "").trim()}
@@ -110,7 +110,7 @@ export const Footer = () => {
               <li>
                 <button
                   onClick={openCookieSettings}
-                  className="text-[#DDEBE7] hover:text-white text-sm transition-all duration-200 flex items-center group w-full text-left cursor-pointer"
+                  className="text-primary/75 hover:text-primary text-sm transition-all duration-200 flex items-center group w-full text-left cursor-pointer"
                 >
                   <span className="w-0 group-hover:w-2 transition-all duration-200 overflow-hidden h-[1px] bg-secondary mr-0 group-hover:mr-2"></span>
                   Cookie-Einstellungen
@@ -121,13 +121,13 @@ export const Footer = () => {
 
           {/* 4. Tools & Services */}
           <div>
-            <h4 className="font-bold text-base text-secondary mb-6 uppercase tracking-wider">Tools & Services</h4>
+            <h4 className="font-bold text-base text-primary mb-6 uppercase tracking-wider">Tools & Services</h4>
             <ul className="space-y-3">
               {toolsLinks.map((link: any, i: number) => (
                 <li key={i}>
                   <Link 
                     to={normalizeNavigableHref(String(link?.url ?? "").trim())} 
-                    className="text-[#DDEBE7] hover:text-white text-sm transition-all duration-200 flex items-center group"
+                    className="text-primary/75 hover:text-primary text-sm transition-all duration-200 flex items-center group"
                   >
                     <span className="w-0 group-hover:w-2 transition-all duration-200 overflow-hidden h-[1px] bg-secondary mr-0 group-hover:mr-2"></span>
                     {String(link?.label ?? "").trim()}
@@ -139,15 +139,15 @@ export const Footer = () => {
 
           {/* 5. Quality Badge */}
           <div className="flex flex-col justify-start">
-            <h4 className="font-bold text-base text-secondary mb-6 uppercase tracking-wider">Transparenz</h4>
-            <div className="bg-white/[0.07] border border-white/15 rounded-2xl p-5 hover:bg-white/[0.10] transition-colors cursor-default group">
+            <h4 className="font-bold text-base text-primary mb-6 uppercase tracking-wider">Transparenz</h4>
+            <div className="bg-white/35 border border-primary/15 rounded-2xl p-5 hover:bg-white/45 transition-colors cursor-default group backdrop-blur-sm">
                 <div className="flex items-start gap-4">
-                    <div className="p-2.5 bg-secondary/15 rounded-full text-[#DDEBE7] border border-secondary/30 group-hover:scale-110 transition-transform duration-300 shrink-0">
+                    <div className="p-2.5 bg-secondary/15 rounded-full text-primary/75 border border-secondary/30 group-hover:scale-110 transition-transform duration-300 shrink-0">
                         <ShieldCheck className="w-6 h-6" />
                     </div>
                     <div>
-                        <div className="font-bold text-white text-sm mb-1">{config.text_checked || "Redaktioneller Überblick"}</div>
-                        <div className="text-xs text-[#BFD4CE] leading-snug">
+                        <div className="font-bold text-primary text-sm mb-1">{config.text_checked || "Redaktioneller Überblick"}</div>
+                        <div className="text-xs text-primary/60 leading-snug">
                             {config.text_update || "Fortlaufend gepflegte Daten und nachvollziehbare Vergleiche."}
                         </div>
                     </div>
@@ -157,7 +157,7 @@ export const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-secondary/20 flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-[#DDEBE7]">
+        <div className="pt-8 border-t border-primary/20 flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-primary/80">
           <p>{config.copyright_text || `© ${new Date().getFullYear()} ${brandName}. Alle Rechte vorbehalten.`}</p>
           
           <div className="flex items-center gap-6">
@@ -169,8 +169,8 @@ export const Footer = () => {
         
         {/* Disclaimer - Sauber über Variable gerendert */}
         {finalDisclaimer && (
-            <div className="mt-8 pt-6 border-t border-white/5">
-                <p className="text-xs text-[#DDEBE7] text-center max-w-4xl mx-auto leading-relaxed">
+            <div className="mt-8 pt-6 border-t border-primary/20">
+                <p className="text-xs text-primary/75 text-center max-w-4xl mx-auto leading-relaxed">
                     {finalDisclaimer}
                 </p>
             </div>

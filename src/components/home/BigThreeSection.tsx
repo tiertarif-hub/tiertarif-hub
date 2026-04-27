@@ -42,12 +42,23 @@ const getIcon = (type: string | undefined) => {
 };
 
 // Helle TierTarif-Fallbacks, falls Admin-Feld leer ist.
+const DEFAULT_CATEGORY_IMAGE = "/big-threes/tiertarif-tierversicherung-startseitenbild.webp";
+
 const CATEGORY_IMAGES: Record<string, string> = {
   "Versicherungen": "/big-threes/tiertarif-versicherungen-startseitenbild.webp",
-  "Hundekrankenversicherung": "/big-threes/tiertarif-tierversicherung-startseitenbild.webp",
-  "Katzenversicherung": "/big-threes/tiertarif-tierversicherung-startseitenbild.webp",
-  "Hunde-OP-Versicherung": "/big-threes/tiertarif-tierversicherung-startseitenbild.webp",
-  "Katzen-OP-Versicherung": "/big-threes/tiertarif-tierversicherung-startseitenbild.webp",
+  "Tierversicherungen": "/big-threes/tiertarif-versicherungen-startseitenbild.webp",
+  "Hunde": DEFAULT_CATEGORY_IMAGE,
+  "Hundeschutz": DEFAULT_CATEGORY_IMAGE,
+  "Hundekrankenversicherung": DEFAULT_CATEGORY_IMAGE,
+  "Katzen": DEFAULT_CATEGORY_IMAGE,
+  "Katzenschutz": DEFAULT_CATEGORY_IMAGE,
+  "Katzenversicherung": DEFAULT_CATEGORY_IMAGE,
+  "Pferde": DEFAULT_CATEGORY_IMAGE,
+  "Pferdeversicherung": DEFAULT_CATEGORY_IMAGE,
+  "OP-Schutz": DEFAULT_CATEGORY_IMAGE,
+  "Tier-OP-Versicherung": DEFAULT_CATEGORY_IMAGE,
+  "Hunde-OP-Versicherung": DEFAULT_CATEGORY_IMAGE,
+  "Katzen-OP-Versicherung": DEFAULT_CATEGORY_IMAGE,
   "Forum": "/big-threes/tiertarif-forum-magazin-hero.webp",
 };
 
@@ -130,7 +141,7 @@ const hubHasActiveComparisonChildren = (hub: Category, categoriesBySlug: Map<str
 };
 
 const getOptimizedImageUrl = (url: string | undefined, title: string, width = 720, quality = 75) => {
-  const finalUrl = url && url.trim() !== "" ? url : (CATEGORY_IMAGES[title] || "");
+  const finalUrl = url && url.trim() !== "" ? url.trim() : (CATEGORY_IMAGES[title] || DEFAULT_CATEGORY_IMAGE);
   if (!finalUrl) return "";
 
   try {
@@ -335,7 +346,7 @@ export const BigThreeSection = () => {
                   </div>
 
                   {imageUrl && (
-                    <div className="relative mb-5 h-32 overflow-hidden rounded-2xl bg-secondary/5 ring-1 ring-secondary/20">
+                    <div className="relative mb-5 h-36 overflow-hidden rounded-2xl bg-secondary/5 ring-1 ring-secondary/20 sm:h-40">
                       <img
                         src={imageUrl}
                         alt=""

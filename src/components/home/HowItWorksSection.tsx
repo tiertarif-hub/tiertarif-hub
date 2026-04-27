@@ -312,7 +312,46 @@ export const HowItWorksSection = () => {
     <SectionShell>
       <SectionHeader howItWorks={howItWorks} shouldReduceMotion={shouldReduceMotion} />
 
-      <div className="grid grid-cols-1 gap-0 md:grid-cols-3 md:gap-8 xl:gap-10">
+      <div className="-mx-4 md:hidden">
+        <div
+          className="flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 scroll-smooth overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          aria-label="So funktioniert TierTarif Schritte"
+        >
+          {steps.map((step, index) => (
+            <div
+              key={`mobile-${step.title}-${index}`}
+              className="w-[86vw] max-w-[28rem] flex-none snap-center"
+              onClick={() => setActiveIndex(index)}
+            >
+              <StepCard
+                step={step}
+                index={index}
+                activeIndex={activeIndex}
+                shouldReduceMotion={shouldReduceMotion}
+                onActivate={() => setActiveIndex(index)}
+              />
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-2 flex justify-center gap-2" aria-label="Slider Navigation">
+          {steps.map((step, index) => (
+            <button
+              key={`dot-${step.title}-${index}`}
+              type="button"
+              onClick={() => setActiveIndex(index)}
+              className="h-2.5 rounded-full transition-all duration-300"
+              style={{
+                width: activeIndex === index ? "2rem" : "0.65rem",
+                backgroundColor: activeIndex === index ? THEME_SECONDARY : "hsl(var(--primary) / 0.18)",
+              }}
+              aria-label={`Schritt ${index + 1} anzeigen`}
+            />
+          ))}
+        </div>
+      </div>
+
+      <div className="hidden md:grid md:grid-cols-3 md:gap-8 xl:gap-10">
         {steps.map((step, index) => {
           const connectorActive = activeIndex >= index;
 
@@ -327,10 +366,7 @@ export const HowItWorksSection = () => {
               />
 
               {index < steps.length - 1 && (
-                <>
-                  <DesktopConnector active={connectorActive} shouldReduceMotion={shouldReduceMotion} />
-                  <MobileConnector active={connectorActive} />
-                </>
+                <DesktopConnector active={connectorActive} shouldReduceMotion={shouldReduceMotion} />
               )}
             </div>
           );
