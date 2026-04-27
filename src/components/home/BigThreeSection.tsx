@@ -281,13 +281,13 @@ export const BigThreeSection = () => {
 
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
-        <div className="absolute right-[-8rem] top-10 h-80 w-80 rounded-full bg-[#F8F5EE] blur-3xl" />
-        <div className="absolute left-[-8rem] bottom-10 h-72 w-72 rounded-full bg-[#D8E5E1]/45 blur-3xl" />
+        <div className="absolute right-[-8rem] top-10 h-80 w-80 rounded-full bg-secondary/10 blur-3xl" />
+        <div className="absolute left-[-8rem] bottom-10 h-72 w-72 rounded-full bg-secondary/10 blur-3xl" />
       </div>
 
       <div className="container relative z-10 mx-auto px-4">
         <div className="mx-auto mb-12 max-w-3xl text-center md:mb-16">
-          <div className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-primary/10 bg-[#EFF6F3] px-4 py-2 text-xs font-extrabold uppercase tracking-[0.2em] text-primary">
+          <div className="mx-auto mb-5 inline-flex items-center gap-2 rounded-full border border-secondary/25 bg-secondary/10 px-4 py-2 text-xs font-extrabold uppercase tracking-[0.2em] text-primary">
             <Shield className="h-4 w-4" />
             Vergleichsbereiche
           </div>
@@ -303,7 +303,7 @@ export const BigThreeSection = () => {
           <button
             type="button"
             onClick={() => scrollSlider("prev")}
-            className="absolute -left-5 top-1/2 z-20 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-white text-primary shadow-lg shadow-primary/10 transition-all duration-300 hover:-translate-x-0.5 hover:bg-primary hover:text-primary-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 lg:flex"
+            className="absolute -left-5 top-1/2 z-20 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-white text-primary shadow-lg shadow-primary/10 transition-all duration-300 hover:-translate-x-0.5 hover:bg-secondary hover:text-secondary-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 lg:flex"
             aria-label="Vorherige Vergleichskategorie anzeigen"
           >
             <ChevronLeft className="h-5 w-5" />
@@ -322,27 +322,27 @@ export const BigThreeSection = () => {
                 <Link
                   key={item.id}
                   to={normalizeNavigableHref(item.link)}
-                  className="standard-portal-category-card group relative flex min-h-[460px] snap-start flex-col overflow-hidden rounded-[1.75rem] border border-[#D8E5E1] bg-white p-5 pt-7 shadow-lg shadow-primary/5 transition-all duration-500 hover:-translate-y-1.5 hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/12"
+                  className="standard-portal-category-card group relative flex min-h-[460px] snap-start flex-col overflow-hidden rounded-[1.75rem] border border-secondary/20 bg-white p-5 pt-7 shadow-lg shadow-primary/5 transition-all duration-500 hover:-translate-y-1.5 hover:border-secondary/45 hover:shadow-2xl hover:shadow-secondary/15"
                 >
-                  <div className="absolute inset-x-0 top-0 h-1.5 bg-primary" />
+                  <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-primary via-secondary to-primary" />
                   <div className="mb-5 flex items-start justify-between gap-4">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#EFF6F3] text-primary ring-1 ring-[#D8E5E1] transition-all duration-300 group-hover:bg-primary group-hover:text-primary-foreground">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-secondary/10 text-primary ring-1 ring-secondary/20 transition-all duration-300 group-hover:bg-secondary group-hover:text-secondary-foreground">
                       {getIcon(item.icon)}
                     </div>
-                    <div className="rounded-full bg-[#EFF6F3] px-3 py-1 text-xs font-extrabold uppercase tracking-wider text-primary ring-1 ring-[#D8E5E1]">
+                    <div className="rounded-full bg-secondary/10 px-3 py-1 text-xs font-extrabold uppercase tracking-wider text-secondary ring-1 ring-secondary/20">
                       Prüfen
                     </div>
                   </div>
 
                   {imageUrl && (
-                    <div className="relative mb-5 h-32 overflow-hidden rounded-2xl bg-[#F8F5EE] ring-1 ring-[#D8E5E1]">
+                    <div className="relative mb-5 h-32 overflow-hidden rounded-2xl bg-secondary/5 ring-1 ring-secondary/20">
                       <img
                         src={imageUrl}
                         alt=""
                         loading="lazy"
                         className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-primary/25 via-transparent to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-primary/20 via-secondary/10 to-transparent" />
                     </div>
                   )}
 
@@ -356,7 +356,7 @@ export const BigThreeSection = () => {
 
                     <div className="mt-5 grid grid-cols-3 gap-2">
                       {["Leistung", "Kosten", "Bedingung"].map((metric) => (
-                        <span key={metric} className="rounded-xl border border-[#D8E5E1] bg-[#F8F5EE] px-2 py-2 text-center text-[10px] font-extrabold uppercase tracking-wider text-primary">
+                        <span key={metric} className="rounded-xl border border-secondary/20 bg-secondary/5 px-2 py-2 text-center text-[10px] font-extrabold uppercase tracking-wider text-primary">
                           {metric}
                         </span>
                       ))}
@@ -365,7 +365,7 @@ export const BigThreeSection = () => {
                     <div className="mt-5 space-y-3">
                       {checklistItems.map((point) => (
                         <div key={point} className="flex items-center gap-3 text-sm font-bold text-foreground">
-                          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#EFF6F3] text-primary">
+                          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-secondary/10 text-secondary">
                             <CheckCircle2 className="h-4 w-4" />
                           </span>
                           <span>{point}</span>
@@ -374,11 +374,11 @@ export const BigThreeSection = () => {
                     </div>
 
                     <div className="mt-auto pt-7">
-                      <div className="flex items-center justify-between rounded-2xl bg-primary px-5 py-4 text-primary-foreground transition-all duration-300 group-hover:bg-[#063A36]">
+                      <div className="flex items-center justify-between rounded-2xl bg-gradient-to-r from-primary to-primary px-5 py-4 text-primary-foreground transition-all duration-300 group-hover:from-secondary group-hover:to-secondary/90 group-hover:text-secondary-foreground">
                         <span className="text-sm font-extrabold uppercase tracking-wider">
                           {item.button_text}
                         </span>
-                        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/15 transition-all group-hover:translate-x-1 group-hover:bg-white/25">
+                        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary/20 transition-all group-hover:translate-x-1 group-hover:bg-white/25">
                           <ArrowRight className="h-4 w-4" />
                         </span>
                       </div>
@@ -392,7 +392,7 @@ export const BigThreeSection = () => {
           <button
             type="button"
             onClick={() => scrollSlider("next")}
-            className="absolute -right-5 top-1/2 z-20 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-white text-primary shadow-lg shadow-primary/10 transition-all duration-300 hover:translate-x-0.5 hover:bg-primary hover:text-primary-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 lg:flex"
+            className="absolute -right-5 top-1/2 z-20 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-white text-primary shadow-lg shadow-primary/10 transition-all duration-300 hover:translate-x-0.5 hover:bg-secondary hover:text-secondary-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 lg:flex"
             aria-label="Nächste Vergleichskategorie anzeigen"
           >
             <ChevronRight className="h-5 w-5" />

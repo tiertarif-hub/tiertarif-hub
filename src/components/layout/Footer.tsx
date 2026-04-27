@@ -36,7 +36,7 @@ export const Footer = () => {
   }
 
   return (
-    <footer className="relative bg-[#063A36] pt-20 pb-12 overflow-hidden border-t border-white/10 mt-0">
+    <footer className="relative bg-[#063A36] pt-20 pb-12 overflow-hidden border-t border-secondary/20 mt-0">
       
       {/* --- BACKGROUND EFFECTS --- */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
@@ -51,7 +51,7 @@ export const Footer = () => {
         }}
       />
 
-      <div className="absolute bottom-[-20%] left-[-10%] w-[600px] h-[600px] bg-[#7DAA9B]/10 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-[-20%] left-[-10%] w-[600px] h-[600px] bg-secondary/10 rounded-full blur-[100px] pointer-events-none" />
 
       <div className="container mx-auto px-4 relative z-10">
         
@@ -63,7 +63,7 @@ export const Footer = () => {
             <Link to="/" className="block w-fit group">
                <span className="text-3xl font-display font-extrabold tracking-tight text-white">
                   {brandName}
-                  <span className="text-[#C7DCD6]">.</span>
+                  <span className="text-secondary">.</span>
                </span>
             </Link>
             <p className="text-[#DDEBE7] text-sm leading-relaxed max-w-xs">
@@ -73,7 +73,7 @@ export const Footer = () => {
 
           {/* 2. Links: Vergleiche */}
           <div>
-            <h4 className="font-bold text-base text-[#C7DCD6] mb-6 uppercase tracking-wider">Vergleiche</h4>
+            <h4 className="font-bold text-base text-secondary mb-6 uppercase tracking-wider">Vergleiche</h4>
             <ul className="space-y-3">
               {popularLinks.map((link: any, i: number) => (
                 <li key={i}>
@@ -81,7 +81,7 @@ export const Footer = () => {
                     to={normalizeNavigableHref(link.url)} 
                     className="text-[#DDEBE7] hover:text-white text-sm transition-all duration-200 flex items-center group"
                   >
-                    <span className="w-0 group-hover:w-2 transition-all duration-200 overflow-hidden h-[1px] bg-[#7DAA9B] mr-0 group-hover:mr-2"></span>
+                    <span className="w-0 group-hover:w-2 transition-all duration-200 overflow-hidden h-[1px] bg-secondary mr-0 group-hover:mr-2"></span>
                     {link.label}
                   </Link>
                 </li>
@@ -91,7 +91,7 @@ export const Footer = () => {
 
           {/* 3. Links: Rechtliches */}
           <div>
-            <h4 className="font-bold text-base text-[#C7DCD6] mb-6 uppercase tracking-wider">Rechtliches</h4>
+            <h4 className="font-bold text-base text-secondary mb-6 uppercase tracking-wider">Rechtliches</h4>
             <ul className="space-y-3">
               {/* Dynamische Links aus der Datenbank */}
               {legalLinks.map((link: any, i: number) => (
@@ -100,7 +100,7 @@ export const Footer = () => {
                     to={normalizeNavigableHref(String(link?.url ?? "").trim())}
                     className="text-[#DDEBE7] hover:text-white text-sm transition-all duration-200 flex items-center group"
                   >
-                    <span className="w-0 group-hover:w-2 transition-all duration-200 overflow-hidden h-[1px] bg-[#7DAA9B] mr-0 group-hover:mr-2"></span>
+                    <span className="w-0 group-hover:w-2 transition-all duration-200 overflow-hidden h-[1px] bg-secondary mr-0 group-hover:mr-2"></span>
                     {String(link?.label ?? "").trim()}
                   </Link>
                 </li>
@@ -112,7 +112,7 @@ export const Footer = () => {
                   onClick={openCookieSettings}
                   className="text-[#DDEBE7] hover:text-white text-sm transition-all duration-200 flex items-center group w-full text-left cursor-pointer"
                 >
-                  <span className="w-0 group-hover:w-2 transition-all duration-200 overflow-hidden h-[1px] bg-[#7DAA9B] mr-0 group-hover:mr-2"></span>
+                  <span className="w-0 group-hover:w-2 transition-all duration-200 overflow-hidden h-[1px] bg-secondary mr-0 group-hover:mr-2"></span>
                   Cookie-Einstellungen
                 </button>
               </li>
@@ -121,7 +121,7 @@ export const Footer = () => {
 
           {/* 4. Tools & Services */}
           <div>
-            <h4 className="font-bold text-base text-[#C7DCD6] mb-6 uppercase tracking-wider">Tools & Services</h4>
+            <h4 className="font-bold text-base text-secondary mb-6 uppercase tracking-wider">Tools & Services</h4>
             <ul className="space-y-3">
               {toolsLinks.map((link: any, i: number) => (
                 <li key={i}>
@@ -129,7 +129,7 @@ export const Footer = () => {
                     to={normalizeNavigableHref(String(link?.url ?? "").trim())} 
                     className="text-[#DDEBE7] hover:text-white text-sm transition-all duration-200 flex items-center group"
                   >
-                    <span className="w-0 group-hover:w-2 transition-all duration-200 overflow-hidden h-[1px] bg-[#7DAA9B] mr-0 group-hover:mr-2"></span>
+                    <span className="w-0 group-hover:w-2 transition-all duration-200 overflow-hidden h-[1px] bg-secondary mr-0 group-hover:mr-2"></span>
                     {String(link?.label ?? "").trim()}
                   </Link>
                 </li>
@@ -139,10 +139,10 @@ export const Footer = () => {
 
           {/* 5. Quality Badge */}
           <div className="flex flex-col justify-start">
-            <h4 className="font-bold text-base text-[#C7DCD6] mb-6 uppercase tracking-wider">Transparenz</h4>
+            <h4 className="font-bold text-base text-secondary mb-6 uppercase tracking-wider">Transparenz</h4>
             <div className="bg-white/[0.07] border border-white/15 rounded-2xl p-5 hover:bg-white/[0.10] transition-colors cursor-default group">
                 <div className="flex items-start gap-4">
-                    <div className="p-2.5 bg-[#7DAA9B]/15 rounded-full text-[#DDEBE7] border border-[#7DAA9B]/30 group-hover:scale-110 transition-transform duration-300 shrink-0">
+                    <div className="p-2.5 bg-secondary/15 rounded-full text-[#DDEBE7] border border-secondary/30 group-hover:scale-110 transition-transform duration-300 shrink-0">
                         <ShieldCheck className="w-6 h-6" />
                     </div>
                     <div>
@@ -157,12 +157,12 @@ export const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-[#DDEBE7]">
+        <div className="pt-8 border-t border-secondary/20 flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-[#DDEBE7]">
           <p>{config.copyright_text || `© ${new Date().getFullYear()} ${brandName}. Alle Rechte vorbehalten.`}</p>
           
           <div className="flex items-center gap-6">
              <p className="flex items-center gap-1.5 opacity-80 hover:opacity-100 transition-opacity">
-                {config.made_with_text} <Heart className="w-3.5 h-3.5 text-[#7DAA9B] fill-[#7DAA9B] animate-pulse" /> {config.made_in_text}
+                {config.made_with_text} <Heart className="w-3.5 h-3.5 text-secondary fill-secondary animate-pulse" /> {config.made_in_text}
              </p>
           </div>
         </div>

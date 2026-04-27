@@ -51,9 +51,9 @@ export const Header = ({ transparent = false }: HeaderProps) => {
     return {
       wrapper: "bg-white/95 backdrop-blur-md border-b border-[#D8E5E1] shadow-sm shadow-primary/5",
       rankText: "text-primary",
-      scoutText: "text-[#7DAA9B]",
-      toggleBtn: "text-primary hover:bg-[#EFF6F3]",
-      navLink: "text-[#173D3A] hover:text-primary"
+      scoutText: "text-secondary",
+      toggleBtn: "text-primary hover:bg-secondary/10 hover:text-secondary",
+      navLink: "text-[#173D3A] hover:text-secondary"
     };
   };
 
@@ -94,7 +94,7 @@ export const Header = ({ transparent = false }: HeaderProps) => {
                   <div key={idx} className="relative group h-full flex items-center">
                     <Link to={normalizeNavigableHref(link.url)} className={`flex items-center gap-1.5 text-sm font-bold transition-colors py-2 ${style.navLink}`}>
                       {link.label}
-                      <ChevronDown className="w-4 h-4 text-[#7DAA9B] transition-transform duration-200 group-hover:rotate-180" />
+                      <ChevronDown className="w-4 h-4 text-secondary transition-transform duration-200 group-hover:rotate-180" />
                     </Link>
                     
                     {/* RICH MEGA MENU DROPDOWN */}
@@ -116,15 +116,15 @@ export const Header = ({ transparent = false }: HeaderProps) => {
                                     <img src={sub.image_url} alt={sub.label ? `${sub.label} Vorschau` : "Navigationsbild"} className="w-full h-full object-cover group-hover/item:scale-110 transition-transform duration-500" />
                                 </div>
                               ) : (
-                                <div className="w-12 h-12 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center flex-shrink-0 text-slate-400 group-hover/item:text-white group-hover/item:bg-primary transition-all">
+                                <div className="w-12 h-12 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center flex-shrink-0 text-slate-400 group-hover/item:text-white group-hover/item:bg-secondary transition-all">
                                     <LayoutGrid className="w-6 h-6" />
                                 </div>
                               )}
 
                               <div className="flex-1">
-                                <div className="font-bold text-sm text-slate-800 group-hover/item:text-primary transition-colors flex items-center justify-between">
+                                <div className="font-bold text-sm text-slate-800 group-hover/item:text-secondary transition-colors flex items-center justify-between">
                                     {sub.label}
-                                    <span className="opacity-0 -translate-x-2 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all text-[#7DAA9B]">→</span>
+                                    <span className="opacity-0 -translate-x-2 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all text-secondary">→</span>
                                 </div>
                                 {sub.description ? (
                                     <p className="text-xs text-slate-500 mt-0.5 line-clamp-1 group-hover/item:text-slate-600">{sub.description}</p>
@@ -148,13 +148,13 @@ export const Header = ({ transparent = false }: HeaderProps) => {
                   className={`text-sm font-medium transition-colors relative group py-2 ${style.navLink}`}
                 >
                   {link.label}
-                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-secondary transition-all duration-300 group-hover:w-full" />
                 </Link>
               );
             })}
             
             <Link to={normalizeNavigableHref(config.button_url)}>
-              <Button className="bg-primary hover:bg-primary/90 text-white font-bold shadow-lg shadow-primary/15 transition-all hover:-translate-y-0.5 hover:shadow-primary/25 px-6">
+              <Button className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold shadow-lg shadow-secondary/25 transition-all hover:-translate-y-0.5 hover:shadow-secondary/35 px-6">
                 {config.button_text}
               </Button>
             </Link>
@@ -187,7 +187,7 @@ export const Header = ({ transparent = false }: HeaderProps) => {
                   return (
                     <div key={link.label} className="relative">
                       {isComingSoon && (
-                        <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-[#C7A76C] text-[#102B29] text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md z-10 whitespace-nowrap">
+                        <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-secondary text-secondary-foreground text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md z-10 whitespace-nowrap">
                           Bald verfügbar
                         </div>
                       )}
@@ -203,11 +203,11 @@ export const Header = ({ transparent = false }: HeaderProps) => {
                           className={`flex flex-col items-center justify-center p-4 bg-slate-50 rounded-xl border border-slate-100 transition-all group shadow-sm duration-200 h-full
                             ${isComingSoon 
                               ? "opacity-60 grayscale cursor-default" 
-                              : "hover:border-primary/30 hover:bg-white active:scale-95"
+                              : "hover:border-secondary/40 hover:bg-white active:scale-95"
                             }
                           `}
                       >
-                          <div className={`mb-2 transition-transform ${isComingSoon ? "text-slate-400" : "text-[#7DAA9B] group-hover:scale-110"}`}>
+                          <div className={`mb-2 transition-transform ${isComingSoon ? "text-slate-400" : "text-secondary group-hover:scale-110"}`}>
                              <Icon className="w-6 h-6" />
                           </div>
                           <span className={`text-xs font-bold uppercase tracking-wide text-center ${isComingSoon ? "text-slate-500" : "text-slate-700"}`}>
@@ -231,9 +231,9 @@ export const Header = ({ transparent = false }: HeaderProps) => {
                         key={`${link.label}-${idx}`}
                         to={normalizeNavigableHref(link.url)}
                         onClick={() => setIsMobileMenuOpen(false)}
-                        className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 hover:border-primary/30 hover:text-primary transition-all"
+                        className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 hover:border-secondary/40 hover:text-secondary transition-all"
                       >
-                        <Icon className="w-4 h-4 text-[#7DAA9B]" />
+                        <Icon className="w-4 h-4 text-secondary" />
                         <span>{link.label}</span>
                       </Link>
                     );
@@ -251,17 +251,17 @@ export const Header = ({ transparent = false }: HeaderProps) => {
                     if (hasSubmenu) {
                       return (
                         <AccordionItem key={idx} value={`item-${idx}`} className="border-b border-slate-100">
-                          <AccordionTrigger className="text-lg font-bold text-slate-800 hover:text-primary py-4 hover:no-underline">
+                          <AccordionTrigger className="text-lg font-bold text-slate-800 hover:text-secondary py-4 hover:no-underline">
                             {link.label}
                           </AccordionTrigger>
                           <AccordionContent>
-                             <div className="flex flex-col space-y-1 pl-4 pb-4 border-l-2 border-primary/20 ml-1">
+                             <div className="flex flex-col space-y-1 pl-4 pb-4 border-l-2 border-secondary/25 ml-1">
                                 {link.items.map((sub: any, sIdx: number) => (
                                   <Link
                                     key={sIdx}
                                     to={normalizeNavigableHref(sub.url)}
                                     onClick={() => setIsMobileMenuOpen(false)}
-                                    className="py-2 text-base font-medium text-slate-600 hover:text-primary block"
+                                    className="py-2 text-base font-medium text-slate-600 hover:text-secondary block"
                                   >
                                     {sub.label}
                                   </Link>
@@ -277,10 +277,10 @@ export const Header = ({ transparent = false }: HeaderProps) => {
                         key={idx}
                         to={normalizeNavigableHref(link.url)}
                         onClick={() => setIsMobileMenuOpen(false)}
-                        className="text-lg font-bold text-slate-800 hover:text-primary py-4 border-b border-slate-100 flex justify-between items-center group"
+                        className="text-lg font-bold text-slate-800 hover:text-secondary py-4 border-b border-slate-100 flex justify-between items-center group"
                       >
                         {link.label}
-                        <span className="text-slate-300 group-hover:text-primary group-hover:translate-x-1 transition-all">→</span>
+                        <span className="text-slate-300 group-hover:text-secondary group-hover:translate-x-1 transition-all">→</span>
                       </Link>
                     );
                   })}
@@ -288,7 +288,7 @@ export const Header = ({ transparent = false }: HeaderProps) => {
             </div>
 
             <Link to={normalizeNavigableHref(config.button_url)} onClick={() => setIsMobileMenuOpen(false)} className="mt-4">
-              <Button className="w-full bg-primary hover:bg-primary/90 text-white font-bold h-14 text-lg rounded-xl shadow-xl shadow-primary/15">
+              <Button className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold h-14 text-lg rounded-xl shadow-xl shadow-secondary/25">
                 {config.button_text}
               </Button>
             </Link>

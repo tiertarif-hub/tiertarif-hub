@@ -9,7 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
  * be trusted for actual authorization decisions.
  * 
  * ALL admin operations MUST be protected by:
- * 1. Server-side verification via RPC (e.g., verify_admin_access())
+ * 1. Server-side role verification and Supabase RLS policies
  * 2. Row Level Security (RLS) policies using has_role() function
  * 
  * The AdminLayout component properly validates admin access server-side
@@ -76,7 +76,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   /**
    * Checks admin status for UI rendering purposes only.
    * SECURITY: This is NOT a security gate. All admin operations are protected by:
-   * 1. AdminLayout's server-side verify_admin_access() RPC check
+   * 1. AdminLayout's server-side role check
    * 2. RLS policies on all admin tables using has_role() function
    * 
    * Even if this state is manipulated client-side, server-side RLS will block

@@ -93,6 +93,10 @@ export const HeroSection = () => {
   const badgeText = content.hero?.badge || "TierTarif Vergleichsportal";
   const searchPlaceholder = content.hero?.search_placeholder || "Hund, Katze oder OP-Versicherung suchen";
   const searchButtonLabel = content.hero?.search_label || "Vergleich starten";
+  const heroDesktopImageUrl = typeof content.hero?.desktop_image_url === "string" ? content.hero.desktop_image_url.trim() : "";
+  const heroMobileImageUrl = typeof content.hero?.mobile_image_url === "string" ? content.hero.mobile_image_url.trim() : "";
+  const heroImageUrl = heroDesktopImageUrl || heroMobileImageUrl;
+  const hasHeroImage = Boolean(heroImageUrl);
 
   const showDropdown = isSearchFocused && searchQuery.length >= 2;
   const heroStats = Array.isArray(content.hero?.stats) && content.hero.stats.length > 0
@@ -104,18 +108,41 @@ export const HeroSection = () => {
       ];
 
   return (
-    <section className="relative overflow-hidden bg-[#F8F5EE] pt-28 md:pt-40">
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute inset-0 opacity-[0.55] [background-image:linear-gradient(rgba(11,75,69,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(11,75,69,0.045)_1px,transparent_1px)] [background-size:34px_34px]" />
-        <div className="absolute left-[-8rem] top-24 h-72 w-72 rounded-full bg-[#D8E5E1]/50 blur-3xl" />
+    <section className={`relative overflow-hidden pt-28 md:pt-40 ${hasHeroImage ? "bg-primary" : "bg-[#F8F5EE]"}`}>
+      {hasHeroImage && (
+        <picture className="absolute inset-0 z-0 block">
+          {heroMobileImageUrl && <source media="(max-width: 767px)" srcSet={heroMobileImageUrl} />}
+          <img
+            src={heroImageUrl}
+            alt=""
+            aria-hidden="true"
+            loading="eager"
+            decoding="async"
+            className="h-full w-full object-cover"
+          />
+        </picture>
+      )}
+
+      <div className="absolute inset-0 z-[1] pointer-events-none">
+        {hasHeroImage ? (
+          <>
+            <div className="absolute inset-0 bg-gradient-to-r from-[#FAF7F0]/96 via-[#FAF7F0]/88 to-[#FAF7F0]/68" />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#FAF7F0]/70 via-transparent to-white" />
+          </>
+        ) : (
+          <div className="absolute inset-0 opacity-[0.55] [background-image:linear-gradient(rgba(11,75,69,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(11,75,69,0.045)_1px,transparent_1px)] [background-size:34px_34px]" />
+        )}
+        <div className="absolute inset-0 opacity-[0.36] [background-image:linear-gradient(rgba(11,75,69,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(11,75,69,0.045)_1px,transparent_1px)] [background-size:34px_34px]" />
+        <div className="absolute left-[-8rem] top-24 h-72 w-72 rounded-full bg-secondary/10 blur-3xl" />
+        <div className="absolute right-[-10rem] top-20 h-80 w-80 rounded-full bg-primary/10 blur-3xl" />
         <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-white to-transparent" />
       </div>
 
       <div className="container relative z-10 mx-auto px-4 pb-14 md:pb-20">
         <div className="grid items-center gap-10 lg:grid-cols-[1.02fr_0.98fr] lg:gap-14">
           <div className="max-w-3xl">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/10 bg-white px-4 py-2 text-sm font-bold text-primary shadow-sm">
-              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#D8E5E1] text-primary">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-secondary/25 bg-secondary/10 px-4 py-2 text-sm font-bold text-primary shadow-sm backdrop-blur-sm">
+              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
                 <ShieldCheck className="h-4 w-4" />
               </span>
               {badgeText}
@@ -132,10 +159,10 @@ export const HeroSection = () => {
             <div ref={searchRef} className="relative z-30 mt-8 max-w-2xl">
               <form
                 onSubmit={handleSearch}
-                className="group relative flex flex-col gap-3 rounded-[1.7rem] border border-border bg-white p-2 shadow-xl shadow-primary/10 transition-all duration-300 focus-within:border-primary/30 focus-within:shadow-2xl focus-within:shadow-primary/15 sm:flex-row"
+                className="group relative flex flex-col gap-3 rounded-[1.7rem] border border-border bg-white p-2 shadow-xl shadow-primary/10 transition-all duration-300 focus-within:border-secondary/45 focus-within:shadow-2xl focus-within:shadow-secondary/20 sm:flex-row"
               >
                 <div className="flex h-14 flex-1 items-center px-4">
-                  <Search className="mr-3 h-5 w-5 shrink-0 text-primary/60" />
+                  <Search className="mr-3 h-5 w-5 shrink-0 text-secondary" />
                   <Input
                     type="text"
                     placeholder={searchPlaceholder}
@@ -153,7 +180,7 @@ export const HeroSection = () => {
                 <Button
                   type="submit"
                   size="lg"
-                  className="h-14 rounded-2xl bg-primary px-7 text-base font-extrabold text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:-translate-y-0.5 hover:bg-[#063A36] hover:shadow-primary/30 sm:rounded-[1.25rem]"
+                  className="h-14 rounded-2xl bg-secondary px-7 text-base font-extrabold text-secondary-foreground shadow-lg shadow-secondary/25 transition-all hover:-translate-y-0.5 hover:bg-secondary/90 hover:shadow-secondary/35 sm:rounded-[1.25rem]"
                 >
                   {searchButtonLabel}
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -171,11 +198,11 @@ export const HeroSection = () => {
                           onClick={() => setIsSearchFocused(false)}
                           className="group flex items-center gap-4 rounded-xl p-3 transition-all hover:bg-muted"
                         >
-                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted text-xl text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted text-xl text-primary transition-colors group-hover:bg-secondary group-hover:text-secondary-foreground">
                             {result.icon || "🔍"}
                           </div>
                           <div className="min-w-0 flex-1">
-                            <h4 className="truncate text-sm font-bold text-foreground transition-colors group-hover:text-primary">
+                            <h4 className="truncate text-sm font-bold text-foreground transition-colors group-hover:text-secondary">
                               {result.title}
                             </h4>
                             {result.subtitle && (
@@ -184,14 +211,14 @@ export const HeroSection = () => {
                               </p>
                             )}
                           </div>
-                          <ExternalLink className="h-4 w-4 shrink-0 text-muted-foreground group-hover:text-primary" />
+                          <ExternalLink className="h-4 w-4 shrink-0 text-muted-foreground group-hover:text-secondary" />
                         </Link>
                       ))}
                     </div>
                   ) : !isSearching && searchQuery.length >= 2 ? (
                     <div className="p-8 text-center">
                       <p className="text-sm text-muted-foreground">
-                        Keine Treffer für <span className="font-bold text-foreground">"{searchQuery}"</span>
+                        Keine Treffer für <span className="font-bold text-foreground">&quot;{searchQuery}&quot;</span>
                       </p>
                     </div>
                   ) : null}
@@ -203,7 +230,7 @@ export const HeroSection = () => {
               {heroStats.map((stat, index) => (
                 <div
                   key={`${stat.title}-${stat.label}-${index}`}
-                  className="rounded-2xl border border-[#D8E5E1] bg-white p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-md"
+                  className="rounded-2xl border border-secondary/20 bg-white/95 p-4 shadow-sm backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-secondary/45 hover:shadow-md hover:shadow-secondary/10"
                 >
                   <div className="text-sm font-extrabold text-primary">{stat.title}</div>
                   <div className="mt-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -215,9 +242,9 @@ export const HeroSection = () => {
           </div>
 
           <div className="relative">
-            <div className="absolute -inset-4 rounded-[2.4rem] bg-[#D8E5E1]/55 blur-2xl" />
+            <div className="absolute -inset-4 rounded-[2.4rem] bg-secondary/15 blur-2xl" />
 
-            <div className="relative overflow-hidden rounded-[2rem] border border-[#D8E5E1] bg-white p-5 shadow-2xl shadow-primary/10 md:p-7">
+            <div className="relative overflow-hidden rounded-[2rem] border border-secondary/25 bg-white/96 p-5 shadow-2xl shadow-primary/10 backdrop-blur-sm md:p-7">
               <div className="mb-6 flex items-start justify-between gap-4">
                 <div>
                   <p className="text-xs font-bold uppercase tracking-[0.22em] text-primary">Vergleichsrechner</p>
@@ -225,14 +252,14 @@ export const HeroSection = () => {
                     Schutz passend eingrenzen
                   </h2>
                 </div>
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-muted text-primary">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-secondary/10 text-primary">
                   <ClipboardCheck className="h-6 w-6" />
                 </div>
               </div>
 
-              <div className="mb-4 grid grid-cols-3 gap-2 rounded-2xl bg-[#F8F5EE] p-2">
+              <div className="mb-4 grid grid-cols-3 gap-2 rounded-2xl bg-secondary/5 p-2">
                 {["1. Tier", "2. Schutz", "3. Ergebnis"].map((step) => (
-                  <div key={step} className="rounded-xl border border-[#D8E5E1] bg-white px-3 py-2 text-center text-[11px] font-extrabold uppercase tracking-wider text-primary">
+                  <div key={step} className="rounded-xl border border-secondary/25 bg-white px-3 py-2 text-center text-[11px] font-extrabold uppercase tracking-wider text-primary">
                     {step}
                   </div>
                 ))}
@@ -246,10 +273,10 @@ export const HeroSection = () => {
                     <button
                       key={field.label}
                       type="button"
-                      className="group flex w-full items-center gap-4 rounded-2xl border border-border bg-background/60 p-4 text-left transition-all hover:-translate-y-0.5 hover:border-primary/25 hover:bg-muted hover:shadow-md"
+                      className="group flex w-full items-center gap-4 rounded-2xl border border-border bg-background/60 p-4 text-left transition-all hover:-translate-y-0.5 hover:border-secondary/40 hover:bg-secondary/5 hover:shadow-md hover:shadow-secondary/10"
                       aria-label={`${field.label}: ${field.value}`}
                     >
-                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-primary shadow-sm ring-1 ring-border transition-all group-hover:bg-primary group-hover:text-primary-foreground">
+                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-primary shadow-sm ring-1 ring-border transition-all group-hover:bg-secondary group-hover:text-secondary-foreground">
                         <Icon className="h-5 w-5" />
                       </span>
                       <span className="min-w-0 flex-1">
@@ -260,13 +287,13 @@ export const HeroSection = () => {
                           {field.value}
                         </span>
                       </span>
-                      <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-primary" />
+                      <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-secondary" />
                     </button>
                   );
                 })}
               </div>
 
-              <div className="mt-5 rounded-2xl border border-[#D8E5E1] bg-[#F8F5EE] p-4">
+              <div className="mt-5 rounded-2xl border border-secondary/25 bg-secondary/5 p-4">
                 <div className="flex items-center justify-between gap-4">
                   <div>
                     <div className="text-xs font-extrabold uppercase tracking-wider text-primary/70">Simulation</div>
@@ -274,13 +301,13 @@ export const HeroSection = () => {
                       3 passende Prüfbereiche gefunden
                     </p>
                   </div>
-                  <div className="rounded-full bg-white px-3 py-1 text-xs font-extrabold text-primary shadow-sm">
+                  <div className="rounded-full bg-secondary/10 px-3 py-1 text-xs font-extrabold text-secondary shadow-sm">
                     neutral
                   </div>
                 </div>
               </div>
 
-              <div className="mt-5 rounded-2xl bg-[#063A36] p-5 text-primary-foreground">
+              <div className="mt-5 rounded-2xl bg-primary p-5 text-primary-foreground shadow-lg shadow-primary/15">
                 <div className="flex items-center justify-between gap-4">
                   <div>
                     <div className="text-sm font-extrabold">Nächster Schritt</div>
@@ -288,7 +315,7 @@ export const HeroSection = () => {
                       Kategorie wählen und Leistungsdetails prüfen.
                     </p>
                   </div>
-                  <Button asChild className="bg-white text-primary hover:bg-[#F8F5EE]">
+                  <Button asChild className="bg-secondary text-secondary-foreground hover:bg-secondary/90">
                     <Link to="/kategorien">Starten</Link>
                   </Button>
                 </div>
@@ -304,11 +331,11 @@ export const HeroSection = () => {
           </div>
         </div>
 
-        <div className="mt-10 rounded-[1.5rem] border border-primary/10 bg-white p-4 shadow-lg shadow-primary/5 md:mt-14">
+        <div className="mt-10 rounded-[1.5rem] border border-primary/10 bg-white/95 p-4 shadow-lg shadow-primary/5 backdrop-blur-sm md:mt-14">
           <div className="grid gap-3 md:grid-cols-4">
             {trustItems.map((item) => (
-              <div key={item} className="flex items-center gap-3 rounded-2xl bg-[#EFF6F3] px-4 py-3 text-sm font-bold text-primary">
-                <CheckCircle2 className="h-4 w-4 shrink-0 text-primary" />
+              <div key={item} className="flex items-center gap-3 rounded-2xl bg-secondary/10 px-4 py-3 text-sm font-bold text-primary">
+                <CheckCircle2 className="h-4 w-4 shrink-0 text-secondary" />
                 <span>{item}</span>
               </div>
             ))}

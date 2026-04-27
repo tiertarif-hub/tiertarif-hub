@@ -77,69 +77,69 @@
 @layer base {
   :root {
     /* TierTarif Default Theme: Trust Vet Teal */
-    --background: 40 50% 96%;           /* #FAF7F0 Soft Cream */
-    --foreground: 188 41% 11%;          /* #102326 Deep Ink */
-    --primary: 175 75% 17%;             /* #0B4B45 Deep Vet Teal */
-    --primary-foreground: 40 50% 98%;
-    --secondary: 160 24% 58%;            /* #7DAA9B Sage Green */
-    --secondary-foreground: 174 81% 13%;
+    --background: 40 50% 96%;           /* Soft Cream */
+    --foreground: 173 45% 11%;          /* Dark Navy Teal */
+    --primary: 178 67% 18%;             /* Deep Vet Teal */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 16 100% 67%;           /* Coral CTA #FF8559 */
+    --secondary-foreground: 173 45% 11%;
     --card: 0 0% 100%;
-    --card-foreground: 188 41% 11%;
+    --card-foreground: 173 45% 11%;
     --popover: 0 0% 100%;
-    --popover-foreground: 188 41% 11%;
-    --muted: 163 35% 92%;               /* #E4F2EE Sage Mist */
-    --muted-foreground: 184 20% 34%;
-    --accent: 163 35% 92%;
-    --accent-foreground: 175 75% 17%;
-    --destructive: 0 84% 60%;
+    --popover-foreground: 173 45% 11%;
+    --muted: 137 20% 93%;               /* Soft Sage Mist */
+    --muted-foreground: 160 9% 40%;
+    --accent: 158 38% 75%;
+    --accent-foreground: 177 74% 11%;
+    --destructive: 4 76% 40%;
     --destructive-foreground: 0 0% 100%;
-    --border: 166 22% 84%;              /* #CFE0DC Soft Teal Gray */
-    --input: 166 22% 84%;
-    --ring: 175 75% 17%;
+    --border: 147 16% 86%;              /* Soft Teal Gray */
+    --input: 147 16% 86%;
+    --ring: 178 67% 18%;
     --radius: 1rem;
 
     /* TierTarif semantic accents */
-    --success: 146 45% 45%;             /* #3FA66B Vet Green */
-    --warning: 40 89% 60%;              /* #F4B740 Amber */
-    --brand-sage: 160 24% 58%;          /* #7DAA9B Sage Green */
-    --brand-sand: 39 43% 60%;           /* #C7A76C Sand Gold */
+    --success: 146 59% 30%;             /* Success Green */
+    --warning: 38 95% 39%;              /* Warning */
+    --brand-sage: 158 38% 75%;          /* Sage Mint */
+    --brand-coral: 16 100% 67%;          /* Coral CTA #FF8559 */
 
     /* Admin Sidebar (TierTarif) */
-    --sidebar-background: 174 81% 13%;
+    --sidebar-background: 177 74% 11%;
     --sidebar-foreground: 40 50% 98%;
-    --sidebar-primary: 160 24% 58%;
-    --sidebar-primary-foreground: 188 41% 11%;
-    --sidebar-accent: 175 64% 17%;
+    --sidebar-primary: 16 100% 67%;
+    --sidebar-primary-foreground: 173 45% 11%;
+    --sidebar-accent: 178 67% 18%;
     --sidebar-accent-foreground: 40 50% 98%;
-    --sidebar-border: 175 34% 26%;
-    --sidebar-ring: 160 24% 58%;
+    --sidebar-border: 178 40% 24%;
+    --sidebar-ring: 16 100% 67%;
   }
 
   /* --- THEME PRESETS --- */
 
   [data-theme="tiertarif"] {
-    --background: 40 50% 96%;
-    --foreground: 188 41% 11%;
-    --primary: 175 75% 17%;
-    --primary-foreground: 40 50% 98%;
-    --secondary: 160 24% 58%;
-    --secondary-foreground: 174 81% 13%;
+    --background: 42 50% 96%;
+    --foreground: 173 45% 11%;
+    --primary: 178 67% 18%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 16 100% 67%;
+    --secondary-foreground: 173 45% 11%;
     --card: 0 0% 100%;
-    --card-foreground: 188 41% 11%;
+    --card-foreground: 173 45% 11%;
     --popover: 0 0% 100%;
-    --popover-foreground: 188 41% 11%;
-    --muted: 163 35% 92%;
-    --muted-foreground: 184 20% 34%;
-    --accent: 163 35% 92%;
-    --accent-foreground: 175 75% 17%;
-    --border: 166 22% 84%;
-    --input: 166 22% 84%;
-    --ring: 175 75% 17%;
-    --sidebar-background: 174 81% 13%;
-    --sidebar-border: 175 34% 26%;
-    --sidebar-accent: 175 64% 17%;
-    --sidebar-primary: 160 24% 58%;
-    --sidebar-primary-foreground: 188 41% 11%;
+    --popover-foreground: 173 45% 11%;
+    --muted: 137 20% 93%;
+    --muted-foreground: 160 9% 40%;
+    --accent: 158 38% 75%;
+    --accent-foreground: 177 74% 11%;
+    --border: 147 16% 86%;
+    --input: 147 16% 86%;
+    --ring: 178 67% 18%;
+    --sidebar-background: 177 74% 11%;
+    --sidebar-border: 178 40% 24%;
+    --sidebar-accent: 178 67% 18%;
+    --sidebar-primary: 16 100% 67%;
+    --sidebar-primary-foreground: 173 45% 11%;
   }
 
   [data-theme="royal"] {
@@ -259,7 +259,7 @@
     --primary: 163 40% 82%;
     --primary-foreground: 174 81% 13%;
     --secondary: 160 24% 58%;
-    --secondary-foreground: 174 81% 13%;
+    --secondary-foreground: 173 45% 11%;
     --card: 174 52% 13%;
     --card-foreground: 40 50% 96%;
     --muted: 174 45% 16%;
@@ -272,7 +272,7 @@
     --sidebar-background: 178 47% 7%;
     --sidebar-border: 175 30% 25%;
     --sidebar-accent: 174 45% 16%;
-    --sidebar-primary: 160 24% 58%;
+    --sidebar-primary: 16 100% 67%;
   }
 }
 
@@ -288,6 +288,10 @@
 }
 
 @layer components {
+  .theme-soft-panel {
+    background: linear-gradient(180deg, hsl(var(--background)), hsl(var(--muted) / 0.55));
+  }
+
   .dots-white {
     background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px);
     background-size: 30px 30px;
@@ -331,12 +335,12 @@
 
 /* --- FIX FÜR BUTTONS IM FORUM --- */
 .prose a.text-white {
-  color: #ffffff !important;
+  color: rgb(255 255 255) !important;
   text-decoration: none !important;
 }
 
 .prose a.text-white:hover {
-  color: #ffffff !important;
+  color: rgb(255 255 255) !important;
 }
 
 .scrollbar-none {

@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useCategories } from "@/hooks/useCategories";
 import { useProjects } from "@/hooks/useProjects";
-import { useAdminSettings, useUpdateSetting } from "@/hooks/useSettings";
+import { useAdminSettings, useUpdateSetting, useFeatureToggles } from "@/hooks/useSettings";
 import {
   Card,
   CardContent,
@@ -92,19 +92,19 @@ async function fetchRedirects() {
 
 // --- COLORS ---
 const COLORS = [
-  "#0E1F53",
-  "#FF8400",
-  "#2563EB",
-  "#14B8A6",
-  "#8B5CF6",
-  "#F59E0B",
-  "#22C55E",
-  "#EC4899",
+  "hsl(var(--primary))",
+  "hsl(var(--secondary))",
+  "hsl(var(--primary))",
+  "hsl(var(--accent))",
+  "hsl(var(--secondary))",
+  "hsl(var(--secondary) / 0.82)",
+  "hsl(var(--accent-foreground))",
+  "hsl(var(--muted-foreground))",
 ];
 
 const SYSTEM_PAGE_LABELS: Record<string, string> = {
   home: "Startseite",
-  "top-apps": "Top Apps",
+  "top-apps": "Topliste",
   "categories-overview": "Kategorien",
   "forum-index": "Forum Übersicht",
 };
@@ -195,11 +195,13 @@ export default function AdminDashboard() {
   const { data: categories = [] } = useCategories(true);
   const { data: projects = [] } = useProjects(true);
   const { data: settings } = useAdminSettings();
+  const featureToggles = useFeatureToggles();
   const updateSetting = useUpdateSetting();
 
   // 1. PERIOD STATS (Unique Views aus page_views_analytics)
   const { data: rawAnalytics = [] } = useQuery({
     queryKey: ["analytics-period", dateRange],
+    enabled: featureToggles.has_analytics,
     queryFn: async () => {
       if (!dateRange?.from) return [];
 
@@ -222,6 +224,7 @@ export default function AdminDashboard() {
   // 2. ALL TIME STATS
   const { data: allTimeStats = [] } = useQuery({
     queryKey: ["daily-stats-alltime"],
+    enabled: featureToggles.has_analytics,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("daily_stats")
@@ -234,11 +237,13 @@ export default function AdminDashboard() {
 
   const { data: subscribers = [] } = useQuery({
     queryKey: ["subscribers"],
+    enabled: featureToggles.has_leads,
     queryFn: fetchSubscribers,
   });
 
   const { data: redirects = [] } = useQuery({
     queryKey: ["redirects"],
+    enabled: featureToggles.has_redirects,
     queryFn: fetchRedirects,
   });
 
@@ -252,6 +257,7 @@ export default function AdminDashboard() {
   } = useQuery<GithubPulseCommit[]>({
     queryKey: ["github-pulse"],
     staleTime: 1000 * 60 * 5,
+    enabled: featureToggles.has_indexing_tools,
     queryFn: async () => {
       const { data, error } = await supabase.functions.invoke("github-pulse", {
         body: { perPage: PROJECT_PULSE_LIMIT },
@@ -433,7 +439,7 @@ export default function AdminDashboard() {
 
   const { data: periodForumThreads = [] } = useQuery({
     queryKey: ["period-forum-threads", forumSlugs],
-    enabled: forumSlugs.length > 0,
+    enabled: featureToggles.has_forum && forumSlugs.length > 0,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("forum_threads")
@@ -470,9 +476,10 @@ export default function AdminDashboard() {
       });
       toast({ title: "Einstellung gespeichert" });
     } catch (error) {
+      const description = error instanceof Error ? error.message : "Speichern fehlgeschlagen";
       toast({
         title: "Fehler",
-        description: "Speichern fehlgeschlagen",
+        description,
         variant: "destructive",
       });
     }
@@ -536,16 +543,16 @@ export default function AdminDashboard() {
           <Table>
             <TableHeader className="bg-slate-50/90">
               <TableRow>
-                <TableHead className="px-6 py-4 text-xs font-black uppercase tracking-[0.18em] text-[#0E1F53]">
+                <TableHead className="px-6 py-4 text-xs font-black uppercase tracking-[0.18em] text-primary">
                   Seite / Ziel
                 </TableHead>
-                <TableHead className="px-6 py-4 text-xs font-black uppercase tracking-[0.18em] text-[#0E1F53]">
+                <TableHead className="px-6 py-4 text-xs font-black uppercase tracking-[0.18em] text-primary">
                   Typ
                 </TableHead>
-                <TableHead className="px-6 py-4 text-right text-xs font-black uppercase tracking-[0.18em] text-[#0E1F53]">
+                <TableHead className="px-6 py-4 text-right text-xs font-black uppercase tracking-[0.18em] text-primary">
                   Anteil
                 </TableHead>
-                <TableHead className="px-6 py-4 text-right text-xs font-black uppercase tracking-[0.18em] text-[#FF8400]">
+                <TableHead className="px-6 py-4 text-right text-xs font-black uppercase tracking-[0.18em] text-secondary">
                   Views (Zeitraum)
                 </TableHead>
                 <TableHead className="px-6 py-4 text-right text-xs font-black uppercase tracking-[0.18em] text-slate-500">
@@ -593,11 +600,11 @@ export default function AdminDashboard() {
                           className={cn(
                             "border-none px-3 py-0.5 font-bold text-white",
                             item.type === "project"
-                              ? "bg-green-600"
+                              ? "bg-primary"
                               : item.type === "page"
-                              ? "bg-blue-600"
+                              ? "bg-primary"
                               : item.type === "category"
-                              ? "bg-purple-600"
+                              ? "bg-accent"
                               : item.type === "comparison"
                               ? "bg-amber-600"
                               : item.type === "forum"
@@ -694,7 +701,7 @@ export default function AdminDashboard() {
                 Zurück
               </Button>
 
-              <div className="min-w-[120px] text-center text-sm font-black text-[#0E1F53]">
+              <div className="min-w-[120px] text-center text-sm font-black text-primary">
                 Seite {currentPage} von {totalPages}
               </div>
 
@@ -725,7 +732,7 @@ export default function AdminDashboard() {
       {/* HEADER SECTION */}
       <div className="flex flex-col gap-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:flex-row lg:items-center lg:justify-between lg:p-8">
         <div>
-          <h2 className="font-display text-3xl font-black tracking-tight text-[#0E1F53]">
+          <h2 className="font-display text-3xl font-black tracking-tight text-primary">
             Kommando-Zentrale
           </h2>
           <p className="mt-2 flex items-center gap-2 text-sm text-slate-500">
@@ -750,7 +757,7 @@ export default function AdminDashboard() {
               <Button
                 id="date"
                 variant={"outline"}
-                className="h-12 w-[280px] justify-start rounded-xl border-slate-200 bg-white text-left font-bold text-[#0E1F53] shadow-sm"
+                className="h-12 w-[280px] justify-start rounded-xl border-slate-200 bg-white text-left font-bold text-primary shadow-sm"
               >
                 <CalendarIcon className="mr-2 h-4 w-4 text-slate-400" />
                 {dateRange?.from ? (
@@ -786,14 +793,14 @@ export default function AdminDashboard() {
             className={`px-4 py-2 rounded-full text-xs font-black uppercase border flex items-center gap-2 ${
               analyticsFound
                 ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                : "bg-orange-50 text-[#FF8400] border-orange-200"
+                : "bg-secondary/10 text-secondary border-secondary/30"
             }`}
           >
             <div
               className={`w-2 h-2 rounded-full ${
                 analyticsFound
                   ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"
-                  : "bg-orange-500 animate-pulse"
+                  : "bg-secondary/100 animate-pulse"
               }`}
             ></div>
             Status: {analyticsFound ? "Live" : "Check"}
@@ -808,7 +815,7 @@ export default function AdminDashboard() {
             <CardTitle className="text-xs font-black text-slate-400 uppercase tracking-widest">
               Views (Zeitraum)
             </CardTitle>
-            <MonitorPlay className="w-5 h-5 text-blue-500 group-hover:scale-110 transition-transform" />
+            <MonitorPlay className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" />
           </CardHeader>
           <CardContent>
             <div className="text-4xl font-black text-slate-900">
@@ -825,7 +832,7 @@ export default function AdminDashboard() {
             <CardTitle className="text-xs font-black text-slate-400 uppercase tracking-widest">
               Klicks (Zeitraum)
             </CardTitle>
-            <MousePointer className="w-5 h-5 text-green-500 group-hover:scale-110 transition-transform" />
+            <MousePointer className="w-5 h-5 text-accent-foreground group-hover:scale-110 transition-transform" />
           </CardHeader>
           <CardContent>
             <div className="text-4xl font-black text-slate-900">
@@ -837,18 +844,18 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-2xl border border-orange-200 bg-gradient-to-br from-orange-50 to-white shadow-sm">
+        <Card className="rounded-2xl border border-secondary/30 bg-gradient-to-br from-secondary/10 to-card shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-xs font-black uppercase tracking-[0.18em] text-[#FF8400]">
+            <CardTitle className="text-xs font-black uppercase tracking-[0.18em] text-secondary">
               Conversion Rate
             </CardTitle>
-            <Percent className="w-5 h-5 text-[#FF8400]" />
+            <Percent className="w-5 h-5 text-secondary" />
           </CardHeader>
           <CardContent>
-            <div className="text-4xl font-black text-[#FF8400]">
+            <div className="text-4xl font-black text-secondary">
               {conversionRate}%
             </div>
-            <p className="mt-2 text-[10px] italic text-[#FF8400]/70">
+            <p className="mt-2 text-[10px] italic text-secondary/70">
               Klicks pro View
             </p>
           </CardContent>
@@ -859,7 +866,7 @@ export default function AdminDashboard() {
             <CardTitle className="text-xs font-black text-slate-400 uppercase tracking-widest">
               Aktive Projekte
             </CardTitle>
-            <FileBox className="w-5 h-5 text-orange-500 group-hover:scale-110 transition-transform" />
+            <FileBox className="w-5 h-5 text-secondary group-hover:scale-110 transition-transform" />
           </CardHeader>
           <CardContent>
             <div className="text-4xl font-black text-slate-900">
@@ -945,37 +952,37 @@ export default function AdminDashboard() {
             <TabsList className="mb-6 flex h-auto w-full justify-start overflow-x-auto rounded-2xl border border-slate-200 bg-slate-100 p-1.5">
               <TabsTrigger
                 value="all"
-                className="rounded-xl px-6 py-2.5 font-bold text-slate-600 data-[state=active]:bg-white data-[state=active]:text-[#FF8400] data-[state=active]:shadow-sm"
+                className="rounded-xl px-6 py-2.5 font-bold text-slate-600 data-[state=active]:bg-white data-[state=active]:text-secondary data-[state=active]:shadow-sm"
               >
                 Alles
               </TabsTrigger>
               <TabsTrigger
                 value="pages"
-                className="rounded-xl px-6 py-2.5 font-bold text-slate-600 data-[state=active]:bg-white data-[state=active]:text-[#FF8400] data-[state=active]:shadow-sm"
+                className="rounded-xl px-6 py-2.5 font-bold text-slate-600 data-[state=active]:bg-white data-[state=active]:text-secondary data-[state=active]:shadow-sm"
               >
                 System
               </TabsTrigger>
               <TabsTrigger
                 value="comparisons"
-                className="rounded-xl px-6 py-2.5 font-bold text-slate-600 data-[state=active]:bg-white data-[state=active]:text-[#FF8400] data-[state=active]:shadow-sm"
+                className="rounded-xl px-6 py-2.5 font-bold text-slate-600 data-[state=active]:bg-white data-[state=active]:text-secondary data-[state=active]:shadow-sm"
               >
                 Vergleiche
               </TabsTrigger>
               <TabsTrigger
                 value="categories"
-                className="rounded-xl px-6 py-2.5 font-bold text-slate-600 data-[state=active]:bg-white data-[state=active]:text-[#FF8400] data-[state=active]:shadow-sm"
+                className="rounded-xl px-6 py-2.5 font-bold text-slate-600 data-[state=active]:bg-white data-[state=active]:text-secondary data-[state=active]:shadow-sm"
               >
                 Kategorien
               </TabsTrigger>
               <TabsTrigger
                 value="forum"
-                className="rounded-xl px-6 py-2.5 font-bold text-slate-600 data-[state=active]:bg-white data-[state=active]:text-[#FF8400] data-[state=active]:shadow-sm"
+                className="rounded-xl px-6 py-2.5 font-bold text-slate-600 data-[state=active]:bg-white data-[state=active]:text-secondary data-[state=active]:shadow-sm"
               >
                 Forum
               </TabsTrigger>
               <TabsTrigger
                 value="outbound"
-                className="rounded-xl px-6 py-2.5 font-bold text-green-700 data-[state=active]:bg-white data-[state=active]:text-[#FF8400] data-[state=active]:shadow-sm"
+                className="rounded-xl px-6 py-2.5 font-bold text-primary data-[state=active]:bg-white data-[state=active]:text-secondary data-[state=active]:shadow-sm"
               >
                 Affiliate Klicks
               </TabsTrigger>
@@ -1025,8 +1032,8 @@ export default function AdminDashboard() {
             </TabsContent>
 
             <TabsContent value="outbound" className="mt-0 focus-visible:ring-0">
-              <div className="mb-6 flex items-center gap-4 rounded-2xl border border-orange-200 bg-orange-50 p-4 text-sm font-bold text-[#FF8400] shadow-sm">
-                <TrendingUp className="w-5 h-5 text-[#FF8400]" />
+              <div className="mb-6 flex items-center gap-4 rounded-2xl border border-secondary/30 bg-secondary/10 p-4 text-sm font-bold text-secondary shadow-sm">
+                <TrendingUp className="w-5 h-5 text-secondary" />
                 Welche Partner generieren aktuell den meisten Umsatz?
               </div>
               <TrafficTable
@@ -1045,8 +1052,8 @@ export default function AdminDashboard() {
           {/* PERFORMANCE CHART */}
           <Card className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
             <CardHeader className="border-b border-slate-200 bg-slate-50/80 p-6">
-              <CardTitle className="flex items-center gap-3 text-xl font-black text-[#0E1F53]">
-                <Activity className="w-5 h-5 text-[#FF8400]" />
+              <CardTitle className="flex items-center gap-3 text-xl font-black text-primary">
+                <Activity className="w-5 h-5 text-secondary" />
                 Performance Distribution
               </CardTitle>
               <CardDescription className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
@@ -1068,7 +1075,7 @@ export default function AdminDashboard() {
                           innerRadius={74}
                           paddingAngle={4}
                           dataKey="value"
-                          stroke="#ffffff"
+                          stroke="hsl(var(--card))"
                           strokeWidth={3}
                         >
                           {categoryPerformance.map((entry, index) => (
@@ -1086,7 +1093,7 @@ export default function AdminDashboard() {
                           ]}
                           contentStyle={{
                             borderRadius: "16px",
-                            border: "1px solid #e2e8f0",
+                            border: "1px solid hsl(var(--border))",
                             boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.08)",
                           }}
                         />
@@ -1188,8 +1195,8 @@ export default function AdminDashboard() {
           {/* LÄNDER VERTEILUNG CHART */}
           <Card className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
             <CardHeader className="border-b border-slate-200 bg-slate-50/80 p-6">
-              <CardTitle className="flex items-center gap-3 text-xl font-black text-[#0E1F53]">
-                <MapPin className="w-5 h-5 text-[#FF8400]" />
+              <CardTitle className="flex items-center gap-3 text-xl font-black text-primary">
+                <MapPin className="w-5 h-5 text-secondary" />
                 Länder-Verteilung
               </CardTitle>
               <CardDescription className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
@@ -1211,7 +1218,7 @@ export default function AdminDashboard() {
                           innerRadius={68}
                           paddingAngle={4}
                           dataKey="value"
-                          stroke="#ffffff"
+                          stroke="hsl(var(--card))"
                           strokeWidth={3}
                         >
                           {countryStats.map((entry, index) => (
@@ -1231,7 +1238,7 @@ export default function AdminDashboard() {
                           ]}
                           contentStyle={{
                             borderRadius: "16px",
-                            border: "1px solid #e2e8f0",
+                            border: "1px solid hsl(var(--border))",
                             boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.08)",
                           }}
                         />
@@ -1326,8 +1333,8 @@ export default function AdminDashboard() {
         <div className="space-y-8 h-full">
           <Card className="rounded-2xl border border-slate-200 bg-white shadow-sm">
             <CardHeader className="pb-4">
-              <CardTitle className="flex items-center gap-2 text-lg font-black text-[#0E1F53]">
-                <Zap className="h-5 w-5 rounded-full text-[#FF8400]" />
+              <CardTitle className="flex items-center gap-2 text-lg font-black text-primary">
+                <Zap className="h-5 w-5 rounded-full text-secondary" />
                 Schnellzugriff
               </CardTitle>
             </CardHeader>
@@ -1393,7 +1400,7 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
 
-          <Card className="overflow-hidden rounded-2xl border border-[#0E1F53]/10 bg-[#0E1F53] text-white shadow-sm">
+          <Card className="overflow-hidden rounded-2xl border border-primary/10 bg-primary text-white shadow-sm">
             <CardHeader className="pb-4">
               <div className="flex items-center gap-3">
                 <Download className="w-6 h-6 text-white" />
@@ -1411,7 +1418,7 @@ export default function AdminDashboard() {
 
               <Button
                 variant="default"
-                className="h-14 w-full rounded-2xl border-none bg-[#FF8400] font-black text-white shadow-lg shadow-[#FF8400]/20 transition-all hover:bg-[#e67800] active:scale-95"
+                className="h-14 w-full rounded-2xl border-none bg-secondary font-black text-white shadow-lg shadow-secondary/20 transition-all hover:bg-secondary/90 active:scale-95"
                 onClick={() => {
                   const csv =
                     "Email,Quelle,Datum\n" +
@@ -1445,10 +1452,10 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
 
-          <Card className="overflow-hidden rounded-2xl border border-[#0E1F53]/10 bg-[#10265f] text-white shadow-sm">
+          <Card className="overflow-hidden rounded-2xl border border-primary/10 bg-primary text-white shadow-sm">
             <CardHeader className="pb-4">
               <div className="flex items-center gap-3">
-                <Activity className="w-6 h-6 text-blue-400" />
+                <Activity className="w-6 h-6 text-accent" />
                 <CardTitle className="text-lg font-black text-white">
                   Analytics-Export
                 </CardTitle>
@@ -1463,7 +1470,7 @@ export default function AdminDashboard() {
 
               <Button
                 variant="default"
-                className="h-14 w-full rounded-2xl border-none bg-[#FF8400] font-black text-white shadow-lg shadow-[#FF8400]/20 transition-all hover:bg-[#e67800] active:scale-95"
+                className="h-14 w-full rounded-2xl border-none bg-secondary font-black text-white shadow-lg shadow-secondary/20 transition-all hover:bg-secondary/90 active:scale-95"
                 onClick={() => {
                   const csv =
                     "Seite,Typ,Landcode,Land,Datum\n" +
@@ -1502,7 +1509,7 @@ export default function AdminDashboard() {
         <Card className="shadow-sm border-none bg-white rounded-3xl ring-1 ring-slate-100 group overflow-hidden">
           <CardHeader className="border-b border-slate-200 bg-slate-50/80 p-6">
             <CardTitle className="flex items-center gap-2 text-lg font-black">
-              <Globe className="w-5 h-5 text-[#0E1F53] group-hover:animate-pulse" />
+              <Globe className="w-5 h-5 text-primary group-hover:animate-pulse" />
               Meistgelesen (Zeitraum)
             </CardTitle>
           </CardHeader>
@@ -1517,7 +1524,7 @@ export default function AdminDashboard() {
                 topContentItems.map((item) => (
                   <div
                     key={`${item.type}-${item.name}`}
-                    className="flex items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50/80 p-4 transition-all hover:border-orange-200 hover:bg-white"
+                    className="flex items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50/80 p-4 transition-all hover:border-secondary/30 hover:bg-white"
                   >
                     <div className="flex flex-col min-w-0 max-w-[72%]">
                       <span className="text-xs font-black text-slate-400 uppercase tracking-tighter mb-1">
@@ -1532,7 +1539,7 @@ export default function AdminDashboard() {
                     </div>
 
                     <div className="flex items-center gap-2 shrink-0">
-                      <span className="flex items-center gap-2 rounded-full bg-orange-50 px-3 py-1.5 text-xs font-black text-[#FF8400]">
+                      <span className="flex items-center gap-2 rounded-full bg-secondary/10 px-3 py-1.5 text-xs font-black text-secondary">
                         <Eye className="w-3 h-3" />
                         {item.count}
                       </span>
@@ -1557,7 +1564,7 @@ export default function AdminDashboard() {
         <Card className="shadow-sm border-none bg-white rounded-3xl ring-1 ring-slate-100 group overflow-hidden">
           <CardHeader className="border-b border-slate-200 bg-slate-50/80 p-6">
             <CardTitle className="flex items-center gap-2 text-lg font-black">
-              <MessageSquare className="w-5 h-5 text-[#FF8400] group-hover:animate-bounce" />
+              <MessageSquare className="w-5 h-5 text-secondary group-hover:animate-bounce" />
               Heiß diskutiert (Zeitraum)
             </CardTitle>
           </CardHeader>
@@ -1572,7 +1579,7 @@ export default function AdminDashboard() {
                 topForumItems.map((item) => (
                   <div
                     key={`${item.type}-${item.name}`}
-                    className="flex items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50/80 p-4 transition-all hover:border-orange-200 hover:bg-white"
+                    className="flex items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50/80 p-4 transition-all hover:border-secondary/30 hover:bg-white"
                   >
                     <div className="flex flex-col min-w-0 max-w-[72%]">
                       <span className="text-xs font-black text-slate-400 uppercase tracking-tighter mb-1">
@@ -1587,7 +1594,7 @@ export default function AdminDashboard() {
                     </div>
 
                     <div className="flex items-center gap-2 shrink-0">
-                      <span className="flex items-center gap-2 rounded-full bg-orange-50 px-3 py-1.5 text-xs font-black text-[#FF8400]">
+                      <span className="flex items-center gap-2 rounded-full bg-secondary/10 px-3 py-1.5 text-xs font-black text-secondary">
                         <Eye className="w-3 h-3" />
                         {item.count}
                       </span>
@@ -1615,8 +1622,8 @@ export default function AdminDashboard() {
         <CardHeader className="border-b border-slate-200 bg-slate-50/80 p-6">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="space-y-2">
-              <CardTitle className="flex items-center gap-2 text-lg font-black text-[#0E1F53]">
-                <GitBranch className="h-5 w-5 text-[#FF8400]" />
+              <CardTitle className="flex items-center gap-2 text-lg font-black text-primary">
+                <GitBranch className="h-5 w-5 text-secondary" />
                 Projekt-Pulse - Letzte System-Updates
               </CardTitle>
               <CardDescription className="text-sm text-slate-500">
@@ -1675,18 +1682,18 @@ export default function AdminDashboard() {
                       <span className="absolute left-[7px] top-6 h-[calc(100%+8px)] w-px bg-slate-200" />
                     )}
 
-                    <span className="absolute left-0 top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#FF8400] text-white shadow-sm">
+                    <span className="absolute left-0 top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-secondary text-white shadow-sm">
                       <GitBranch className="h-3 w-3" />
                     </span>
 
-                    <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-5 transition-colors hover:border-orange-200 hover:bg-white">
+                    <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-5 transition-colors hover:border-secondary/30 hover:bg-white">
                       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                         <div className="min-w-0">
                           <a
                             href={commit.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="block text-base font-black text-[#0E1F53] transition-colors hover:text-[#FF8400]"
+                            className="block text-base font-black text-primary transition-colors hover:text-secondary"
                           >
                             {commit.message}
                           </a>
@@ -1731,7 +1738,7 @@ export default function AdminDashboard() {
                       Zurück
                     </Button>
 
-                    <div className="min-w-[120px] text-center text-sm font-black text-[#0E1F53]">
+                    <div className="min-w-[120px] text-center text-sm font-black text-primary">
                       Seite {currentPulsePage} von {totalPulsePages}
                     </div>
 

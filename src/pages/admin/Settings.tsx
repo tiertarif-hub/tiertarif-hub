@@ -9,7 +9,10 @@ import {
   useUpdateComplianceConfig,
   defaultHomeLayout, 
   defaultHomeContent,
-  ForumAd 
+  defaultFeatureToggles,
+  normalizeFeatureTogglesValue,
+  ForumAd,
+  type FeatureToggles
 } from "@/hooks/useSettings";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,7 +25,7 @@ import {
   DollarSign, Image as ImageIcon, Upload, Link as LinkIcon,
   Target, Users, Plus, Menu as MenuIcon, MessageSquare, ShieldCheck, List,
   Mail, Megaphone, PaintBucket, ArrowUp, ArrowDown, Type, Rocket, X,
-  ShieldAlert, ShieldOff, FileText
+  ShieldAlert, ShieldOff, FileText, Monitor, Smartphone
 } from "lucide-react";
 import type { Json } from "@/integrations/supabase/types";
 import { Switch } from "@/components/ui/switch";
@@ -66,8 +69,8 @@ function ComplianceSettingsCard() {
     <Card className="bg-card border-border shadow-sm border-l-4 border-l-slate-800">
       <CardHeader className="bg-slate-50/50 dark:bg-slate-900/50 pb-4 border-b border-border">
         <CardTitle className="text-lg font-bold flex items-center gap-2">
-          {mode === 'strict' && <ShieldCheck className="w-5 h-5 text-green-500" />}
-          {mode === 'warn' && <ShieldAlert className="w-5 h-5 text-yellow-500" />}
+          {mode === 'strict' && <ShieldCheck className="w-5 h-5 text-accent-foreground" />}
+          {mode === 'warn' && <ShieldAlert className="w-5 h-5 text-secondary" />}
           {mode === 'off' && <ShieldOff className="w-5 h-5 text-red-500" />}
           Legal & Compliance Manager
         </CardTitle>
@@ -85,10 +88,10 @@ function ComplianceSettingsCard() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="strict">
-                <span className="font-bold text-green-600 dark:text-green-500">STRICT:</span> Harter Block (Speichern wird verweigert)
+                <span className="font-bold text-primary dark:text-accent-foreground">STRICT:</span> Harter Block (Speichern wird verweigert)
               </SelectItem>
               <SelectItem value="warn">
-                <span className="font-bold text-yellow-600 dark:text-yellow-500">SOFT ALLOW (Warn):</span> Speichern wird erlaubt, kein Hard-Stop
+                <span className="font-bold text-secondary">SOFT ALLOW (Warn):</span> Speichern wird erlaubt, kein Hard-Stop
               </SelectItem>
               <SelectItem value="off">
                 <span className="font-bold text-red-600 dark:text-red-500">OFF (Exit-Modus):</span> Komplett deaktiviert (Alles ist erlaubt)
@@ -145,6 +148,25 @@ function ServerSecretsWarningCard() {
 }
 // --- ENDE NEUE KOMPONENTE ---
 
+const HERO_IMAGE_BUCKET = "branding";
+const HERO_IMAGE_FIELDS = {
+  desktop: "desktop_image_url",
+  mobile: "mobile_image_url",
+} as const;
+type HeroImageVariant = keyof typeof HERO_IMAGE_FIELDS;
+
+function getSafeStorageFileName(file: File, prefix: string) {
+  const fileExtension = file.name.split(".").pop()?.toLowerCase() || "webp";
+  const baseName = file.name
+    .replace(/\.[^/.]+$/, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60) || "hero";
+
+  return `hero/${prefix}-${Date.now()}-${baseName}.${fileExtension}`;
+}
+
 export default function AdminSettings() {
   const { data: settings, isLoading } = useAdminSettings();
   const updateSetting = useUpdateSetting();
@@ -173,6 +195,8 @@ export default function AdminSettings() {
   const [analyticsCode, setAnalyticsCode] = useState("");
   const [adsEnabled, setAdsEnabled] = useState(false);
   const [isUploadingLogo, setIsUploadingLogo] = useState(false);
+  const [isUploadingHeroDesktop, setIsUploadingHeroDesktop] = useState(false);
+  const [isUploadingHeroMobile, setIsUploadingHeroMobile] = useState(false);
 
   // --- THEME STATES ---
   const [activeTheme, setActiveTheme] = useState("tiertarif");
@@ -189,6 +213,9 @@ export default function AdminSettings() {
 
   // --- HOME SECTIONS (ERWEITERT) ---
   const [homeSections, setHomeSections] = useState<any[]>([]);
+
+  // --- TIER TARIF FEATURE TOGGLES ---
+  const [featureToggles, setFeatureToggles] = useState<FeatureToggles>(defaultFeatureToggles);
 
   // --- ANALYTICS STATES ---
   const [ga4Id, setGa4Id] = useState("");
@@ -246,7 +273,6 @@ export default function AdminSettings() {
       }
 
     } catch (error: any) {
-      console.error(error);
       toast({ title: "Fehler beim Pingen", description: error.message || "Unbekannter Fehler", variant: "destructive" });
     } finally {
       setIsPinging(false);
@@ -254,6 +280,11 @@ export default function AdminSettings() {
   };
 
   const handleGenerateSitemap = async () => {
+    if (!featureToggles.has_indexing_tools) {
+      toast({ title: "Indexing Tools deaktiviert", description: "Aktiviere das Modul zuerst unter Module." });
+      return;
+    }
+
     setIsGeneratingSitemap(true);
 
     try {
@@ -270,7 +301,6 @@ export default function AdminSettings() {
         description: `${data.url_count ?? 0} URLs geschrieben. ${data.public_url ? `Live-URL: ${data.public_url}` : ''}`.trim(),
       });
     } catch (error: any) {
-      console.error(error);
       toast({ title: 'Fehler bei der Sitemap', description: error.message || 'Unbekannter Fehler', variant: 'destructive' });
     } finally {
       setIsGeneratingSitemap(false);
@@ -278,30 +308,28 @@ export default function AdminSettings() {
   };
 
   // --- STANDARD CONFIG WERTE (DEFAULTS) ---
-  const defaultHeaderConfig = { 
+  const defaultHeaderConfig = {
     nav_links: [
-      { label: "Versicherungen", url: getCategoriesRoute() },
-      { label: "Finanzen & Krypto", url: getCategoriesRoute() },
-      { label: "KI & Software", url: getCategoriesRoute() }
+      { label: "Hunde", url: getCategoriesRoute() },
+      { label: "Katzen", url: getCategoriesRoute() },
+      { label: "OP-Schutz", url: getCategoriesRoute() }
     ],
     hub_links: [
-      { label: "Vergleichs-Hub", url: "/kategorien", icon: "LayoutGrid" }, 
-      { label: "Arcade", url: "/arcade", icon: "Gamepad2" }, 
-      { label: "Brain-Boost", url: "/brain-boost", icon: "BrainCircuit" }, 
-      { label: "Community", url: "/forum", icon: "Users" }
+      { label: "Alle Kategorien", url: "/kategorien", icon: "LayoutGrid" },
+      { label: "Ratgeber", url: "/kategorien", icon: "FileText" }
     ],
-    button_text: "Jetzt vergleichen", 
-    button_url: getCategoriesRoute() 
+    button_text: "Jetzt vergleichen",
+    button_url: getCategoriesRoute()
   };
 
   const defaultFooterConfig = {
     text_checked: "Redaktionell geprüft",
     text_update: "Aktualisiert: 2026",
-    text_description: "Unsere Vergleiche basieren auf echten Daten, Nutzer-Feedback und Experten-Analysen.", 
+    text_description: "TierTarif strukturiert Tierversicherungen, Tierarztkosten und OP-Schutz sachlich für Hunde- und Katzenhalter.",
     copyright_text: "© 2026 TierTarif. Alle Rechte vorbehalten.",
     made_with_text: "Made with",
-    made_in_text: "in Germany", 
-    disclaimer: "*Werbehinweis: Wir finanzieren uns über sogenannte Affiliate-Links. Wenn Sie über einen Link auf dieser Seite einkaufen, erhalten wir möglicherweise eine Provision. Der Preis für Sie ändert sich dabei nicht. Unsere redaktionelle Unabhängigkeit bleibt davon unberührt.",
+    made_in_text: "in Austria",
+    disclaimer: "*Werbehinweis: Wir finanzieren uns teilweise über sogenannte Affiliate-Links. Wenn du über einen Link oder Vergleichsrechner auf dieser Seite weitergehst, erhalten wir möglicherweise eine Provision. Der Preis für dich ändert sich dadurch nicht. Unsere Inhalte werden redaktionell erstellt und fortlaufend gepflegt.",
     legal_links: [
       { label: "Kontakt", url: "/kontakt" },
       { label: "Wie wir vergleichen", url: "/wie-wir-vergleichen" },
@@ -313,12 +341,11 @@ export default function AdminSettings() {
       { label: "Cookie-Einstellungen", url: "/cookie-einstellungen" }
     ],
     popular_links: [
-      { label: "Versicherungen", url: getCategoriesRoute() },
-      { label: "Finanzen & Krypto", url: getCategoriesRoute() },
-      { label: "KI & Software", url: getCategoriesRoute() }
+      { label: "Hundeversicherung", url: getCategoriesRoute() },
+      { label: "Katzenversicherung", url: getCategoriesRoute() },
+      { label: "Tier-OP-Versicherung", url: getCategoriesRoute() }
     ],
     tools_links: [
-      { label: "Kündigung Vorlage", url: "/kuendigung-vorlage" },
       { label: "Alle Vergleiche", url: "/kategorien" },
       { label: "Wie wir vergleichen", url: "/wie-wir-vergleichen" },
       { label: "Kontakt", url: "/kontakt" },
@@ -352,6 +379,7 @@ export default function AdminSettings() {
     setDashboardTheme((settings.dashboard_theme as string) || "dark");
     setNewsletterActive((settings.newsletter_active as boolean) ?? true);
     setPopupActive((settings.popup_active as boolean) ?? false);
+    setFeatureToggles(normalizeFeatureTogglesValue(settings.feature_toggles as Partial<FeatureToggles> | undefined));
 
     // Forum Banner Init
     setForumBanner((prev: any) => ({
@@ -431,15 +459,12 @@ export default function AdminSettings() {
   }, [normalizedHomeSectionsKey, homeSections.length]);
 
   useEffect(() => {
-    const fetchLeads = async () => {
-      const { count } = await supabase
-        .from("subscribers")
-        .select("*", { count: 'exact', head: true })
-        .eq("source_page", "scouty_widget");
-      if (count !== null) setScoutyLeadsCount(count);
-    };
-    fetchLeads();
-  }, []);
+    // TierTarif-Hotfix: Keine blinde Anfrage mehr auf die optionale Tabelle
+    // "subscribers". Wenn das Leads-Modul/Tabelle in Supabase nicht existiert,
+    // erzeugt bereits der Request einen Browser-404. Darum bleibt der Zähler
+    // deaktiviert, bis das Leads-Modul inklusive DB-Tabelle bewusst ausgerollt wird.
+    setScoutyLeadsCount(0);
+  }, [featureToggles.has_scouty, featureToggles.has_leads]);
 
   async function saveSetting(key: string, value: Json) {
     try {
@@ -472,6 +497,14 @@ export default function AdminSettings() {
   const saveMarketingSettings = () => {
     saveSetting("newsletter_active", newsletterActive);
     saveSetting("popup_active", popupActive);
+  };
+
+  const updateFeatureToggle = (key: keyof FeatureToggles, value: boolean) => {
+    setFeatureToggles((current) => ({ ...current, [key]: value }));
+  };
+
+  const saveFeatureToggles = () => {
+    saveSetting("feature_toggles", featureToggles as unknown as Json);
   };
 
   const saveForumBannerConfig = () => {
@@ -522,18 +555,171 @@ export default function AdminSettings() {
     setHasUnsavedChanges(true);
   };
 
-  const saveContentManually = () => {
-    if (!localContent) return;
+  const persistHomeContent = async (nextContent: typeof defaultHomeContent, successTitle = "Startseiteninhalte gespeichert") => {
     const finalContentToSave = {
-      ...localContent,
+      ...nextContent,
       seo: {
-        ...localContent.seo,
+        ...nextContent.seo,
         long_text: seoLongText
       }
     };
-    saveSetting("home_content", finalContentToSave);
+
+    await updateSetting.mutateAsync({
+      key: "home_content",
+      value: finalContentToSave as unknown as Json
+    });
+
     setLocalContent(finalContentToSave);
     setHasUnsavedChanges(false);
+    toast({ title: successTitle });
+  };
+
+  const saveContentManually = async () => {
+    if (!localContent) return;
+
+    try {
+      await persistHomeContent(localContent);
+    } catch (error: any) {
+      toast({
+        title: "Fehler",
+        description: error?.message || "Startseiteninhalte konnten nicht gespeichert werden.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleHeroImageUpload = async (event: React.ChangeEvent<HTMLInputElement>, variant: HeroImageVariant) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+
+    if (!file || !localContent) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast({ title: "Ungültige Datei", description: "Bitte lade ein Bild im Format WebP, AVIF, JPG oder PNG hoch.", variant: "destructive" });
+      return;
+    }
+
+    if (file.size > 4 * 1024 * 1024) {
+      toast({ title: "Bild zu groß", description: "Bitte komprimiere das Hero-Bild auf maximal 4 MB. Für Live ideal: unter 350 KB.", variant: "destructive" });
+      return;
+    }
+
+    const setUploading = variant === "desktop" ? setIsUploadingHeroDesktop : setIsUploadingHeroMobile;
+    setUploading(true);
+
+    try {
+      const fileName = getSafeStorageFileName(file, variant);
+      const { error: uploadError } = await supabase.storage
+        .from(HERO_IMAGE_BUCKET)
+        .upload(fileName, file, { cacheControl: "31536000", upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from(HERO_IMAGE_BUCKET)
+        .getPublicUrl(fileName);
+
+      const heroField = HERO_IMAGE_FIELDS[variant];
+      const nextContent = {
+        ...localContent,
+        hero: {
+          ...localContent.hero,
+          [heroField]: publicUrl,
+        }
+      } as typeof defaultHomeContent;
+
+      await persistHomeContent(
+        nextContent,
+        variant === "desktop" ? "Desktop-Hero-Bild gespeichert" : "Mobiles Hero-Bild gespeichert"
+      );
+    } catch (error: any) {
+      toast({
+        title: "Hero-Bild Upload fehlgeschlagen",
+        description: error?.message?.includes("Bucket not found")
+          ? "Storage-Bucket 'branding' fehlt. Bitte zuerst das SQL create_storage_branding_bucket.sql ausführen oder statt Upload eine Bild-URL eintragen."
+          : (error?.message || "Bitte Storage-Bucket und Admin-Rechte prüfen oder alternativ eine Bild-URL eintragen."),
+        variant: "destructive"
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const updateHeroImageUrl = (variant: HeroImageVariant, url: string) => {
+    if (!localContent) return;
+
+    const heroField = HERO_IMAGE_FIELDS[variant];
+    setLocalContent({
+      ...localContent,
+      hero: {
+        ...localContent.hero,
+        [heroField]: url,
+      }
+    } as typeof defaultHomeContent);
+    setHasUnsavedChanges(true);
+  };
+
+  const saveHeroImageUrl = async (variant: HeroImageVariant) => {
+    if (!localContent) return;
+
+    const heroField = HERO_IMAGE_FIELDS[variant];
+    const normalizedUrl = String(localContent.hero?.[heroField] || "").trim();
+
+    if (normalizedUrl && !/^https?:\/\//i.test(normalizedUrl) && !normalizedUrl.startsWith("/")) {
+      toast({
+        title: "Ungültige Bild-URL",
+        description: "Bitte eine vollständige https:// URL oder einen relativen Pfad wie /hero/bild.webp eintragen.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const nextContent = {
+      ...localContent,
+      hero: {
+        ...localContent.hero,
+        [heroField]: normalizedUrl,
+      }
+    } as typeof defaultHomeContent;
+
+    try {
+      await persistHomeContent(
+        nextContent,
+        variant === "desktop" ? "Desktop-Hero-URL gespeichert" : "Mobile-Hero-URL gespeichert"
+      );
+    } catch (error: any) {
+      toast({
+        title: "Fehler",
+        description: error?.message || "Hero-Bild-URL konnte nicht gespeichert werden.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const removeHeroImage = async (variant: HeroImageVariant) => {
+    if (!localContent) return;
+
+    try {
+      const heroField = HERO_IMAGE_FIELDS[variant];
+      const nextContent = {
+        ...localContent,
+        hero: {
+          ...localContent.hero,
+          [heroField]: "",
+        }
+      } as typeof defaultHomeContent;
+
+      await persistHomeContent(
+        nextContent,
+        variant === "desktop" ? "Desktop-Hero-Bild entfernt" : "Mobiles Hero-Bild entfernt"
+      );
+    } catch (error: any) {
+      toast({
+        title: "Fehler",
+        description: error?.message || "Hero-Bild konnte nicht entfernt werden.",
+        variant: "destructive"
+      });
+    }
   };
 
   // --- BIG THREE DYNAMISCH ---
@@ -548,7 +734,7 @@ export default function AdminSettings() {
       link: "/",
       button_text: "Ansehen",
       image_url: "",
-      theme: "blue",
+      theme: "tiertarif",
       icon: "trending"
     };
     updateContent("big_three", "items", [...currentItems, newItem]);
@@ -778,21 +964,24 @@ export default function AdminSettings() {
       </div>
 
       <Tabs defaultValue="global" className="w-full">
-        <TabsList className="grid w-full grid-cols-5 bg-slate-200/50 dark:bg-slate-800 p-1 rounded-xl h-auto flex-wrap md:flex-nowrap">
-          <TabsTrigger value="global" className="py-3 rounded-lg data-[state=active]:bg-secondary data-[state=active]:text-white data-[state=active]:shadow-md transition-all font-medium">
+        <TabsList className="grid w-full grid-cols-6 bg-muted/70 p-1 rounded-xl h-auto flex-wrap md:flex-nowrap">
+          <TabsTrigger value="global" className="py-3 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all font-medium">
             Global
           </TabsTrigger>
-          <TabsTrigger value="marketing" className="py-3 rounded-lg data-[state=active]:bg-green-600 data-[state=active]:text-white data-[state=active]:shadow-md transition-all font-medium flex gap-2 items-center justify-center">
+          <TabsTrigger value="modules" className="py-3 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all font-medium flex gap-2 items-center justify-center">
+            <Layout className="w-4 h-4 hidden sm:block"/> Module
+          </TabsTrigger>
+          <TabsTrigger value="marketing" className="py-3 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all font-medium flex gap-2 items-center justify-center">
             <Megaphone className="w-4 h-4 hidden sm:block"/> Marketing
           </TabsTrigger>
-          <TabsTrigger value="analytics_new" className="py-3 rounded-lg data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow-md transition-all font-medium flex gap-2 items-center justify-center">
+          <TabsTrigger value="analytics_new" className="py-3 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all font-medium flex gap-2 items-center justify-center">
             <BarChart3 className="w-4 h-4 hidden sm:block"/> API
           </TabsTrigger>
-          <TabsTrigger value="navigation" className="py-3 rounded-lg data-[state=active]:bg-secondary data-[state=active]:text-white data-[state=active]:shadow-md transition-all font-medium">
+          <TabsTrigger value="navigation" className="py-3 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all font-medium">
             Navi & Footer
           </TabsTrigger>
-          <TabsTrigger value="home" className="py-3 rounded-lg data-[state=active]:bg-secondary data-[state=active]:text-white data-[state=active]:shadow-md transition-all font-medium">
-            Startseite {hasUnsavedChanges && <span className="ml-2 w-2 h-2 rounded-full bg-[#C7A76C] animate-pulse"></span>}
+          <TabsTrigger value="home" className="py-3 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all font-medium">
+            Startseite {hasUnsavedChanges && <span className="ml-2 w-2 h-2 rounded-full bg-secondary animate-pulse"></span>}
           </TabsTrigger>
         </TabsList>
 
@@ -801,12 +990,12 @@ export default function AdminSettings() {
         ============================================================== */}
         <TabsContent value="global" className="space-y-6 mt-6">
           <div className="grid gap-6 md:grid-cols-2">
-            <Card className="bg-slate-900 border-slate-800 text-slate-100">
+            <Card className="bg-primary border-primary/20 text-primary-foreground">
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-base text-white">
                   <Target className="h-4 w-4 text-secondary" /> Scouty AI Config
                 </CardTitle>
-                <CardDescription className="text-slate-400 text-xs">Konfiguriere deinen AI-Assistenten.</CardDescription>
+                <CardDescription className="text-primary-foreground/70 text-xs">Konfiguriere deinen AI-Assistenten.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
@@ -815,24 +1004,24 @@ export default function AdminSettings() {
                 </div>
                 <div className="space-y-2">
                   <Label className="text-white text-xs">High-Ticket / Easter-Egg URL</Label>
-                  <Input placeholder="https://..." value={scoutyHighTicketUrl} onChange={(e) => setScoutyHighTicketUrl(e.target.value)} className="bg-slate-950 border-slate-800 text-xs h-9" />
+                  <Input placeholder="https://..." value={scoutyHighTicketUrl} onChange={(e) => setScoutyHighTicketUrl(e.target.value)} className="bg-primary/80 border-primary/30 text-xs h-9" />
                 </div>
-                <Button onClick={saveScoutyConfig} size="sm" className="w-full bg-secondary hover:bg-secondary/80 h-8">
+                <Button onClick={saveScoutyConfig} size="sm" className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground h-8">
                   <Save className="h-3 w-3 mr-2" /> Speichern
                 </Button>
               </CardContent>
             </Card>
 
-            <Card className="bg-slate-900 border-slate-800 text-slate-100">
+            <Card className="bg-primary border-primary/20 text-primary-foreground">
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-base text-white">
-                  <Users className="h-4 w-4 text-green-500" /> Scouty Leads
+                  <Users className="h-4 w-4 text-accent-foreground" /> Scouty Leads
                 </CardTitle>
-                <CardDescription className="text-slate-400 text-xs">Generierte Kontakte im Chat.</CardDescription>
+                <CardDescription className="text-primary-foreground/70 text-xs">Generierte Kontakte im Chat.</CardDescription>
               </CardHeader>
               <CardContent className="flex items-center gap-4">
                 <div className="text-3xl font-extrabold text-white">{scoutyLeadsCount}</div>
-                <div className="text-xs text-slate-400 leading-tight">User haben ihre Mail<br/>hinterlassen.</div>
+                <div className="text-xs text-primary-foreground/70 leading-tight">User haben ihre Mail<br/>hinterlassen.</div>
               </CardContent>
             </Card>
           </div>
@@ -861,7 +1050,7 @@ export default function AdminSettings() {
                 </div>
 
                 <div className="space-y-4 bg-slate-50 dark:bg-slate-900 p-4 rounded-lg border border-slate-100">
-                  <h4 className="font-medium flex items-center gap-2 text-sm"><PaintBucket className="w-4 h-4 text-purple-500" /> Farbgebung</h4>
+                  <h4 className="font-medium flex items-center gap-2 text-sm"><PaintBucket className="w-4 h-4 text-primary" /> Farbgebung</h4>
                   <div className="space-y-2">
                     <Label className="text-xs">Aktives Theme (Frontend)</Label>
                     <Select value={activeTheme} onValueChange={setActiveTheme}>
@@ -901,14 +1090,72 @@ export default function AdminSettings() {
           <ComplianceSettingsCard />
         </TabsContent>
 
+
+        {/* ==============================================================
+            MODULE TAB
+        ============================================================== */}
+        <TabsContent value="modules" className="space-y-6 mt-6">
+          <Card className="bg-card border-border shadow-sm">
+            <CardHeader>
+              <CardTitle className="font-display text-lg flex items-center gap-2">
+                <Layout className="w-5 h-5 text-primary" /> TierTarif Modul-Steuerung
+              </CardTitle>
+              <CardDescription>
+                Blendet fachfremde Alt-Module aus dem Admin und aus der Startseiten-Logik aus, ohne die Codebasis zu zerstören.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-5">
+              <div className="rounded-2xl border border-accent/60 bg-accent/15 p-4 text-sm text-primary">
+                Für TierTarif bleiben Versicherungs-, Seiten-, Ratgeber-, Lead- und Trust-Module aktiv. Gaming, App-Deals, Massen-Generator und Ads bleiben standardmäßig aus.
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                {[
+                  ["has_projects", "Partner & Angebote", "Vergleichspartner und Angebotsverwaltung im Admin anzeigen."],
+                  ["has_pages", "Seiten & Hubs", "Kategorien, Hubs und Landingpage-Strukturen verwalten."],
+                  ["has_magazine", "Ratgeber / Magazin", "Redaktionelle Inhalte und Ratgeberverwaltung anzeigen."],
+                  ["has_forum", "Forum / Community", "Forum-Teaser und Community-Verwaltung aktivieren."],
+                  ["has_apps", "Apps & Deals / Ticker", "Altes App-/Deal-Modul inklusive Ticker aktivieren."],
+                  ["has_mass_generator", "Massen-Generator", "Multi-Publisher und Programmatic-Generator im Admin anzeigen."],
+                  ["has_ads", "Werbe-Module global", "AdSense/Amazon-Slots grundsätzlich erlauben."],
+                  ["has_amazon", "Amazon Banner", "Amazon-Banner auf Startseite und in Einstellungen erlauben."],
+                  ["has_adsense", "Google AdSense", "AdSense-Bereiche auf Startseite und in Einstellungen erlauben."],
+                  ["has_scouty", "Scouty Assistent", "Scouty Widget und Admin-Konfiguration aktivieren."],
+                  ["has_leads", "Leads", "Lead-Verwaltung im Admin anzeigen."],
+                  ["has_redirects", "Redirects", "Redirect-Verwaltung im Admin anzeigen."],
+                  ["has_footer_links", "Footer-Links", "Footer-Link-Verwaltung im Admin anzeigen."],
+                  ["has_about", "Über uns", "Über-uns-Verwaltung im Admin anzeigen."],
+                  ["has_indexing_tools", "Indexing Tools", "Google-Ping und Sitemap-Aktionen in den Settings anzeigen."],
+                  ["has_analytics", "Analytics/API", "Analytics- und API-Einstellungen anzeigen."]
+                ].map(([key, label, description]) => (
+                  <div key={key} className="flex items-center justify-between gap-4 rounded-2xl border border-border bg-muted/35 p-4">
+                    <div className="space-y-1">
+                      <Label className="font-semibold text-foreground">{label}</Label>
+                      <p className="text-xs leading-relaxed text-muted-foreground">{description}</p>
+                    </div>
+                    <Switch
+                      checked={featureToggles[key as keyof FeatureToggles]}
+                      onCheckedChange={(checked) => updateFeatureToggle(key as keyof FeatureToggles, checked)}
+                    />
+                  </div>
+                ))}
+              </div>
+
+              <Button onClick={saveFeatureToggles} className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-bold">
+                <Save className="w-4 h-4 mr-2" /> Modul-Steuerung speichern
+              </Button>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         {/* ==============================================================
             MARKETING TAB
         ============================================================== */}
         <TabsContent value="marketing" className="space-y-6 mt-6">
-          <Card className="bg-card border-border shadow-sm border-t-4 border-t-green-500">
+          <Card className="bg-card border-border shadow-sm border-t-4 border-t-primary">
             <CardHeader>
               <CardTitle className="font-display text-lg flex items-center gap-2">
-                <Mail className="w-5 h-5 text-green-600" /> Lead-Gen Steuerung
+                <Mail className="w-5 h-5 text-primary" /> Lead-Gen Steuerung
               </CardTitle>
               <CardDescription>Aktivieren oder Deaktivieren von Popups und Newsletter-Formularen.</CardDescription>
             </CardHeader>
@@ -929,7 +1176,7 @@ export default function AdminSettings() {
                 <Switch checked={popupActive} onCheckedChange={setPopupActive} />
               </div>
               
-              <Button onClick={saveMarketingSettings} className="bg-green-600 hover:bg-green-700 text-white w-full">
+              <Button onClick={saveMarketingSettings} className="bg-primary hover:bg-primary/90 text-primary-foreground w-full">
                 <Save className="w-4 h-4 mr-2" /> Einstellungen Speichern
               </Button>
             </CardContent>
@@ -938,7 +1185,7 @@ export default function AdminSettings() {
           <Card className="bg-card border-border shadow-sm">
             <CardHeader>
               <CardTitle className="font-display text-lg flex items-center gap-2">
-                <DollarSign className="w-5 h-5 text-green-600" /> Monetarisierung
+                <DollarSign className="w-5 h-5 text-primary" /> Monetarisierung
               </CardTitle>
               <CardDescription>Steuere Werbebanner und Affiliate Links.</CardDescription>
             </CardHeader>
@@ -953,9 +1200,9 @@ export default function AdminSettings() {
 
               <div className="space-y-4 pt-4 border-t border-border">
                 <h4 className="font-medium flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                  <span className="w-1.5 h-1.5 rounded-full bg-purple-500"/> Forum Global Banner
+                  <span className="w-1.5 h-1.5 rounded-full bg-accent"/> Forum Global Banner
                 </h4>
-                <div className="space-y-3 bg-purple-50/50 dark:bg-purple-900/10 p-4 rounded-lg">
+                <div className="space-y-3 bg-accent/15 p-4 rounded-lg">
                   <div className="flex justify-between items-center mb-2">
                     <Label className="font-bold">Banner aktiv</Label>
                     <Switch checked={forumBanner.isActive} onCheckedChange={(c) => setForumBanner({ ...forumBanner, isActive: c })} />
@@ -967,7 +1214,7 @@ export default function AdminSettings() {
                     <div className="space-y-2"><Label>Bild URL</Label><Input value={forumBanner.imageUrl} onChange={(e) => setForumBanner({ ...forumBanner, imageUrl: e.target.value })} /></div>
                   </div>
                   <div className="space-y-2"><Label>Beschreibung</Label><Textarea value={forumBanner.description} onChange={(e) => setForumBanner({ ...forumBanner, description: e.target.value })} rows={2} /></div>
-                  <Button size="sm" onClick={saveForumBannerConfig} className="bg-purple-600 hover:bg-purple-700 text-white w-full mt-2">
+                  <Button size="sm" onClick={saveForumBannerConfig} className="bg-primary hover:bg-primary/90 text-primary-foreground w-full mt-2">
                     <Save className="w-4 h-4 mr-2" /> Forum Banner Speichern
                   </Button>
                 </div>
@@ -975,7 +1222,7 @@ export default function AdminSettings() {
 
               <div className="space-y-4 pt-4 border-t border-border">
                 <h4 className="font-medium flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#C7A76C]"/> Native Amazon Banner
+                  <span className="w-1.5 h-1.5 rounded-full bg-secondary"/> Native Amazon Banner
                 </h4>
                 <div className="space-y-3">
                   <div className="grid md:grid-cols-2 gap-4">
@@ -1006,7 +1253,7 @@ export default function AdminSettings() {
 
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2"><BarChart3 className="w-5 h-5 text-blue-600"/> Tracking & Reports</CardTitle>
+              <CardTitle className="flex items-center gap-2"><BarChart3 className="w-5 h-5 text-primary"/> Tracking & Reports</CardTitle>
               <CardDescription>Verbinde deine Google Dienste für maximale Einsicht.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -1036,57 +1283,68 @@ export default function AdminSettings() {
                 </div>
               </div>
 
-              <Button onClick={() => { saveAnalytics(); saveSetting("ads_sense_client_id", adSenseClient); saveSetting("ads_sense_slot_id", adSenseSlot); }} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold"><Save className="w-4 h-4 mr-2" /> Analytics & Ads speichern</Button>
+              <Button onClick={() => { saveAnalytics(); saveSetting("ads_sense_client_id", adSenseClient); saveSetting("ads_sense_slot_id", adSenseSlot); }} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold"><Save className="w-4 h-4 mr-2" /> Analytics & Ads speichern</Button>
             </CardContent>
           </Card>
 
           {/* --- GOOGLE INDEXING TOOL --- */}
-          <Card className="border-yellow-500/20 bg-yellow-50/10">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2"><Sparkles className="w-5 h-5 text-yellow-500"/> Google Indexing API</CardTitle>
-              <CardDescription>Manuelles Pingen von URLs an den Google Index (via Indexing API).</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label>URLs (Eine pro Zeile)</Label>
-                <Textarea 
-                  placeholder="https://deine-domain.at/kategorie/..." 
-                  className="font-mono text-xs min-h-[150px] bg-slate-50 dark:bg-slate-900"
-                  value={indexingUrls}
-                  onChange={(e) => setIndexingUrls(e.target.value)}
-                />
-                <p className="text-xs text-muted-foreground">Maximal 200 URLs pro Tag (Google Quota beachten).</p>
-              </div>
-              <Button 
-                onClick={handleIndexPing} 
-                disabled={isPinging || !indexingUrls.trim()} 
-                className="w-full bg-yellow-600 hover:bg-yellow-700 text-white"
-              >
-                {isPinging ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Rocket className="w-4 h-4 mr-2" />}
-                Jetzt Indexierung beantragen
-              </Button>
-            </CardContent>
-          </Card>
+          {featureToggles.has_indexing_tools ? (
+            <>
+              <Card className="border-secondary/30 bg-secondary/10">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2"><Sparkles className="w-5 h-5 text-secondary"/> Google Indexing API</CardTitle>
+                  <CardDescription>Manuelles Pingen von URLs an den Google Index (via Indexing API).</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>URLs (Eine pro Zeile)</Label>
+                    <Textarea
+                      placeholder="https://deine-domain.at/kategorie/..."
+                      className="font-mono text-xs min-h-[150px] bg-muted/40"
+                      value={indexingUrls}
+                      onChange={(e) => setIndexingUrls(e.target.value)}
+                    />
+                    <p className="text-xs text-muted-foreground">Maximal 200 URLs pro Tag (Google Quota beachten).</p>
+                  </div>
+                  <Button
+                    onClick={handleIndexPing}
+                    disabled={isPinging || !indexingUrls.trim()}
+                    className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+                  >
+                    {isPinging ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Rocket className="w-4 h-4 mr-2" />}
+                    Jetzt Indexierung beantragen
+                  </Button>
+                </CardContent>
+              </Card>
 
-          <Card className="border-emerald-500/20 bg-emerald-50/10">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2"><Globe className="w-5 h-5 text-emerald-500"/> Auto-Sitemap</CardTitle>
-              <CardDescription>Generiert die sitemap.xml neu, lädt sie in den öffentlichen Bucket <code>seo-assets</code> und versorgt Nginx über die Bucket-URL.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4 text-sm text-muted-foreground">
-                Nutzt aktive Kategorien, Forum-Threads und die geteilte Route-Logik aus den Edge Functions. Affiliate-<code>/go/</code>-Routen bleiben bewusst außen vor.
-              </div>
-              <Button 
-                onClick={handleGenerateSitemap} 
-                disabled={isGeneratingSitemap} 
-                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
-              >
-                {isGeneratingSitemap ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Globe className="w-4 h-4 mr-2" />}
-                Sitemap neu generieren
-              </Button>
-            </CardContent>
-          </Card>
+              <Card className="border-accent/40 bg-accent/15">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2"><Globe className="w-5 h-5 text-primary"/> Auto-Sitemap</CardTitle>
+                  <CardDescription>Generiert die sitemap.xml neu, lädt sie in den öffentlichen Bucket <code>seo-assets</code> und versorgt Nginx über die Bucket-URL.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="rounded-xl border border-accent/40 bg-card/70 p-4 text-sm text-muted-foreground">
+                    Nutzt aktive Kategorien, Forum-Threads und die geteilte Route-Logik aus den Edge Functions. Affiliate-<code>/go/</code>-Routen bleiben bewusst außen vor.
+                  </div>
+                  <Button
+                    onClick={handleGenerateSitemap}
+                    disabled={isGeneratingSitemap}
+                    className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+                  >
+                    {isGeneratingSitemap ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Globe className="w-4 h-4 mr-2" />}
+                    Sitemap neu generieren
+                  </Button>
+                </CardContent>
+              </Card>
+            </>
+          ) : (
+            <Card className="border-border bg-muted/30">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2"><Sparkles className="w-5 h-5 text-primary"/> Indexing Tools deaktiviert</CardTitle>
+                <CardDescription>Google-Ping und Auto-Sitemap sind im Modul-Manager ausgeschaltet und feuern keine Edge-Function-Requests.</CardDescription>
+              </CardHeader>
+            </Card>
+          )}
         </TabsContent>
 
         {/* ==============================================================
@@ -1121,7 +1379,7 @@ export default function AdminSettings() {
                     </div>
                         
                     <div className="pl-4 ml-2 border-l-2 border-slate-200 dark:border-slate-700 space-y-3">
-                      <Label className="text-xs text-slate-400 uppercase tracking-widest">Untermenü (Mega Dropdown)</Label>
+                      <Label className="text-xs text-primary-foreground/70 uppercase tracking-widest">Untermenü (Mega Dropdown)</Label>
                       {link.items?.map((subLink: any, subIdx: number) => (
                         <div key={subIdx} className="flex flex-col gap-2 p-3 bg-white dark:bg-slate-950 border rounded-lg mb-2 shadow-sm relative group/edit">
                           <div className="flex gap-2 items-center justify-between mb-1">
@@ -1129,7 +1387,7 @@ export default function AdminSettings() {
                               <div className="w-3 h-3 rounded-full bg-slate-200 flex items-center justify-center text-[8px] font-bold text-slate-500">{subIdx + 1}</div>
                               <span className="text-xs font-semibold text-slate-500">Eintrag #{subIdx + 1}</span>
                             </div>
-                            <Button variant="ghost" size="sm" onClick={() => removeSubLink(idx, subIdx)} className="h-6 w-6 p-0 text-slate-400 hover:text-red-500 hover:bg-red-50"><X className="w-3 h-3" /></Button>
+                            <Button variant="ghost" size="sm" onClick={() => removeSubLink(idx, subIdx)} className="h-6 w-6 p-0 text-primary-foreground/70 hover:text-red-500 hover:bg-red-50"><X className="w-3 h-3" /></Button>
                           </div>
                                       
                           <div className="grid grid-cols-2 gap-3">
@@ -1205,7 +1463,7 @@ export default function AdminSettings() {
           </Card>
 
           <Card className="bg-card border-border shadow-sm">
-            <CardHeader><CardTitle className="flex items-center gap-2"><List className="w-5 h-5 text-green-500" /> Footer Links</CardTitle></CardHeader>
+            <CardHeader><CardTitle className="flex items-center gap-2"><List className="w-5 h-5 text-accent-foreground" /> Footer Links</CardTitle></CardHeader>
             <CardContent className="space-y-8">
               <div className="space-y-4">
                 <h4 className="font-medium flex items-center gap-2 text-slate-700 dark:text-slate-300"><ShieldCheck className="w-4 h-4" /> Rechtliches</h4>
@@ -1294,7 +1552,7 @@ export default function AdminSettings() {
               {homeSections.length > 0 ? homeSections.map((section, idx) => (
                 <div key={section.id} className={`flex items-center justify-between border border-slate-200 dark:border-slate-800 p-3 rounded-lg ${section.enabled ? 'bg-slate-50 dark:bg-slate-900/50' : 'bg-slate-100 dark:bg-slate-950 opacity-50'}`}>
                   <div className="flex items-center gap-4">
-                    <span className="font-mono text-xs text-slate-400 w-4">{idx + 1}.</span>
+                    <span className="font-mono text-xs text-primary-foreground/70 w-4">{idx + 1}.</span>
                     <Label className="font-semibold text-sm cursor-pointer">{section.label}</Label>
                   </div>
                   <div className="flex items-center gap-3">
@@ -1311,9 +1569,9 @@ export default function AdminSettings() {
             </CardContent>
           </Card>
 
-          <Card className="bg-card border-border shadow-sm border-l-4 border-l-blue-500">
+          <Card className="bg-card border-border shadow-sm border-l-4 border-l-primary">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2"><Type className="w-5 h-5 text-blue-500" /> Startseiten Inhalte (Texte)</CardTitle>
+              <CardTitle className="flex items-center gap-2"><Type className="w-5 h-5 text-primary" /> Startseiten Inhalte (Texte)</CardTitle>
               <CardDescription>Bearbeite die Live-Texte der einzelnen Sektionen. Vergiss nicht oben zu speichern!</CardDescription>
             </CardHeader>
             <CardContent>
@@ -1324,7 +1582,7 @@ export default function AdminSettings() {
                   <AccordionContent className="space-y-4 pt-4">
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label className="text-green-600 font-bold">Badge Text</Label>
+                        <Label className="text-primary font-bold">Badge Text</Label>
                         <Input placeholder="Update 2026: Neue Vergleiche" value={localContent.hero?.badge || ""} onChange={e => updateContent("hero", "badge", e.target.value)} />
                       </div>
                       <div className="space-y-2">
@@ -1346,6 +1604,146 @@ export default function AdminSettings() {
                       <div className="space-y-2">
                         <Label>Suchfeld Platzhalter</Label>
                         <Input placeholder="z.B. Kredit, VPN..." value={localContent.hero?.search_placeholder || ""} onChange={e => updateContent("hero", "search_placeholder", e.target.value)} />
+                      </div>
+                    </div>
+
+                    <div className="space-y-4 rounded-2xl border border-secondary/30 bg-secondary/5 p-4">
+                      <div className="flex items-start gap-3">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary/15 text-secondary">
+                          <ImageIcon className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <Label className="text-base font-bold text-primary">Hero-Bilder Desktop & Mobil</Label>
+                          <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                            Empfohlen Desktop: <strong>2400 × 1350 px</strong> (16:9), WebP/AVIF, ideal unter 350 KB. Mobil: <strong>1080 × 1350 px</strong> (4:5), WebP/AVIF, ideal unter 250 KB. Motiv bitte ruhig halten, mit genug Freiraum für Text und Rechner.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="grid gap-4 md:grid-cols-2">
+                        <div className="rounded-2xl border border-border bg-white p-4 shadow-sm">
+                          <div className="mb-3 flex items-center justify-between gap-3">
+                            <div className="flex items-center gap-2 font-bold text-primary">
+                              <Monitor className="h-4 w-4 text-secondary" /> Desktop Hero
+                            </div>
+                            <span className="rounded-full bg-muted px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">2400×1350</span>
+                          </div>
+
+                          <div className="relative flex h-32 items-center justify-center overflow-hidden rounded-xl border border-dashed border-border bg-muted/40">
+                            {localContent.hero?.desktop_image_url ? (
+                              <img src={localContent.hero.desktop_image_url} alt="Desktop Hero Vorschau" className="h-full w-full object-cover" />
+                            ) : (
+                              <div className="text-center text-xs text-muted-foreground">
+                                <ImageIcon className="mx-auto mb-2 h-6 w-6 opacity-50" />
+                                Noch kein Desktop-Bild gesetzt
+                              </div>
+                            )}
+                            {isUploadingHeroDesktop && (
+                              <div className="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm">
+                                <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+                            <Button variant="outline" className="relative flex-1 overflow-hidden border-secondary/40 text-primary hover:bg-secondary/10" disabled={isUploadingHeroDesktop}>
+                              <input
+                                type="file"
+                                className="absolute inset-0 cursor-pointer opacity-0"
+                                accept="image/avif,image/webp,image/jpeg,image/png"
+                                onChange={(event) => handleHeroImageUpload(event, "desktop")}
+                              />
+                              <Upload className="mr-2 h-4 w-4" /> Desktop hochladen
+                            </Button>
+                            {localContent.hero?.desktop_image_url && (
+                              <Button variant="ghost" className="text-destructive hover:text-destructive" onClick={() => removeHeroImage("desktop")}>
+                                <Trash2 className="mr-2 h-4 w-4" /> Entfernen
+                              </Button>
+                            )}
+                          </div>
+
+                          <div className="mt-3 space-y-2 rounded-xl border border-secondary/20 bg-secondary/5 p-3">
+                            <Label className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary">
+                              <LinkIcon className="h-3.5 w-3.5 text-secondary" /> Desktop-Bild per URL
+                            </Label>
+                            <div className="flex flex-col gap-2 sm:flex-row">
+                              <Input
+                                value={localContent.hero?.desktop_image_url || ""}
+                                onChange={(event) => updateHeroImageUrl("desktop", event.target.value)}
+                                placeholder="https://.../hero-desktop.webp oder /hero/desktop.webp"
+                                className="bg-white text-xs"
+                              />
+                              <Button type="button" className="bg-secondary text-secondary-foreground hover:bg-secondary/90" onClick={() => saveHeroImageUrl("desktop")}>
+                                URL speichern
+                              </Button>
+                            </div>
+                            <p className="text-[11px] leading-relaxed text-muted-foreground">
+                              Ideal, wenn du eigene Dateinamen behalten willst: Bild in Supabase/Cloudflare hochladen, Public URL kopieren und hier einfügen.
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="rounded-2xl border border-border bg-white p-4 shadow-sm">
+                          <div className="mb-3 flex items-center justify-between gap-3">
+                            <div className="flex items-center gap-2 font-bold text-primary">
+                              <Smartphone className="h-4 w-4 text-secondary" /> Mobile Hero
+                            </div>
+                            <span className="rounded-full bg-muted px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">1080×1350</span>
+                          </div>
+
+                          <div className="relative mx-auto flex h-40 max-w-[180px] items-center justify-center overflow-hidden rounded-xl border border-dashed border-border bg-muted/40">
+                            {localContent.hero?.mobile_image_url ? (
+                              <img src={localContent.hero.mobile_image_url} alt="Mobile Hero Vorschau" className="h-full w-full object-cover" />
+                            ) : (
+                              <div className="px-3 text-center text-xs text-muted-foreground">
+                                <ImageIcon className="mx-auto mb-2 h-6 w-6 opacity-50" />
+                                Noch kein Mobil-Bild gesetzt
+                              </div>
+                            )}
+                            {isUploadingHeroMobile && (
+                              <div className="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm">
+                                <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+                            <Button variant="outline" className="relative flex-1 overflow-hidden border-secondary/40 text-primary hover:bg-secondary/10" disabled={isUploadingHeroMobile}>
+                              <input
+                                type="file"
+                                className="absolute inset-0 cursor-pointer opacity-0"
+                                accept="image/avif,image/webp,image/jpeg,image/png"
+                                onChange={(event) => handleHeroImageUpload(event, "mobile")}
+                              />
+                              <Upload className="mr-2 h-4 w-4" /> Mobil hochladen
+                            </Button>
+                            {localContent.hero?.mobile_image_url && (
+                              <Button variant="ghost" className="text-destructive hover:text-destructive" onClick={() => removeHeroImage("mobile")}>
+                                <Trash2 className="mr-2 h-4 w-4" /> Entfernen
+                              </Button>
+                            )}
+                          </div>
+
+                          <div className="mt-3 space-y-2 rounded-xl border border-secondary/20 bg-secondary/5 p-3">
+                            <Label className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary">
+                              <LinkIcon className="h-3.5 w-3.5 text-secondary" /> Mobile-Bild per URL
+                            </Label>
+                            <div className="flex flex-col gap-2 sm:flex-row">
+                              <Input
+                                value={localContent.hero?.mobile_image_url || ""}
+                                onChange={(event) => updateHeroImageUrl("mobile", event.target.value)}
+                                placeholder="https://.../hero-mobile.webp oder /hero/mobile.webp"
+                                className="bg-white text-xs"
+                              />
+                              <Button type="button" className="bg-secondary text-secondary-foreground hover:bg-secondary/90" onClick={() => saveHeroImageUrl("mobile")}>
+                                URL speichern
+                              </Button>
+                            </div>
+                            <p className="text-[11px] leading-relaxed text-muted-foreground">
+                              Für Mobile am besten ein eigenes 4:5-Bild verwenden, damit der Kopfbereich nicht ungünstig beschnitten wird.
+                            </p>
+                          </div>
+                        </div>
                       </div>
                     </div>
 
@@ -1387,9 +1785,9 @@ export default function AdminSettings() {
                 </AccordionItem>
 
                 <AccordionItem value="trust">
-                  <AccordionTrigger className="font-semibold">Top Apps / Ticker Sektion</AccordionTrigger>
+                  <AccordionTrigger className="font-semibold">TierTarif Trust-/Ticker-Sektion</AccordionTrigger>
                   <AccordionContent className="space-y-4 pt-4">
-                    <p className="text-xs text-muted-foreground">Im Struktur-Manager heißt dieser Block aktuell „Trust“. Auf der Startseite rendert er tatsächlich den Apps-/Ticker-Bereich.</p>
+                    <p className="text-xs text-muted-foreground">Im Struktur-Manager heißt dieser Block „Trust“. Für TierTarif sollte dieser Bereich nur aktiv sein, wenn das Apps/Ticker-Modul eingeschaltet ist.</p>
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2"><Label>Badge</Label><Input value={localContent.trust?.badge || ""} onChange={e => updateContent("trust", "badge", e.target.value)} /></div>
                       <div className="space-y-2"><Label>Headline</Label><Input value={localContent.trust?.headline || ""} onChange={e => updateContent("trust", "headline", e.target.value)} /></div>
@@ -1582,7 +1980,7 @@ export default function AdminSettings() {
           </Card>
            
           <Card className="bg-card border-border shadow-sm">
-            <CardHeader><CardTitle>App-Ticker Sektion</CardTitle></CardHeader>
+            <CardHeader><CardTitle>TierTarif Ticker Sektion</CardTitle></CardHeader>
             <CardContent>
               <div className="grid gap-4 md:grid-cols-2 p-4 bg-slate-50 dark:bg-slate-900 rounded-lg">
                 <div className="space-y-2">
@@ -1590,18 +1988,18 @@ export default function AdminSettings() {
                   <Input 
                     id="ticker_headline" 
                     name="ticker_headline" 
-                    placeholder="Top Apps & Deals"
-                    defaultValue={settings?.ticker_headline as string || "Top Apps & Deals"} 
+                    placeholder="Beliebte TierTarif-Bereiche"
+                    defaultValue={settings?.ticker_headline as string || "Beliebte TierTarif-Bereiche"} 
                     onChange={(e) => saveSetting("ticker_headline", e.target.value)}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="ticker_badge_text">Badge Text (rot)</Label>
+                  <Label htmlFor="ticker_badge_text">Badge Text</Label>
                   <Input 
                     id="ticker_badge_text" 
                     name="ticker_badge_text" 
-                    placeholder="Live Trends (24h)"
-                    defaultValue={settings?.ticker_badge_text as string || "Live Trends (24h)"} 
+                    placeholder="TierTarif Überblick"
+                    defaultValue={settings?.ticker_badge_text as string || "TierTarif Überblick"} 
                     onChange={(e) => saveSetting("ticker_badge_text", e.target.value)}
                   />
                 </div>
@@ -1610,8 +2008,8 @@ export default function AdminSettings() {
                   <Input 
                     id="ticker_link_text" 
                     name="ticker_link_text" 
-                    placeholder="Alle Top 100 ansehen →"
-                    defaultValue={settings?.ticker_link_text as string || "Alle Top 100 ansehen →"} 
+                    placeholder="Alle Bereiche ansehen →"
+                    defaultValue={settings?.ticker_link_text as string || "Alle Bereiche ansehen →"} 
                     onChange={(e) => saveSetting("ticker_link_text", e.target.value)}
                   />
                 </div>

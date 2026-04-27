@@ -9,6 +9,7 @@ import { useMemo } from "react";
 export const PUBLIC_SETTINGS_KEYS = [
   "active_theme",
   "home_sections",
+  "feature_toggles",
   "home_layout_v2",
   "home_content",
   "header_config",
@@ -71,6 +72,57 @@ export type HomeSection = {
   enabled: boolean;
   order: number;
 };
+
+export type FeatureToggles = {
+  has_projects: boolean;
+  has_pages: boolean;
+  has_apps: boolean;
+  has_forum: boolean;
+  has_finance: boolean;
+  has_mass_generator: boolean;
+  has_ads: boolean;
+  has_amazon: boolean;
+  has_adsense: boolean;
+  has_scouty: boolean;
+  has_leads: boolean;
+  has_redirects: boolean;
+  has_footer_links: boolean;
+  has_about: boolean;
+  has_indexing_tools: boolean;
+  has_analytics: boolean;
+  has_magazine: boolean;
+};
+
+export const defaultFeatureToggles: FeatureToggles = {
+  has_projects: true,
+  has_pages: true,
+  has_apps: false,
+  has_forum: false,
+  has_finance: false,
+  has_mass_generator: false,
+  has_ads: false,
+  has_amazon: false,
+  has_adsense: false,
+  has_scouty: true,
+  has_leads: false,
+  has_redirects: false,
+  has_footer_links: true,
+  has_about: true,
+  has_indexing_tools: false,
+  has_analytics: false,
+  has_magazine: true,
+};
+
+export function normalizeFeatureTogglesValue(raw?: Partial<FeatureToggles> | null): FeatureToggles {
+  const source = raw && typeof raw === "object" && !Array.isArray(raw) ? raw : {};
+
+  return {
+    ...defaultFeatureToggles,
+    ...Object.fromEntries(
+      Object.entries(source).filter(([, value]) => typeof value === "boolean")
+    ),
+  } as FeatureToggles;
+}
 
 export interface ForumAd {
   id: string;
@@ -198,14 +250,19 @@ export function useUpdateSetting() {
       .maybeSingle();
 
       if (error) {
-        console.error("Supabase Error:", error);
-
         if (error.message?.includes("TOXIC_WORD_ERROR")) {
           const cleanMsg = getCleanToxicWordMessage(error.message);
           throw new Error(cleanMsg);
         }
 
-        throw error;
+        const status = (error as { status?: number; code?: string }).status;
+        const code = (error as { code?: string }).code;
+
+        if (status === 401 || status === 403 || code === "42501") {
+          throw new Error("Fehler: Keine Admin-Rechte zum Speichern. Bitte DB-Rechte prüfen.");
+        }
+
+        throw new Error(error.message || "Einstellung konnte nicht gespeichert werden.");
       }
 
       if (!data?.key) {
@@ -228,13 +285,13 @@ export function useActiveTheme() {
 export const defaultHomeSections: HomeSection[] = [
   { id: "hero", label: "Hero Sektion", enabled: true, order: 0 },
   { id: "how_it_works", label: "So funktioniert das Portal", enabled: true, order: 1 },
-  { id: "news", label: "News / Magazin", enabled: true, order: 2 },
-  { id: "big_three", label: "Big Three (Main Links)", enabled: true, order: 3 },
-  { id: "forum", label: "Forum Teaser", enabled: true, order: 4 },
-  { id: "trust", label: "Trust & Siegel", enabled: true, order: 5 },
+  { id: "news", label: "Ratgeber / Magazin", enabled: true, order: 2 },
+  { id: "big_three", label: "Hauptbereiche", enabled: true, order: 3 },
+  { id: "forum", label: "Forum Teaser", enabled: false, order: 4 },
+  { id: "trust", label: "Trust-Leiste", enabled: true, order: 5 },
   { id: "categories", label: "Kategorien Slider", enabled: true, order: 6 },
-  { id: "amazon_top", label: "Amazon Banner (Top)", enabled: true, order: 7 },
-  { id: "adsense_middle", label: "Google AdSense", enabled: true, order: 8 },
+  { id: "amazon_top", label: "Amazon Banner (Top)", enabled: false, order: 7 },
+  { id: "adsense_middle", label: "Google AdSense", enabled: false, order: 8 },
   { id: "home_faq", label: "FAQ Startseite", enabled: true, order: 9 },
   { id: "seo", label: "SEO Text (Unten)", enabled: true, order: 10 },
   { id: "mascot", label: "Scouty Maskottchen", enabled: true, order: 11 },
@@ -244,10 +301,10 @@ export const defaultHomeLayout = {
   hero: true,
   trust: true,
   big_three: true,
-  why_us: true, 
+  why_us: true,
   categories: true,
   news: true,
-  forum_teaser: true,
+  forum_teaser: false,
   ads: false,
   seo_text: true
 };
@@ -266,6 +323,8 @@ export const defaultHomeContent = {
   search_placeholder: "Hund, Katze oder OP-Versicherung suchen",
   search_label: "Vergleich starten",
   button_text: "Jetzt vergleichen",
+  desktop_image_url: "",
+  mobile_image_url: "",
   stats: [
     { title: "Transparent", label: "Leistungen prüfen" },
     { title: "Sachlich", label: "Kosten einordnen" },
@@ -273,19 +332,20 @@ export const defaultHomeContent = {
   ]
 },
   how_it_works: {
-    headline: "So funktioniert das Portal",
-    subheadline: "In drei einfachen Schritten zur besten Entscheidung.",
+    badge: "In 3 Schritten zum Vergleich",
+    headline: "So funktioniert TierTarif",
+    subheadline: "In drei einfachen Schritten Leistungen, Kosten und Tarifdetails sachlich prüfen.",
     steps: [
-      { title: "Suchen", text: "Wähle deine Kategorie oder suche direkt nach deinem Bedarf." },
-      { title: "Vergleichen", text: "Unsere KI-gestützten Daten zeigen dir Stärken, Schwächen und Preise auf einen Blick." },
-      { title: "Entscheiden", text: "Vergleiche passende Angebote und prüfe verfügbare Vorteile." }
+      { title: "Bedarf wählen", text: "Wähle Hund, Katze oder OP-Schutz und starte mit deinem konkreten Versicherungsbedarf.", status: "Tierart oder Schutz wählen" },
+      { title: "Leistungen prüfen", text: "Vergleiche Wartezeiten, Erstattung, Selbstbeteiligung und wichtige Leistungsgrenzen.", status: "Kriterien sachlich prüfen" },
+      { title: "Entscheiden", text: "Öffne den passenden Vergleich und ordne verfügbare Tarifdetails in Ruhe ein.", status: "Zum Vergleich weitergehen" }
     ]
   },
-  trust: { 
-    badge: "Live: Trend Apps letzte 24h",
-    headline: "Top Apps & Deals",
-    link_text: "Alle Trends ansehen →",
-    subheadline: "Top Apps & Deals"
+  trust: {
+    badge: "TierTarif Überblick",
+    headline: "Tiergesundheit sachlich vergleichen",
+    link_text: "Kategorien ansehen →",
+    subheadline: "Hunde, Katzen und OP-Schutz transparent prüfen"
   },
   big_three: { 
     headline: "Tierversicherung gezielt prüfen", 
@@ -299,55 +359,62 @@ export const defaultHomeContent = {
     services_title: "Tierversicherungen", services_desc: "Tarife, Leistungen und Bedingungen für Haustiere sachlich prüfen.", services_link: getCategoriesRoute(), services_button: "Zum Vergleich" 
   },
   why_us: {
-    headline: "Warum dieses Vergleichsportal?",
-    subheadline: "Wir sind deine intelligente Entscheidungshilfe.",
+    headline: "Warum TierTarif?",
+    subheadline: "Eine ruhige Entscheidungshilfe für Tierhalter, die Leistungen und Kosten sauber einordnen möchten.",
     features: [
-      { title: "Hohe Performance", text: "Schnelle Ladezeiten, klare Fakten.", icon: "zap" },
-      { title: "Transparente Kriterien", text: "Nachvollziehbare Vergleiche.", icon: "shield" },
-      { title: "Global & Lokal", text: "Von International bis Regional.", icon: "globe" },
-      { title: "Laufende Updates", text: "Regelmäßig frische Daten.", icon: "chart" }
+      { title: "Klare Kriterien", text: "Leistungen, Wartezeiten und Erstattungslogik verständlich strukturiert.", icon: "shield" },
+      { title: "Tierhalter-Fokus", text: "Hund, Katze und OP-Schutz werden sachlich und alltagsnah betrachtet.", icon: "heart" },
+      { title: "Mobile First", text: "Schnelle Orientierung auf Smartphone, Tablet und Desktop.", icon: "zap" },
+      { title: "Laufende Pflege", text: "Ratgeber und Vergleichsinhalte werden fortlaufend verbessert.", icon: "chart" }
     ]
   },
   home_faq: {
-    badge: "FAQ • Startseite",
-    headline: "Häufige Fragen zum Vergleichsportal",
-    subheadline: "Hier findest du kompakte Antworten zu Vergleichen, Rechnern, Ratgebern und Partner-Anfragen auf diesem Portal.",
+    badge: "FAQ • TierTarif",
+    headline: "Häufige Fragen zu TierTarif",
+    subheadline: "Kompakte Antworten zu Tierversicherungen, Tierarztkosten und Vergleichsinhalten.",
     items: [
       {
         id: "home-faq-1",
-        question: "Was ist dieses Vergleichsportal?",
-        answer: "<p>Dieses Vergleichsportal ist eine Plattform für Vergleiche, Rechner und Ratgeber zu Themen wie Finanzen, Versicherungen, Energie, Internet, Software und digitalen Diensten.</p>",
+        question: "Was ist TierTarif?",
+        answer: "<p>TierTarif ist ein sachliches Informations- und Vergleichsportal für Tierhalter. Der Fokus liegt auf Tierkrankenversicherung, Hundeversicherung, Katzenversicherung und OP-Schutz.</p>",
       },
       {
         id: "home-faq-2",
-        question: "Welche Themen finde ich auf diesem Portal?",
-        answer: "<p>Du findest Vergleiche, redaktionelle Einordnungen und praktische Rechner zu Alltags- und Digitalthemen – von Versicherung über Kredit bis hin zu Software und Internet.</p>",
+        question: "Welche Themen finde ich auf TierTarif?",
+        answer: "<p>Du findest Ratgeber und Vergleichsinhalte zu Leistungen, Kosten, Wartezeiten, Selbstbeteiligung, Erstattungsgrenzen, Zahn-OPs und wichtigen Tarifdetails für Hunde und Katzen.</p>",
       },
       {
         id: "home-faq-3",
-        question: "Warum lohnt sich ein regelmäßiger Tarifvergleich?",
-        answer: "<p>Konditionen ändern sich laufend. Ein regelmäßiger Vergleich hilft dir, Preise, Leistungen und Vertragsdetails sauber einzuordnen und Sparpotenziale zu erkennen.</p>",
+        question: "Ist TierTarif ein Makler?",
+        answer: "<p>TierTarif versteht sich als Informations- und Vergleichsportal. Die Inhalte ersetzen keine individuelle Versicherungsberatung, sondern helfen dir, Tarifdetails strukturierter zu prüfen.</p>",
       },
     ],
   },
-  seo: { 
-    headline: "Über unseren Vergleichs-Hub", 
-    intro: "Willkommen auf Ihrem Vergleichsportal. Wir bringen Licht in den Dschungel digitaler Dienstleistungen.", 
-    block1_title: "Unser Ansatz", block1_text: "Wir strukturieren komplexe Angebote und bereiten Konditionen verständlich und übersichtlich auf.", 
-    block2_title: "Laufende Pflege", block2_text: "Unsere Redaktion überprüft den Markt regelmäßig auf neue Entwicklungen und Tarifänderungen.",
-    long_text: "" 
+  seo: {
+    headline: "Über TierTarif",
+    intro: "TierTarif bündelt Informationen rund um Tierversicherungen, Tierarztkosten und OP-Schutz für Hunde und Katzen.",
+    block1_title: "Unser Ansatz", block1_text: "Wir strukturieren komplexe Tarifmerkmale wie Wartezeit, Selbstbeteiligung, Erstattung und Leistungsgrenzen verständlich und übersichtlich.",
+    block2_title: "Laufende Pflege", block2_text: "Unsere Inhalte werden fortlaufend gepflegt, damit Tierhalter wichtige Unterschiede besser einordnen können.",
+    long_text: ""
   },
-  categories: { headline: "Alle Kategorien im Überblick", count: 6, button_more: "Alle Kategorien anzeigen", button_card: "Bereich erkunden" },
-  news: { headline: "Aktuelles & Ratgeber", subheadline: "News & Updates", count: 3, button_text: "Alle Vergleiche ansehen", button_url: "/kategorien", read_more: "Artikel lesen" },
-  forum_teaser: { headline: "Community Hub", subheadline: "Tauche in beliebte Themenbereiche ein und teile deine Erfahrungen mit der Community.", link_text: "Alle Foren anzeigen", mobile_button: "Zum Community Forum" }
+  categories: { headline: "Alle TierTarif-Bereiche im Überblick", count: 6, button_more: "Alle Kategorien anzeigen", button_card: "Bereich erkunden" },
+  news: { headline: "Ratgeber & Wissen", subheadline: "Aktuelles für Tierhalter", count: 3, button_text: "Alle Ratgeber ansehen", button_url: "/kategorien", read_more: "Artikel lesen" },
+  forum_teaser: { headline: "Tierhalter-Community", subheadline: "Tausche dich mit anderen Tierhaltern aus und teile Erfahrungen rund um Hunde, Katzen und Versicherungsschutz.", link_text: "Alle Foren anzeigen", mobile_button: "Zur Community" }
 };
 
-export const defaultHeaderConfig = { 
-  button_text: "Jetzt vergleichen", 
-  button_url: getCategoriesRoute(), 
-  nav_links: [{ label: "Versicherungen", url: getCategoriesRoute() }, { label: "Finanzen & Krypto", url: getCategoriesRoute() }, { label: "KI & Software", url: getCategoriesRoute() }], 
-  hub_links: [{ label: "Vergleichs-Hub", url: "/kategorien", icon: "LayoutGrid" }, { label: "Arcade", url: "/arcade", icon: "Gamepad2" }, { label: "Brain-Boost", url: "/brain-boost", icon: "BrainCircuit" }, { label: "Community", url: "/forum", icon: "Users" }],
-  tools_links: [{ label: "Kündigung Vorlage", url: "/kuendigung-vorlage", icon: "FileText" }] 
+export const defaultHeaderConfig = {
+  button_text: "Jetzt vergleichen",
+  button_url: getCategoriesRoute(),
+  nav_links: [
+    { label: "Hunde", url: getCategoriesRoute() },
+    { label: "Katzen", url: getCategoriesRoute() },
+    { label: "OP-Schutz", url: getCategoriesRoute() }
+  ],
+  hub_links: [
+    { label: "Alle Kategorien", url: "/kategorien", icon: "LayoutGrid" },
+    { label: "Ratgeber", url: "/kategorien", icon: "FileText" }
+  ],
+  tools_links: [{ label: "Wie wir vergleichen", url: "/wie-wir-vergleichen", icon: "ShieldCheck" }]
 };
 
 export const defaultFooterConfig = { 
@@ -369,15 +436,24 @@ export const defaultFooterConfig = {
     { label: "Über uns", url: "/ueber-uns" },
     { label: "Cookie-Einstellungen", url: "/cookie-einstellungen" }
   ], 
-  popular_links: [{ label: "Versicherungen", url: getCategoriesRoute() }, { label: "Finanzen & Krypto", url: getCategoriesRoute() }, { label: "KI & Software", url: getCategoriesRoute() }],
-  tools_links: [{ label: "Kündigung Vorlage", url: "/kuendigung-vorlage" }, { label: "Alle Vergleiche", url: "/kategorien" }, { label: "Wie wir vergleichen", url: "/wie-wir-vergleichen" }, { label: "Kontakt", url: "/kontakt" }, { label: "Cookie-Einstellungen", url: "/cookie-einstellungen" }] 
+  popular_links: [
+    { label: "Hundeversicherung", url: getCategoriesRoute() },
+    { label: "Katzenversicherung", url: getCategoriesRoute() },
+    { label: "Tier-OP-Versicherung", url: getCategoriesRoute() }
+  ],
+  tools_links: [
+    { label: "Alle Vergleiche", url: "/kategorien" },
+    { label: "Wie wir vergleichen", url: "/wie-wir-vergleichen" },
+    { label: "Kontakt", url: "/kontakt" },
+    { label: "Cookie-Einstellungen", url: "/cookie-einstellungen" }
+  ]
 };
 
-export const defaultScoutyConfig = { 
-  bubble_intro: "Hi, ich bin Scouty! Ich finde passende Angebote für dich! 🔭", 
-  bubble_exit: "Warte! 🛑 Bevor du gehst: Ich habe gerade einen passenden Vorschlag gefunden. Willst du ihn sehen?", 
-  bubble_newsletter: "Spannende Deals per Mail?", 
-  powered_by: `Powered by ${DEFAULT_BRAND_NAME}` 
+export const defaultScoutyConfig = {
+  bubble_intro: "Hi, ich bin Scouty! Ich helfe dir, TierTarif schneller zu verstehen. 🐾",
+  bubble_exit: "Kurz bevor du gehst: Möchtest du noch die wichtigsten Vergleichspunkte prüfen?",
+  bubble_newsletter: "Neue Ratgeber und Tarif-Updates per Mail?",
+  powered_by: `Powered by ${DEFAULT_BRAND_NAME}`
 };
 
 type LinkConfigItem = { url?: string | null; [key: string]: any };
@@ -493,10 +569,21 @@ export function normalizeHomeSectionsValue(rawSections?: HomeSection[] | null): 
 
 // --- CONFIG HOOKS ---
 
+export function useFeatureToggles() {
+  const { data: settings } = useSettings();
+
+  return useMemo(
+    () => normalizeFeatureTogglesValue(settings?.feature_toggles as Partial<FeatureToggles> | undefined),
+    [settings?.feature_toggles]
+  );
+}
+
 export function useHomeLayout() { 
   const { data: settings } = useSettings(); 
 
   return useMemo(() => {
+    const featureToggles = normalizeFeatureTogglesValue(settings?.feature_toggles as Partial<FeatureToggles> | undefined);
+
     const layoutV2 = settings?.home_layout_v2 as typeof defaultHomeLayout | undefined;
     const layout = { ...defaultHomeLayout, ...(layoutV2 || {}) };
 
@@ -505,14 +592,16 @@ export function useHomeLayout() {
     const mappedSections = sections.map((s) => {
       let isEnabled = typeof s.enabled === 'boolean' ? s.enabled : true;
       if (s.id === 'hero') isEnabled = layout.hero;
-      else if (s.id === 'trust') isEnabled = layout.trust;
+      else if (s.id === 'trust') isEnabled = layout.trust && featureToggles.has_apps;
       else if (s.id === 'big_three') isEnabled = layout.big_three;
       else if (s.id === 'categories') isEnabled = layout.categories;
       else if (s.id === 'news') isEnabled = layout.news;
-      else if (s.id === 'forum') isEnabled = layout.forum_teaser;
+      else if (s.id === 'forum') isEnabled = layout.forum_teaser && featureToggles.has_forum;
       else if (s.id === 'seo') isEnabled = layout.seo_text;
-      else if (s.id === 'amazon_top' || s.id === 'adsense_middle') isEnabled = layout.ads;
-      
+      else if (s.id === 'amazon_top') isEnabled = layout.ads && featureToggles.has_ads && featureToggles.has_amazon;
+      else if (s.id === 'adsense_middle') isEnabled = layout.ads && featureToggles.has_ads && featureToggles.has_adsense;
+      else if (s.id === 'mascot') isEnabled = featureToggles.has_scouty;
+
       return { ...s, enabled: isEnabled };
     });
 
@@ -520,7 +609,7 @@ export function useHomeLayout() {
       sections: mappedSections, 
       layout 
     }; 
-  }, [settings?.home_layout_v2, settings?.home_sections]);
+  }, [settings?.home_layout_v2, settings?.home_sections, settings?.feature_toggles]);
 }
 
 export function useHeaderConfig() {
@@ -689,9 +778,9 @@ export function useFooterDesignerUrl() { return useSetting<string>("footer_desig
 export function useTickerConfig() {
   const { data: settings } = useSettings();
   return {
-    badge: (settings?.ticker_badge_text as string) || "Aktuelle Trends",
-    headline: (settings?.ticker_headline as string) || "Beliebte Apps & Deals",
-    linkText: (settings?.ticker_link_text as string) || "Alle Trends ansehen →"
+    badge: (settings?.ticker_badge_text as string) || "TierTarif Überblick",
+    headline: (settings?.ticker_headline as string) || "Beliebte TierTarif-Bereiche",
+    linkText: (settings?.ticker_link_text as string) || "Alle Bereiche ansehen →"
   };
 }
 
