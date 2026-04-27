@@ -351,3 +351,80 @@
 .scrollbar-none::-webkit-scrollbar {
   display: none;
 }
+
+/* --- TIER TARIF PREMIUM GLOSS LAYER (C8) --- */
+@layer components {
+  .tt-gloss-nav {
+    background: linear-gradient(135deg, rgba(255,255,255,0.97) 0%, rgba(250,247,240,0.94) 52%, rgba(255,133,89,0.08) 100%);
+    box-shadow: 0 14px 34px hsl(var(--primary) / 0.08), inset 0 -1px 0 hsl(var(--secondary) / 0.16);
+  }
+
+  .tt-coral-shine,
+  .tt-teal-shine {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    border: 1px solid rgba(255,255,255,0.38);
+    box-shadow: 0 18px 36px hsl(var(--primary) / 0.16), inset 0 1px 0 rgba(255,255,255,0.48);
+    transition: transform 260ms ease, box-shadow 260ms ease, filter 260ms ease;
+  }
+
+  .tt-coral-shine {
+    background: linear-gradient(135deg, hsl(var(--secondary)) 0%, #ff9a78 48%, #ffb39a 100%) !important;
+    color: hsl(var(--secondary-foreground)) !important;
+  }
+
+  .tt-teal-shine {
+    background: linear-gradient(135deg, #073f3c 0%, hsl(var(--primary)) 46%, #14736d 100%) !important;
+    color: hsl(var(--primary-foreground)) !important;
+  }
+
+  .tt-coral-shine::before,
+  .tt-teal-shine::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(115deg, transparent 0%, rgba(255,255,255,0.46) 22%, transparent 44%);
+    transform: translateX(-130%);
+    transition: transform 680ms ease;
+  }
+
+  .tt-coral-shine:hover,
+  .tt-teal-shine:hover {
+    transform: translateY(-2px);
+    filter: saturate(1.06) brightness(1.02);
+    box-shadow: 0 22px 44px hsl(var(--secondary) / 0.24), inset 0 1px 0 rgba(255,255,255,0.56);
+  }
+
+  .tt-coral-shine:hover::before,
+  .tt-teal-shine:hover::before {
+    transform: translateX(130%);
+  }
+
+  .tt-teal-shine::after {
+    content: "";
+    position: absolute;
+    inset: auto 14% 0 14%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, hsl(var(--secondary) / 0.85), transparent);
+    pointer-events: none;
+  }
+
+  .tt-glass-card {
+    background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(250,247,240,0.9));
+    box-shadow: 0 22px 54px hsl(var(--primary) / 0.10), inset 0 1px 0 rgba(255,255,255,0.75);
+  }
+
+  .tt-coral-footer {
+    background:
+      radial-gradient(circle at 12% 8%, rgba(255,255,255,0.42), transparent 30%),
+      radial-gradient(circle at 85% 18%, rgba(255,255,255,0.18), transparent 24%),
+      linear-gradient(135deg, #ff8559 0%, #ff9675 52%, #ffad94 100%);
+  }
+
+  .tt-green-pop {
+    color: #063a36 !important;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.28);
+  }
+}

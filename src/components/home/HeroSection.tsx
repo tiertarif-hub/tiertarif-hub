@@ -159,7 +159,7 @@ export const HeroSection = () => {
             <div ref={searchRef} className="relative z-30 mt-8 max-w-2xl">
               <form
                 onSubmit={handleSearch}
-                className="group relative flex flex-col gap-3 rounded-[1.7rem] border border-border bg-white p-2 shadow-xl shadow-primary/10 transition-all duration-300 focus-within:border-secondary/45 focus-within:shadow-2xl focus-within:shadow-secondary/20 sm:flex-row"
+                className="group tt-glass-card relative flex flex-col gap-3 rounded-[1.7rem] border border-secondary/20 p-2 transition-all duration-300 focus-within:border-secondary/50 focus-within:shadow-2xl focus-within:shadow-secondary/20 sm:flex-row"
               >
                 <div className="flex h-14 flex-1 items-center px-4">
                   <Search className="mr-3 h-5 w-5 shrink-0 text-secondary" />
@@ -180,7 +180,7 @@ export const HeroSection = () => {
                 <Button
                   type="submit"
                   size="lg"
-                  className="h-14 rounded-2xl bg-secondary px-7 text-base font-extrabold text-secondary-foreground shadow-lg shadow-secondary/25 transition-all hover:-translate-y-0.5 hover:bg-secondary/90 hover:shadow-secondary/35 sm:rounded-[1.25rem]"
+                  className="tt-coral-shine h-14 rounded-2xl px-7 text-base font-extrabold sm:rounded-[1.25rem]"
                 >
                   {searchButtonLabel}
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -244,7 +244,7 @@ export const HeroSection = () => {
           <div className="relative">
             <div className="absolute -inset-4 rounded-[2.4rem] bg-secondary/15 blur-2xl" />
 
-            <div className="relative overflow-hidden rounded-[2rem] border border-secondary/25 bg-white/96 p-5 shadow-2xl shadow-primary/10 backdrop-blur-sm md:p-7">
+            <div className="tt-glass-card relative overflow-hidden rounded-[2rem] border border-secondary/25 p-5 backdrop-blur-sm md:p-7">
               <div className="mb-6 flex items-start justify-between gap-4">
                 <div>
                   <p className="text-xs font-bold uppercase tracking-[0.22em] text-primary">Vergleichsrechner</p>
@@ -252,7 +252,7 @@ export const HeroSection = () => {
                     Schutz passend eingrenzen
                   </h2>
                 </div>
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-secondary/10 text-primary">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-secondary/15 text-primary ring-1 ring-secondary/20 shadow-sm">
                   <ClipboardCheck className="h-6 w-6" />
                 </div>
               </div>
@@ -307,7 +307,7 @@ export const HeroSection = () => {
                 </div>
               </div>
 
-              <div className="mt-5 rounded-2xl bg-primary p-5 text-primary-foreground shadow-lg shadow-primary/15">
+              <div className="tt-teal-shine mt-5 rounded-2xl p-5 text-primary-foreground">
                 <div className="flex items-center justify-between gap-4">
                   <div>
                     <div className="text-sm font-extrabold">Nächster Schritt</div>
@@ -315,7 +315,7 @@ export const HeroSection = () => {
                       Kategorie wählen und Leistungsdetails prüfen.
                     </p>
                   </div>
-                  <Button asChild className="bg-secondary text-secondary-foreground hover:bg-secondary/90">
+                  <Button asChild className="tt-coral-shine">
                     <Link to="/kategorien">Starten</Link>
                   </Button>
                 </div>
@@ -334,7 +334,7 @@ export const HeroSection = () => {
         <div className="mt-10 rounded-[1.5rem] border border-primary/10 bg-white/95 p-4 shadow-lg shadow-primary/5 backdrop-blur-sm md:mt-14">
           <div className="grid gap-3 md:grid-cols-4">
             {trustItems.map((item) => (
-              <div key={item} className="flex items-center gap-3 rounded-2xl bg-secondary/10 px-4 py-3 text-sm font-bold text-primary">
+              <div key={item} className="flex items-center gap-3 rounded-2xl border border-secondary/20 bg-white/80 px-4 py-3 text-sm font-bold text-primary shadow-sm transition-all hover:-translate-y-0.5 hover:border-secondary/35 hover:bg-secondary/10">
                 <CheckCircle2 className="h-4 w-4 shrink-0 text-secondary" />
                 <span>{item}</span>
               </div>

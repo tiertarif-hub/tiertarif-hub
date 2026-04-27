@@ -38,7 +38,7 @@ const defaultSteps: Step[] = [
 const cardBaseStyle: React.CSSProperties = {
   borderColor: "hsl(var(--primary) / 0.92)",
   boxShadow: "0 18px 48px hsl(var(--primary) / 0.08)",
-  background: "linear-gradient(180deg, rgba(255,255,255,0.98), hsl(var(--muted) / 0.45))",
+  background: "linear-gradient(180deg, rgba(255,255,255,0.99), rgba(250,247,240,0.92))",
 };
 
 const getCardHighlight = (active: boolean, final = false): React.CSSProperties => ({
@@ -229,7 +229,7 @@ const StepCard = ({
       viewport={{ once: true, amount: 0.25 }}
       transition={{ duration: 0.55, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
       whileHover={shouldReduceMotion ? {} : { y: -8, transition: { duration: 0.22 } }}
-      className="group relative h-full overflow-hidden rounded-[2rem] border px-6 pb-8 pt-7 text-center outline-none transition-shadow md:px-7 focus-visible:ring-2 focus-visible:ring-offset-4"
+      className="group tt-glass-card relative h-full overflow-hidden rounded-[2rem] border px-6 pb-8 pt-7 text-center outline-none transition-shadow md:px-7 focus-visible:ring-2 focus-visible:ring-offset-4"
       style={{ ...cardBaseStyle, ...getCardHighlight(active, final) }}
     >
       <div
@@ -291,7 +291,7 @@ const StepCard = ({
           style={{
             color: active ? THEME_PRIMARY : "hsl(var(--muted-foreground))",
             borderColor: active ? "hsl(var(--secondary) / 0.32)" : "hsl(var(--primary) / 0.12)",
-            background: active ? "hsl(var(--secondary) / 0.08)" : "hsl(var(--muted) / 0.9)",
+            background: active ? "linear-gradient(135deg, hsl(var(--secondary) / 0.14), rgba(255,255,255,0.94))" : "hsl(var(--muted) / 0.9)",
           }}
         >
           {step.status}

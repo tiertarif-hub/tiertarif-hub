@@ -49,11 +49,11 @@ export const Header = ({ transparent = false }: HeaderProps) => {
 
   const getHeaderStyle = () => {
     return {
-      wrapper: "bg-white/95 backdrop-blur-md border-b border-[#D8E5E1] shadow-sm shadow-primary/5",
+      wrapper: "tt-gloss-nav backdrop-blur-md border-b border-secondary/20",
       rankText: "text-primary",
       scoutText: "text-secondary",
       toggleBtn: "text-primary hover:bg-secondary/10 hover:text-secondary",
-      navLink: "text-[#173D3A] hover:text-secondary"
+      navLink: "text-primary/90 hover:text-secondary"
     };
   };
 
@@ -80,7 +80,7 @@ export const Header = ({ transparent = false }: HeaderProps) => {
           <Link to="/" className="flex items-center gap-2 group" onClick={() => setIsMobileMenuOpen(false)}>
             <span className={`text-2xl md:text-3xl font-display font-extrabold tracking-tight transition-colors ${style.rankText}`}>
               {brandName}
-              <span className={style.scoutText}>.</span>
+              <span className={`${style.scoutText} drop-shadow-[0_2px_8px_rgba(255,133,89,0.35)]`}>.</span>
             </span>
           </Link>
 
@@ -148,20 +148,20 @@ export const Header = ({ transparent = false }: HeaderProps) => {
                   className={`text-sm font-medium transition-colors relative group py-2 ${style.navLink}`}
                 >
                   {link.label}
-                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-secondary transition-all duration-300 group-hover:w-full" />
+                  <span className="absolute bottom-0 left-0 h-0.5 w-0 rounded-full bg-gradient-to-r from-secondary via-[#ffb39a] to-secondary transition-all duration-300 group-hover:w-full" />
                 </Link>
               );
             })}
             
             <Link to={normalizeNavigableHref(config.button_url)}>
-              <Button className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold shadow-lg shadow-secondary/25 transition-all hover:-translate-y-0.5 hover:shadow-secondary/35 px-6">
+              <Button className="tt-coral-shine px-6 font-bold">
                 {config.button_text}
               </Button>
             </Link>
           </nav>
 
           <button 
-            className={`md:hidden p-2 rounded-lg transition-colors ${style.toggleBtn}`} 
+            className={`md:hidden rounded-xl border border-primary/10 bg-white/70 p-2 shadow-sm transition-colors ${style.toggleBtn}`} 
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label={isMobileMenuOpen ? "Menü schließen" : "Menü öffnen"}
           >
@@ -288,7 +288,7 @@ export const Header = ({ transparent = false }: HeaderProps) => {
             </div>
 
             <Link to={normalizeNavigableHref(config.button_url)} onClick={() => setIsMobileMenuOpen(false)} className="mt-4">
-              <Button className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold h-14 text-lg rounded-xl shadow-xl shadow-secondary/25">
+              <Button className="tt-coral-shine h-14 w-full rounded-xl text-lg font-bold">
                 {config.button_text}
               </Button>
             </Link>

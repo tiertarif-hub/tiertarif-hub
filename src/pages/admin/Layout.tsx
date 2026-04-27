@@ -121,7 +121,7 @@ export default function AdminLayout() {
         >
           <div className="flex h-24 items-center justify-between border-b border-sidebar-border px-6">
             <Link to="/admin" className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-sidebar-primary shadow-lg shadow-black/15">
+              <div className="tt-coral-shine flex h-12 w-12 items-center justify-center rounded-2xl shadow-lg shadow-black/15">
                 <span className="text-lg font-black text-sidebar-primary-foreground">T</span>
               </div>
               <div>
@@ -163,7 +163,7 @@ export default function AdminLayout() {
                   cn(
                     "group flex items-center gap-3 rounded-2xl px-4 py-3.5 text-sm font-semibold transition-all duration-200",
                     isActive
-                      ? "bg-white text-primary shadow-lg"
+                      ? "bg-white text-primary shadow-lg ring-1 ring-secondary/20"
                       : "text-sidebar-foreground/82 hover:bg-white/10 hover:text-white"
                   )
                 }
@@ -174,7 +174,7 @@ export default function AdminLayout() {
                       className={cn(
                         "flex h-10 w-10 items-center justify-center rounded-xl transition-colors",
                         isActive
-                          ? "bg-secondary/15 text-secondary"
+                          ? "bg-secondary/20 text-secondary shadow-sm"
                           : "bg-white/5 text-sidebar-foreground/70 group-hover:bg-white/10 group-hover:text-white"
                       )}
                     >
@@ -245,7 +245,7 @@ export default function AdminLayout() {
                 <Menu className="h-5 w-5" />
               </button>
               <div className="text-base font-black text-secondary">TierTarif Admin</div>
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-secondary text-sm font-black text-secondary-foreground">
+              <div className="tt-coral-shine flex h-10 w-10 items-center justify-center rounded-xl text-sm font-black">
                 T
               </div>
             </div>
@@ -262,7 +262,7 @@ export default function AdminLayout() {
                 </h1>
               </div>
 
-              <div className="inline-flex items-center gap-2 rounded-full border border-secondary/30 bg-secondary/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-secondary">
+              <div className="inline-flex items-center gap-2 rounded-full border border-secondary/35 bg-secondary/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-secondary shadow-sm shadow-secondary/10">
                 <ShieldCheck className="h-4 w-4" />
                 Trust Vet Control
               </div>

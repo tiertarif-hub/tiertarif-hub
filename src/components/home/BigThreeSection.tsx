@@ -314,7 +314,7 @@ export const BigThreeSection = () => {
           <button
             type="button"
             onClick={() => scrollSlider("prev")}
-            className="absolute -left-5 top-1/2 z-20 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-white text-primary shadow-lg shadow-primary/10 transition-all duration-300 hover:-translate-x-0.5 hover:bg-secondary hover:text-secondary-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 lg:flex"
+            className="tt-coral-shine absolute -left-5 top-1/2 z-20 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full text-secondary-foreground transition-all duration-300 hover:-translate-x-0.5 focus:outline-none focus:ring-2 focus:ring-primary/30 lg:flex"
             aria-label="Vorherige Vergleichskategorie anzeigen"
           >
             <ChevronLeft className="h-5 w-5" />
@@ -333,7 +333,7 @@ export const BigThreeSection = () => {
                 <Link
                   key={item.id}
                   to={normalizeNavigableHref(item.link)}
-                  className="standard-portal-category-card group relative flex min-h-[460px] snap-start flex-col overflow-hidden rounded-[1.75rem] border border-secondary/20 bg-white p-5 pt-7 shadow-lg shadow-primary/5 transition-all duration-500 hover:-translate-y-1.5 hover:border-secondary/45 hover:shadow-2xl hover:shadow-secondary/15"
+                  className="standard-portal-category-card tt-glass-card group relative flex min-h-[460px] snap-start flex-col overflow-hidden rounded-[1.75rem] border border-secondary/20 p-5 pt-7 transition-all duration-500 hover:-translate-y-1.5 hover:border-secondary/50 hover:shadow-2xl hover:shadow-secondary/15"
                 >
                   <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-primary via-secondary to-primary" />
                   <div className="mb-5 flex items-start justify-between gap-4">
@@ -385,11 +385,11 @@ export const BigThreeSection = () => {
                     </div>
 
                     <div className="mt-auto pt-7">
-                      <div className="flex items-center justify-between rounded-2xl bg-gradient-to-r from-primary to-primary px-5 py-4 text-primary-foreground transition-all duration-300 group-hover:from-secondary group-hover:to-secondary/90 group-hover:text-secondary-foreground">
+                      <div className="tt-teal-shine flex items-center justify-between rounded-2xl px-5 py-4 text-primary-foreground">
                         <span className="text-sm font-extrabold uppercase tracking-wider">
                           {item.button_text}
                         </span>
-                        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary/20 transition-all group-hover:translate-x-1 group-hover:bg-white/25">
+                        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-secondary/20 text-white ring-1 ring-white/15 transition-all group-hover:translate-x-1 group-hover:bg-secondary">
                           <ArrowRight className="h-4 w-4" />
                         </span>
                       </div>
@@ -403,7 +403,7 @@ export const BigThreeSection = () => {
           <button
             type="button"
             onClick={() => scrollSlider("next")}
-            className="absolute -right-5 top-1/2 z-20 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-white text-primary shadow-lg shadow-primary/10 transition-all duration-300 hover:translate-x-0.5 hover:bg-secondary hover:text-secondary-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 lg:flex"
+            className="tt-coral-shine absolute -right-5 top-1/2 z-20 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full text-secondary-foreground transition-all duration-300 hover:translate-x-0.5 focus:outline-none focus:ring-2 focus:ring-primary/30 lg:flex"
             aria-label="Nächste Vergleichskategorie anzeigen"
           >
             <ChevronRight className="h-5 w-5" />

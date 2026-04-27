@@ -36,10 +36,10 @@ export const Footer = () => {
   }
 
   return (
-    <footer className="relative bg-secondary pt-20 pb-12 overflow-hidden border-t border-secondary mt-0">
+    <footer className="tt-coral-footer relative mt-0 overflow-hidden border-t border-secondary/50 pt-20 pb-12">
       
       {/* --- BACKGROUND EFFECTS --- */}
-      <div className="absolute inset-0 bg-gradient-to-t from-primary/10 via-transparent to-white/10 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-t from-white/18 via-transparent to-white/24 pointer-events-none" />
       
       <div 
         className="absolute inset-0 z-0 opacity-[0.06]" 
@@ -61,7 +61,7 @@ export const Footer = () => {
           {/* 1. BRANDING (CONSISTENT) */}
           <div className="space-y-6 sm:col-span-2 lg:col-span-1">
             <Link to="/" className="block w-fit group">
-               <span className="text-3xl font-display font-extrabold tracking-tight text-primary">
+               <span className="tt-green-pop text-3xl font-display font-extrabold tracking-tight">
                   {brandName}
                   <span className="text-secondary">.</span>
                </span>
@@ -73,13 +73,13 @@ export const Footer = () => {
 
           {/* 2. Links: Vergleiche */}
           <div>
-            <h4 className="font-bold text-base text-primary mb-6 uppercase tracking-wider">Vergleiche</h4>
+            <h4 className="tt-green-pop mb-6 text-base font-bold uppercase tracking-wider">Vergleiche</h4>
             <ul className="space-y-3">
               {popularLinks.map((link: any, i: number) => (
                 <li key={i}>
                   <Link 
                     to={normalizeNavigableHref(link.url)} 
-                    className="text-primary/75 hover:text-primary text-sm transition-all duration-200 flex items-center group"
+                    className="flex items-center text-sm text-[#083f3b]/80 transition-all duration-200 hover:text-[#063a36] group"
                   >
                     <span className="w-0 group-hover:w-2 transition-all duration-200 overflow-hidden h-[1px] bg-secondary mr-0 group-hover:mr-2"></span>
                     {link.label}
@@ -91,14 +91,14 @@ export const Footer = () => {
 
           {/* 3. Links: Rechtliches */}
           <div>
-            <h4 className="font-bold text-base text-primary mb-6 uppercase tracking-wider">Rechtliches</h4>
+            <h4 className="tt-green-pop mb-6 text-base font-bold uppercase tracking-wider">Rechtliches</h4>
             <ul className="space-y-3">
               {/* Dynamische Links aus der Datenbank */}
               {legalLinks.map((link: any, i: number) => (
                 <li key={i}>
                   <Link
                     to={normalizeNavigableHref(String(link?.url ?? "").trim())}
-                    className="text-primary/75 hover:text-primary text-sm transition-all duration-200 flex items-center group"
+                    className="flex items-center text-sm text-[#083f3b]/80 transition-all duration-200 hover:text-[#063a36] group"
                   >
                     <span className="w-0 group-hover:w-2 transition-all duration-200 overflow-hidden h-[1px] bg-secondary mr-0 group-hover:mr-2"></span>
                     {String(link?.label ?? "").trim()}
@@ -110,7 +110,7 @@ export const Footer = () => {
               <li>
                 <button
                   onClick={openCookieSettings}
-                  className="text-primary/75 hover:text-primary text-sm transition-all duration-200 flex items-center group w-full text-left cursor-pointer"
+                  className="flex w-full cursor-pointer items-center text-left text-sm text-[#083f3b]/80 transition-all duration-200 hover:text-[#063a36] group"
                 >
                   <span className="w-0 group-hover:w-2 transition-all duration-200 overflow-hidden h-[1px] bg-secondary mr-0 group-hover:mr-2"></span>
                   Cookie-Einstellungen
@@ -121,13 +121,13 @@ export const Footer = () => {
 
           {/* 4. Tools & Services */}
           <div>
-            <h4 className="font-bold text-base text-primary mb-6 uppercase tracking-wider">Tools & Services</h4>
+            <h4 className="tt-green-pop mb-6 text-base font-bold uppercase tracking-wider">Tools & Services</h4>
             <ul className="space-y-3">
               {toolsLinks.map((link: any, i: number) => (
                 <li key={i}>
                   <Link 
                     to={normalizeNavigableHref(String(link?.url ?? "").trim())} 
-                    className="text-primary/75 hover:text-primary text-sm transition-all duration-200 flex items-center group"
+                    className="flex items-center text-sm text-[#083f3b]/80 transition-all duration-200 hover:text-[#063a36] group"
                   >
                     <span className="w-0 group-hover:w-2 transition-all duration-200 overflow-hidden h-[1px] bg-secondary mr-0 group-hover:mr-2"></span>
                     {String(link?.label ?? "").trim()}
@@ -139,15 +139,15 @@ export const Footer = () => {
 
           {/* 5. Quality Badge */}
           <div className="flex flex-col justify-start">
-            <h4 className="font-bold text-base text-primary mb-6 uppercase tracking-wider">Transparenz</h4>
-            <div className="bg-white/35 border border-primary/15 rounded-2xl p-5 hover:bg-white/45 transition-colors cursor-default group backdrop-blur-sm">
+            <h4 className="tt-green-pop mb-6 text-base font-bold uppercase tracking-wider">Transparenz</h4>
+            <div className="rounded-2xl border border-white/35 bg-white/30 p-5 backdrop-blur-sm transition-colors hover:bg-white/40 cursor-default group shadow-lg shadow-primary/10">
                 <div className="flex items-start gap-4">
                     <div className="p-2.5 bg-secondary/15 rounded-full text-primary/75 border border-secondary/30 group-hover:scale-110 transition-transform duration-300 shrink-0">
                         <ShieldCheck className="w-6 h-6" />
                     </div>
                     <div>
-                        <div className="font-bold text-primary text-sm mb-1">{config.text_checked || "Redaktioneller Überblick"}</div>
-                        <div className="text-xs text-primary/60 leading-snug">
+                        <div className="tt-green-pop mb-1 text-sm font-bold">{config.text_checked || "Redaktioneller Überblick"}</div>
+                        <div className="text-xs leading-snug text-[#083f3b]/70">
                             {config.text_update || "Fortlaufend gepflegte Daten und nachvollziehbare Vergleiche."}
                         </div>
                     </div>
@@ -157,7 +157,7 @@ export const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-primary/20 flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-primary/80">
+        <div className="flex flex-col items-center justify-between gap-6 border-t border-white/35 pt-8 text-sm text-[#083f3b]/80 md:flex-row">
           <p>{config.copyright_text || `© ${new Date().getFullYear()} ${brandName}. Alle Rechte vorbehalten.`}</p>
           
           <div className="flex items-center gap-6">
@@ -169,8 +169,8 @@ export const Footer = () => {
         
         {/* Disclaimer - Sauber über Variable gerendert */}
         {finalDisclaimer && (
-            <div className="mt-8 pt-6 border-t border-primary/20">
-                <p className="text-xs text-primary/75 text-center max-w-4xl mx-auto leading-relaxed">
+            <div className="mt-8 border-t border-white/35 pt-6">
+                <p className="mx-auto max-w-4xl text-center text-xs leading-relaxed text-[#083f3b]/80">
                     {finalDisclaimer}
                 </p>
             </div>
