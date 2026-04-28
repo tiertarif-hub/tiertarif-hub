@@ -7,7 +7,6 @@ import {
   useForumAds,
   useComplianceConfig,
   useUpdateComplianceConfig,
-  defaultHomeLayout, 
   defaultHomeContent,
   defaultFeatureToggles,
   normalizeFeatureTogglesValue,
@@ -172,7 +171,7 @@ export default function AdminSettings() {
   const updateSetting = useUpdateSetting();
    
   // Hooks für Home-Steuerung & Ads
-  const { layout, sections: normalizedHomeSections } = useHomeLayout();
+  const { sections: normalizedHomeSections } = useHomeLayout();
   const { content: serverContent } = useHomeContent();
   const forumSidebarConfig = useForumSidebarConfig();
   const { data: comparisonCategories = [] } = useCategories(false);
@@ -453,10 +452,10 @@ export default function AdminSettings() {
   useEffect(() => {
     const nextHomeSections = JSON.parse(normalizedHomeSectionsKey || "[]");
 
-    if (nextHomeSections.length > 0 && homeSections.length === 0) {
+    if (nextHomeSections.length > 0) {
       setHomeSections(nextHomeSections);
     }
-  }, [normalizedHomeSectionsKey, homeSections.length]);
+  }, [normalizedHomeSectionsKey]);
 
   useEffect(() => {
     // TierTarif-Hotfix: Keine blinde Anfrage mehr auf die optionale Tabelle
@@ -533,12 +532,6 @@ export default function AdminSettings() {
     newSections[index].enabled = !newSections[index].enabled;
     setHomeSections(newSections);
     saveSetting("home_sections", newSections);
-  };
-
-  const toggleSection = (key: keyof typeof defaultHomeLayout) => {
-    // @ts-ignore
-    const newLayout = { ...layout, [key]: !layout[key] };
-    saveSetting("home_layout_v2", newLayout); 
   };
 
   const updateContent = (section: string, field: string, value: any) => {
@@ -1536,7 +1529,7 @@ export default function AdminSettings() {
           <div className="sticky top-2 z-50 bg-background/95 backdrop-blur py-3 border-b border-border/50 flex justify-between items-center mb-6">
             <div>
               <h3 className="font-bold text-lg">Startseiten Editor</h3>
-              <p className="text-xs text-muted-foreground">Struktur und Live-Texte der Homepage.</p>
+              <p className="text-xs text-muted-foreground">Struktur und Live-Texte der Homepage. Der Struktur Manager ist die einzige Quelle für Reihenfolge und Sichtbarkeit.</p>
             </div>
             <Button onClick={saveContentManually} size="lg" className={hasUnsavedChanges ? 'bg-primary animate-pulse' : 'bg-primary'}>
               <Save className="w-4 h-4 mr-2" /> Alle Änderungen Speichern
@@ -1546,7 +1539,7 @@ export default function AdminSettings() {
           <Card className="bg-card border-border shadow-sm border-l-4 border-l-secondary">
             <CardHeader>
               <CardTitle className="flex items-center gap-2"><Layout className="w-5 h-5 text-secondary" /> Struktur Manager</CardTitle>
-              <CardDescription>Aktiviere und sortiere die Blöcke auf der Startseite (Top to Bottom).</CardDescription>
+              <CardDescription>Aktiviere und sortiere die tatsächlich gerenderten Startseiten-Blöcke. Diese Reihenfolge steuert die Live-Homepage.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
               {homeSections.length > 0 ? homeSections.map((section, idx) => (
@@ -1578,7 +1571,7 @@ export default function AdminSettings() {
               <Accordion type="single" collapsible className="w-full">
                 
                 <AccordionItem value="hero">
-                  <AccordionTrigger className="font-semibold">Hero Sektion (Ganz oben)</AccordionTrigger>
+                  <AccordionTrigger className="font-semibold">Hero</AccordionTrigger>
                   <AccordionContent className="space-y-4 pt-4">
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
@@ -1784,20 +1777,8 @@ export default function AdminSettings() {
                   </AccordionContent>
                 </AccordionItem>
 
-                <AccordionItem value="trust">
-                  <AccordionTrigger className="font-semibold">TierTarif Trust-/Ticker-Sektion</AccordionTrigger>
-                  <AccordionContent className="space-y-4 pt-4">
-                    <p className="text-xs text-muted-foreground">Im Struktur-Manager heißt dieser Block „Trust“. Für TierTarif sollte dieser Bereich nur aktiv sein, wenn das Apps/Ticker-Modul eingeschaltet ist.</p>
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="space-y-2"><Label>Badge</Label><Input value={localContent.trust?.badge || ""} onChange={e => updateContent("trust", "badge", e.target.value)} /></div>
-                      <div className="space-y-2"><Label>Headline</Label><Input value={localContent.trust?.headline || ""} onChange={e => updateContent("trust", "headline", e.target.value)} /></div>
-                      <div className="space-y-2 md:col-span-2"><Label>Button / Link Text</Label><Input value={localContent.trust?.link_text || ""} onChange={e => updateContent("trust", "link_text", e.target.value)} /></div>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-
                 <AccordionItem value="how_it_works">
-                  <AccordionTrigger className="font-semibold">So funktioniert Sektion</AccordionTrigger>
+                  <AccordionTrigger className="font-semibold">So funktioniert TierTarif</AccordionTrigger>
                   <AccordionContent className="space-y-4 pt-4">
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2"><Label>Headline</Label><Input value={localContent.how_it_works?.headline || ""} onChange={e => updateContent("how_it_works", "headline", e.target.value)} /></div>
@@ -1825,7 +1806,7 @@ export default function AdminSettings() {
                 </AccordionItem>
 
                 <AccordionItem value="big_three">
-                  <AccordionTrigger className="font-semibold">Big Three Sektion (Hauptlinks)</AccordionTrigger>
+                  <AccordionTrigger className="font-semibold">Unsere Schwerpunkte</AccordionTrigger>
                   <AccordionContent className="space-y-4 pt-4">
                     <div className="space-y-2">
                       <Label>Haupt-Headline</Label>
@@ -1888,79 +1869,27 @@ export default function AdminSettings() {
                 
 
                 <AccordionItem value="categories">
-                  <AccordionTrigger className="font-semibold">Kategorien Slider Sektion</AccordionTrigger>
+                  <AccordionTrigger className="font-semibold">Vergleiche direkt öffnen</AccordionTrigger>
                   <AccordionContent className="space-y-4 pt-4">
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2"><Label>Headline</Label><Input value={localContent.categories?.headline || ""} onChange={e => updateContent("categories", "headline", e.target.value)} /></div>
-                      <div className="space-y-2"><Label>Anzahl anzuzeigender Kategorien</Label><Input type="number" value={localContent.categories?.count || 6} onChange={e => updateContent("categories", "count", parseInt(e.target.value))} /></div>
-                      <div className="space-y-2"><Label>Button ("Mehr laden")</Label><Input value={localContent.categories?.button_more || ""} onChange={e => updateContent("categories", "button_more", e.target.value)} /></div>
+                      <div className="space-y-2"><Label>Anzahl anzuzeigender Vergleiche</Label><Input type="number" value={localContent.categories?.count || 6} onChange={e => updateContent("categories", "count", parseInt(e.target.value))} /></div>
+                      <div className="space-y-2"><Label>Button ("Alle Vergleiche")</Label><Input value={localContent.categories?.button_more || ""} onChange={e => updateContent("categories", "button_more", e.target.value)} /></div>
                       <div className="space-y-2"><Label>Button auf Karte</Label><Input value={localContent.categories?.button_card || ""} onChange={e => updateContent("categories", "button_card", e.target.value)} /></div>
                     </div>
                   </AccordionContent>
                 </AccordionItem>
 
                 <AccordionItem value="news">
-                  <AccordionTrigger className="font-semibold">News & Magazin Sektion</AccordionTrigger>
+                  <AccordionTrigger className="font-semibold">Vergleiche / Vorschau-Karten</AccordionTrigger>
                   <AccordionContent className="space-y-4 pt-4">
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2"><Label>Headline</Label><Input value={localContent.news?.headline || ""} onChange={e => updateContent("news", "headline", e.target.value)} /></div>
                       <div className="space-y-2"><Label>Subheadline</Label><Input value={localContent.news?.subheadline || ""} onChange={e => updateContent("news", "subheadline", e.target.value)} /></div>
-                      <div className="space-y-2"><Label>Anzahl Posts</Label><Input type="number" value={localContent.news?.count || 3} onChange={e => updateContent("news", "count", parseInt(e.target.value))} /></div>
-                      <div className="space-y-2"><Label>Top Button Text</Label><Input value={localContent.news?.button_text || ""} onChange={e => updateContent("news", "button_text", e.target.value)} /></div>
-                      <div className="space-y-2"><Label>Top Button Link</Label><Input value={localContent.news?.button_url || ""} onChange={e => updateContent("news", "button_url", e.target.value)} /></div>
-                      <div className="space-y-2"><Label>Link Text (Karte)</Label><Input value={localContent.news?.read_more || ""} onChange={e => updateContent("news", "read_more", e.target.value)} /></div>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-
-                <AccordionItem value="forum-sidebar">
-                  <AccordionTrigger className="font-semibold">Forum Sidebar</AccordionTrigger>
-                  <AccordionContent className="space-y-6 pt-4">
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="space-y-2"><Label>Titel Heiße Vergleiche</Label><Input value={forumSidebarLocal?.hot_title || ""} onChange={e => setForumSidebarLocal((p: any) => ({ ...p, hot_title: e.target.value }))} /></div>
-                      <div className="space-y-2"><Label>Titel Beliebte Vergleiche</Label><Input value={forumSidebarLocal?.popular_title || ""} onChange={e => setForumSidebarLocal((p: any) => ({ ...p, popular_title: e.target.value }))} /></div>
-                      <div className="space-y-2"><Label>Titel Zufällige Vergleiche</Label><Input value={forumSidebarLocal?.random_title || ""} onChange={e => setForumSidebarLocal((p: any) => ({ ...p, random_title: e.target.value }))} /></div>
-                      <div className="space-y-2"><Label>Anzahl Zufällige Vergleiche</Label><Input type="number" min={0} max={5} value={forumSidebarLocal?.random_count ?? 2} onChange={e => setForumSidebarLocal((p: any) => ({ ...p, random_count: parseInt(e.target.value || '0', 10) }))} /></div>
-                    </div>
-                    <div className="grid md:grid-cols-3 gap-4">
-                      <div className="flex items-center justify-between rounded-xl border p-3"><Label>Heiße Vergleiche anzeigen</Label><Switch checked={!!forumSidebarLocal?.show_hot} onCheckedChange={(checked) => setForumSidebarLocal((p: any) => ({ ...p, show_hot: checked }))} /></div>
-                      <div className="flex items-center justify-between rounded-xl border p-3"><Label>Beliebte Vergleiche anzeigen</Label><Switch checked={!!forumSidebarLocal?.show_popular} onCheckedChange={(checked) => setForumSidebarLocal((p: any) => ({ ...p, show_popular: checked }))} /></div>
-                      <div className="flex items-center justify-between rounded-xl border p-3"><Label>Zufällige Vergleiche anzeigen</Label><Switch checked={!!forumSidebarLocal?.show_random} onCheckedChange={(checked) => setForumSidebarLocal((p: any) => ({ ...p, show_random: checked }))} /></div>
-                    </div>
-                    <div className="space-y-4">
-                      <div>
-                        <Label className="mb-3 block">Heiße Vergleiche</Label>
-                        <div className="grid md:grid-cols-2 gap-2 max-h-64 overflow-auto rounded-xl border p-3">
-                          {comparisonCategories.filter((cat) => ["comparison", "hub_overview"].includes(cat.template)).map((cat) => {
-                            const checked = Array.isArray(forumSidebarLocal?.hot_comparison_ids) && forumSidebarLocal.hot_comparison_ids.includes(cat.id);
-                            return <label key={`hot-${cat.id}`} className="flex items-center gap-2 text-sm"><input type="checkbox" checked={checked} onChange={(e) => setForumSidebarLocal((p: any) => ({ ...p, hot_comparison_ids: e.target.checked ? [...(p.hot_comparison_ids || []), cat.id] : (p.hot_comparison_ids || []).filter((id: string) => id !== cat.id) }))} /> <span>{cat.name}</span></label>;
-                          })}
-                        </div>
-                      </div>
-                      <div>
-                        <Label className="mb-3 block">Beliebte Vergleiche</Label>
-                        <div className="grid md:grid-cols-2 gap-2 max-h-64 overflow-auto rounded-xl border p-3">
-                          {comparisonCategories.filter((cat) => ["comparison", "hub_overview"].includes(cat.template)).map((cat) => {
-                            const checked = Array.isArray(forumSidebarLocal?.popular_comparison_ids) && forumSidebarLocal.popular_comparison_ids.includes(cat.id);
-                            return <label key={`popular-${cat.id}`} className="flex items-center gap-2 text-sm"><input type="checkbox" checked={checked} onChange={(e) => setForumSidebarLocal((p: any) => ({ ...p, popular_comparison_ids: e.target.checked ? [...(p.popular_comparison_ids || []), cat.id] : (p.popular_comparison_ids || []).filter((id: string) => id !== cat.id) }))} /> <span>{cat.name}</span></label>;
-                          })}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex justify-end">
-                      <Button onClick={saveForumSidebarConfig} className="rounded-xl">Forum Sidebar speichern</Button>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-
-                <AccordionItem value="forum_teaser">
-                  <AccordionTrigger className="font-semibold">Forum Teaser Sektion</AccordionTrigger>
-                  <AccordionContent className="space-y-4 pt-4">
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div className="space-y-2"><Label>Headline</Label><Input value={localContent.forum_teaser?.headline || ""} onChange={e => updateContent("forum_teaser", "headline", e.target.value)} /></div>
-                      <div className="space-y-2"><Label>Link Text (Alle Foren)</Label><Input value={localContent.forum_teaser?.link_text || ""} onChange={e => updateContent("forum_teaser", "link_text", e.target.value)} /></div>
-                      <div className="space-y-2 md:col-span-2"><Label>Subheadline</Label><Textarea value={localContent.forum_teaser?.subheadline || ""} onChange={e => updateContent("forum_teaser", "subheadline", e.target.value)} rows={2} /></div>
-                      <div className="space-y-2 md:col-span-2"><Label>Mobile Button</Label><Input value={localContent.forum_teaser?.mobile_button || ""} onChange={e => updateContent("forum_teaser", "mobile_button", e.target.value)} /></div>
+                      <div className="space-y-2"><Label>Anzahl Vergleiche</Label><Input type="number" value={localContent.news?.count || 3} onChange={e => updateContent("news", "count", parseInt(e.target.value))} /></div>
+                      <div className="space-y-2"><Label>Button Text oben</Label><Input value={localContent.news?.button_text || ""} onChange={e => updateContent("news", "button_text", e.target.value)} /></div>
+                      <div className="space-y-2"><Label>Button Link oben</Label><Input value={localContent.news?.button_url || ""} onChange={e => updateContent("news", "button_url", e.target.value)} /></div>
+                      <div className="space-y-2"><Label>Button Text auf Karte</Label><Input value={localContent.news?.read_more || ""} onChange={e => updateContent("news", "read_more", e.target.value)} /></div>
                     </div>
                   </AccordionContent>
                 </AccordionItem>
@@ -1976,7 +1905,7 @@ export default function AdminSettings() {
                 </AccordionItem>
 
                 <AccordionItem value="seo">
-                  <AccordionTrigger className="font-semibold">SEO Texte (Unten)</AccordionTrigger>
+                  <AccordionTrigger className="font-semibold">Unsere Mission / SEO-Text</AccordionTrigger>
                   <AccordionContent className="space-y-4 pt-4">
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2"><Label>SEO Headline</Label><Input value={localContent.seo?.headline || ""} onChange={e => updateContent("seo", "headline", e.target.value)} /></div>
@@ -2002,55 +1931,6 @@ export default function AdminSettings() {
             </CardContent>
           </Card>
 
-          <Card className="bg-card border-border shadow-sm">
-            <CardHeader><CardTitle>Legacy Layout (Backup)</CardTitle><CardDescription>Primitive Steuerung älterer Module.</CardDescription></CardHeader>
-            <CardContent className="space-y-4 opacity-75">
-              {Object.keys(defaultHomeLayout).map((key) => (
-                <div key={key} className="flex items-center justify-between border-b border-border/50 pb-3 last:border-0 p-2 rounded-lg">
-                  <Label className="capitalize font-medium">{key.replace('_', ' ')}</Label>
-                  <Switch checked={(layout as any)[key]} onCheckedChange={() => toggleSection(key as any)} />
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-           
-          <Card className="bg-card border-border shadow-sm">
-            <CardHeader><CardTitle>TierTarif Ticker Sektion</CardTitle></CardHeader>
-            <CardContent>
-              <div className="grid gap-4 md:grid-cols-2 p-4 bg-slate-50 dark:bg-slate-900 rounded-lg">
-                <div className="space-y-2">
-                  <Label htmlFor="ticker_headline">Ticker Überschrift</Label>
-                  <Input 
-                    id="ticker_headline" 
-                    name="ticker_headline" 
-                    placeholder="Beliebte TierTarif-Bereiche"
-                    defaultValue={settings?.ticker_headline as string || "Beliebte TierTarif-Bereiche"} 
-                    onChange={(e) => saveSetting("ticker_headline", e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="ticker_badge_text">Badge Text</Label>
-                  <Input 
-                    id="ticker_badge_text" 
-                    name="ticker_badge_text" 
-                    placeholder="TierTarif Überblick"
-                    defaultValue={settings?.ticker_badge_text as string || "TierTarif Überblick"} 
-                    onChange={(e) => saveSetting("ticker_badge_text", e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2 md:col-span-2">
-                  <Label htmlFor="ticker_link_text">Button Text (Link zur Topliste)</Label>
-                  <Input 
-                    id="ticker_link_text" 
-                    name="ticker_link_text" 
-                    placeholder="Alle Bereiche ansehen →"
-                    defaultValue={settings?.ticker_link_text as string || "Alle Bereiche ansehen →"} 
-                    onChange={(e) => saveSetting("ticker_link_text", e.target.value)}
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </TabsContent>
       </Tabs>
     </div>

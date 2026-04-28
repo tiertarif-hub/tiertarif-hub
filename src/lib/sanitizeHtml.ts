@@ -1,5 +1,6 @@
 import DOMPurify from "dompurify";
 import { normalizeNavigableHref } from "@/lib/routes";
+import { normalizeSupabasePublicImageUrl, normalizeSupabasePublicSrcSet } from "@/lib/storageImage";
 
 const CMS_ALLOWED_TAGS = [
   "h1", "h2", "h3", "h4", "h5", "h6",
@@ -181,38 +182,13 @@ function buildSupabaseImageUrl(base: string, rawQuery: string, hash: string, wid
   params.set("quality", String(quality));
 
   const query = params.toString();
-  return base + (query ? "?" + query : "") + hash;
-}
-
-function buildSupabasePublicObjectUrl(base: string, rawQuery: string, hash: string) {
-  const normalizedBase = base.includes(RENDER_SEGMENT)
-    ? base.replace(RENDER_SEGMENT, STORAGE_SEGMENT)
-    : base;
-
-  const params = new URLSearchParams(rawQuery);
-  ["width", "height", "quality", "resize", "format"].forEach((key) => params.delete(key));
-
-  const query = params.toString();
-  return normalizedBase + (query ? "?" + query : "") + hash;
+  return `${base}${query ? `?${query}` : ""}${hash}`;
 }
 
 function rewriteImageSrcset(srcset: string, width: number, quality: number) {
-  return srcset
-    .split(",")
-    .map((entry) => {
-      const trimmed = entry.trim();
-      if (!trimmed) return trimmed;
-
-      const firstWhitespace = trimmed.search(/\s/);
-      if (firstWhitespace === -1) {
-        return optimizeSupabaseImageUrl(trimmed, width, quality);
-      }
-
-      const url = trimmed.slice(0, firstWhitespace);
-      const descriptor = trimmed.slice(firstWhitespace).trim();
-      return `${optimizeSupabaseImageUrl(url, width, quality)}${descriptor ? ` ${descriptor}` : ""}`;
-    })
-    .join(", ");
+  void width;
+  void quality;
+  return normalizeSupabasePublicSrcSet(srcset);
 }
 
 function normalizeImageWidth(value?: string | null): string | null {
@@ -317,21 +293,9 @@ function sanitizeWithCmsPolicy(html: string) {
 }
 
 export function optimizeSupabaseImageUrl(url?: string | null, width = 800, quality = 80): string {
-  if (!url) return "";
-
-  const trimmedUrl = String(url).trim();
-  if (!trimmedUrl) return "";
-
-  const { base, query, hash } = splitUrlParts(trimmedUrl);
-
-  // TierTarif: Supabase Image-Transform (/render/image/public/) liefert im Live-Projekt
-  // bei Branding-Bucket-Bildern 403. Deshalb nutzen Frontend-Karten und CMS-Bilder
-  // wieder die direkte /object/public/-URL und entfernen Transform-Parameter.
-  if (base.includes(RENDER_SEGMENT) || base.includes(STORAGE_SEGMENT)) {
-    return buildSupabasePublicObjectUrl(base, query, hash);
-  }
-
-  return trimmedUrl;
+  void width;
+  void quality;
+  return normalizeSupabasePublicImageUrl(url);
 }
 
 export function rewriteSupabaseStorageUrls(html?: string | null, width = 800, quality = 80): string {

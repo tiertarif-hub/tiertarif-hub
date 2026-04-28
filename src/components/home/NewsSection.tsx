@@ -20,6 +20,7 @@ import { format } from "date-fns";
 import { de } from "date-fns/locale";
 import { FadeIn } from "@/components/ui/FadeIn";
 import { normalizeInternalLinkTarget } from "@/lib/routes";
+import { normalizeSupabasePublicImageUrl } from "@/lib/storageImage";
 
 type FeedItem = {
   id: string;
@@ -54,25 +55,8 @@ const getExcerpt = (primary: string | null, secondary: string | null, fallback: 
 };
 
 const optimizeImageUrl = (url: string | null, width = 1536) => {
-  if (!url) return "";
-
-  try {
-    const parsed = new URL(url);
-
-    if (parsed.pathname.includes("/storage/v1/render/image/public/")) {
-      parsed.pathname = parsed.pathname.replace("/render/image/public/", "/object/public/");
-      ["width", "height", "quality", "resize", "format"].forEach((key) => parsed.searchParams.delete(key));
-      return parsed.toString();
-    }
-
-    if (parsed.pathname.includes("/storage/v1/object/public/")) {
-      return parsed.toString();
-    }
-  } catch {
-    return url;
-  }
-
-  return url;
+  void width;
+  return normalizeSupabasePublicImageUrl(url);
 };
 
 const NewsCard = ({ item }: { item: FeedItem }) => {

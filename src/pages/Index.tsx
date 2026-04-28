@@ -6,15 +6,11 @@ import { HeroSection } from "@/components/home/HeroSection";
 import { BigThreeSection } from "@/components/home/BigThreeSection";
 import { CategoriesSection } from "@/components/home/CategoriesSection";
 import { NewsSection } from "@/components/home/NewsSection";
-import { ForumSection } from "@/components/home/ForumSection";
 import { ScrollToTop } from "@/components/ui/ScrollToTop";
-import { AdSenseBanner } from "@/components/ads/AdSenseBanner";
-import { AmazonBanner } from "@/components/ads/AmazonBanner";
 import { LoadingScreen } from "@/components/ui/LoadingScreen";
 import { useGlobalAnalyticsCode } from "@/hooks/useGlobalAnalytics";
 import { useSettings, useHomeContent, useHomeLayout, useSiteTitle, useSiteDescription } from "@/hooks/useSettings";
 import { Helmet } from "react-helmet-async";
-import { AppTicker } from "@/components/home/AppTicker";
 import { HowItWorksSection } from "@/components/home/HowItWorksSection";
 import { HomeSEOText } from "@/components/home/HomeSEOText";
 import { HomeFAQSection } from "@/components/home/HomeFAQSection";
@@ -175,14 +171,9 @@ const Index = () => {
     how_it_works: <HowItWorksSection />,
     news: <NewsSection />,
     big_three: <BigThreeSection />,
-    forum: <ForumSection />,
-    trust: <AppTicker />,
     categories: <CategoriesSection />,
-    amazon_top: <AmazonBanner format="horizontal" />,
-    adsense_middle: <AdSenseBanner slotId="placeholder-1" />,
     home_faq: <HomeFAQSection />,
     seo: <HomeSEOText />,
-    mascot: null,
   };
 
   if (shouldShowInitialLoader) {

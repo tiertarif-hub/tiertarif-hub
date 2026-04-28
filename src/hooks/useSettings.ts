@@ -283,18 +283,13 @@ export function useActiveTheme() {
 // --- CMS DEFAULTS ---
 
 export const defaultHomeSections: HomeSection[] = [
-  { id: "hero", label: "Hero Sektion", enabled: true, order: 0 },
-  { id: "how_it_works", label: "So funktioniert das Portal", enabled: true, order: 1 },
-  { id: "news", label: "Ratgeber / Magazin", enabled: true, order: 2 },
-  { id: "big_three", label: "Hauptbereiche", enabled: true, order: 3 },
-  { id: "forum", label: "Forum Teaser", enabled: false, order: 4 },
-  { id: "trust", label: "Trust-Leiste", enabled: true, order: 5 },
-  { id: "categories", label: "Kategorien Slider", enabled: true, order: 6 },
-  { id: "amazon_top", label: "Amazon Banner (Top)", enabled: false, order: 7 },
-  { id: "adsense_middle", label: "Google AdSense", enabled: false, order: 8 },
-  { id: "home_faq", label: "FAQ Startseite", enabled: true, order: 9 },
-  { id: "seo", label: "SEO Text (Unten)", enabled: true, order: 10 },
-  { id: "mascot", label: "Scouty Maskottchen", enabled: true, order: 11 },
+  { id: "hero", label: "Hero", enabled: true, order: 0 },
+  { id: "how_it_works", label: "So funktioniert TierTarif", enabled: true, order: 1 },
+  { id: "big_three", label: "Unsere Schwerpunkte", enabled: true, order: 2 },
+  { id: "news", label: "Vergleiche / Vorschau-Karten", enabled: true, order: 3 },
+  { id: "categories", label: "Vergleiche direkt öffnen", enabled: true, order: 4 },
+  { id: "home_faq", label: "FAQ Startseite", enabled: true, order: 5 },
+  { id: "seo", label: "Unsere Mission / SEO-Text", enabled: true, order: 6 },
 ];
 
 export const defaultHomeLayout = {
@@ -398,7 +393,7 @@ export const defaultHomeContent = {
     long_text: ""
   },
   categories: { headline: "Alle TierTarif-Bereiche im Überblick", count: 6, button_more: "Alle Kategorien anzeigen", button_card: "Bereich erkunden" },
-  news: { headline: "Ratgeber & Wissen", subheadline: "Aktuelles für Tierhalter", count: 3, button_text: "Alle Ratgeber ansehen", button_url: "/kategorien", read_more: "Artikel lesen" },
+  news: { headline: "Beliebte Vergleiche", subheadline: "Aktive TierTarif-Vergleiche", count: 3, button_text: "Alle Vergleiche ansehen", button_url: "/kategorien", read_more: "Vergleich öffnen" },
   forum_teaser: { headline: "Tierhalter-Community", subheadline: "Tausche dich mit anderen Tierhaltern aus und teile Erfahrungen rund um Hunde, Katzen und Versicherungsschutz.", link_text: "Alle Foren anzeigen", mobile_button: "Zur Community" }
 };
 
@@ -521,42 +516,29 @@ function createHomeSection(sectionId: string) {
   } as HomeSection;
 }
 
-export function normalizeHomeSectionsValue(rawSections?: HomeSection[] | null): HomeSection[] {
-  if (!Array.isArray(rawSections) || rawSections.length === 0) {
-    return cloneHomeSections(defaultHomeSections).map((section, index) => ({ ...section, order: index }));
-  }
+export const HOME_SECTION_IDS = new Set(defaultHomeSections.map((section) => section.id));
 
-  const sortedSavedSections = rawSections
-    .filter((section): section is HomeSection => Boolean(section?.id))
+function normalizeHomeSectionsValue(rawSections?: HomeSection[] | null): HomeSection[] {
+  const savedSections = Array.isArray(rawSections) ? rawSections : [];
+
+  const sortedSavedSections = savedSections
+    .filter((section): section is HomeSection => Boolean(section?.id) && HOME_SECTION_IDS.has(section.id))
     .slice()
     .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
     .map((section) => {
       const fallback = defaultHomeSections.find((entry) => entry.id === section.id);
+
       return {
         ...(fallback || {}),
         ...section,
-        label: section.label || fallback?.label || section.id,
+        // Labels bleiben codegeführt, damit alte DB-Beschriftungen wie "News" nicht wieder auftauchen.
+        label: fallback?.label || section.label || section.id,
         enabled: typeof section.enabled === "boolean" ? section.enabled : fallback?.enabled ?? true,
       } as HomeSection;
     });
 
-  const hasSection = (id: string) => sortedSavedSections.some((section) => section.id === id);
-
-  if (!hasSection("how_it_works")) {
-    const heroIndex = sortedSavedSections.findIndex((section) => section.id === "hero");
-    const insertIndex = heroIndex >= 0 ? heroIndex + 1 : 0;
-    sortedSavedSections.splice(insertIndex, 0, createHomeSection("how_it_works"));
-  }
-
-  if (!hasSection("home_faq")) {
-    const seoIndex = sortedSavedSections.findIndex((section) => section.id === "seo");
-    const mascotIndex = sortedSavedSections.findIndex((section) => section.id === "mascot");
-    const insertIndex = seoIndex >= 0 ? seoIndex : mascotIndex >= 0 ? mascotIndex : sortedSavedSections.length;
-    sortedSavedSections.splice(insertIndex, 0, createHomeSection("home_faq"));
-  }
-
   defaultHomeSections.forEach((defaultSection) => {
-    if (!hasSection(defaultSection.id)) {
+    if (!sortedSavedSections.some((section) => section.id === defaultSection.id)) {
       sortedSavedSections.push({ ...defaultSection });
     }
   });
@@ -582,34 +564,43 @@ export function useHomeLayout() {
   const { data: settings } = useSettings(); 
 
   return useMemo(() => {
-    const featureToggles = normalizeFeatureTogglesValue(settings?.feature_toggles as Partial<FeatureToggles> | undefined);
+    const rawSections = settings?.home_sections as HomeSection[] | undefined;
+    const legacyLayout = settings?.home_layout_v2 as typeof defaultHomeLayout | undefined;
+    const hasNewStructure = Array.isArray(rawSections) && rawSections.length > 0;
 
-    const layoutV2 = settings?.home_layout_v2 as typeof defaultHomeLayout | undefined;
-    const layout = { ...defaultHomeLayout, ...(layoutV2 || {}) };
+    let sections = normalizeHomeSectionsValue(rawSections);
 
-    const sections = normalizeHomeSectionsValue(settings?.home_sections as HomeSection[] | undefined);
+    // Einmaliger Fallback für alte Installationen: Wenn noch keine home_sections existieren,
+    // werden die alten home_layout_v2-Werte übernommen. Sobald der Struktur Manager speichert,
+    // ist home_sections die einzige Quelle der Wahrheit.
+    if (!hasNewStructure && legacyLayout) {
+      sections = sections.map((section) => {
+        const legacyEnabled =
+          section.id === "hero" ? legacyLayout.hero :
+          section.id === "big_three" ? legacyLayout.big_three :
+          section.id === "categories" ? legacyLayout.categories :
+          section.id === "news" ? legacyLayout.news :
+          section.id === "seo" ? legacyLayout.seo_text :
+          undefined;
 
-    const mappedSections = sections.map((s) => {
-      let isEnabled = typeof s.enabled === 'boolean' ? s.enabled : true;
-      if (s.id === 'hero') isEnabled = layout.hero;
-      else if (s.id === 'trust') isEnabled = layout.trust && featureToggles.has_apps;
-      else if (s.id === 'big_three') isEnabled = layout.big_three;
-      else if (s.id === 'categories') isEnabled = layout.categories;
-      else if (s.id === 'news') isEnabled = layout.news;
-      else if (s.id === 'forum') isEnabled = layout.forum_teaser && featureToggles.has_forum;
-      else if (s.id === 'seo') isEnabled = layout.seo_text;
-      else if (s.id === 'amazon_top') isEnabled = layout.ads && featureToggles.has_ads && featureToggles.has_amazon;
-      else if (s.id === 'adsense_middle') isEnabled = layout.ads && featureToggles.has_ads && featureToggles.has_adsense;
-      else if (s.id === 'mascot') isEnabled = featureToggles.has_scouty;
+        return typeof legacyEnabled === "boolean" ? { ...section, enabled: legacyEnabled } : section;
+      });
+    }
 
-      return { ...s, enabled: isEnabled };
-    });
+    const layout = {
+      hero: sections.find((section) => section.id === "hero")?.enabled ?? true,
+      trust: false,
+      big_three: sections.find((section) => section.id === "big_three")?.enabled ?? true,
+      why_us: sections.find((section) => section.id === "how_it_works")?.enabled ?? true,
+      categories: sections.find((section) => section.id === "categories")?.enabled ?? true,
+      news: sections.find((section) => section.id === "news")?.enabled ?? true,
+      forum_teaser: false,
+      ads: false,
+      seo_text: sections.find((section) => section.id === "seo")?.enabled ?? true,
+    };
 
-    return { 
-      sections: mappedSections, 
-      layout 
-    }; 
-  }, [settings?.home_layout_v2, settings?.home_sections, settings?.feature_toggles]);
+    return { sections, layout }; 
+  }, [settings?.home_layout_v2, settings?.home_sections]);
 }
 
 export function useHeaderConfig() {
