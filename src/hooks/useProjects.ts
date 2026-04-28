@@ -66,6 +66,10 @@ export function useProjects(includeInactive = false, categoryId?: string) {
       if (error) throw error;
       return data as ProjectWithCategory[];
     },
+    staleTime: 2 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    retry: 1,
+    refetchOnWindowFocus: false,
   });
 }
 

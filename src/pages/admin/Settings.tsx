@@ -155,16 +155,37 @@ const HERO_IMAGE_FIELDS = {
 } as const;
 type HeroImageVariant = keyof typeof HERO_IMAGE_FIELDS;
 
-function getSafeStorageFileName(file: File, prefix: string) {
+function getSafeStorageFileName(file: File, prefix: string, folder = "hero") {
   const fileExtension = file.name.split(".").pop()?.toLowerCase() || "webp";
   const baseName = file.name
     .replace(/\.[^/.]+$/, "")
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
-    .slice(0, 60) || "hero";
+    .slice(0, 60) || prefix || "image";
 
-  return `hero/${prefix}-${Date.now()}-${baseName}.${fileExtension}`;
+  return `${folder}/${prefix}-${Date.now()}-${baseName}.${fileExtension}`;
+}
+
+function normalizeAdminImageUrl(value: unknown) {
+  const cleanUrl = String(value ?? "").trim();
+  if (!cleanUrl) return "";
+
+  const normalizedUrl = cleanUrl.startsWith("//") ? `https:${cleanUrl}` : cleanUrl;
+
+  try {
+    const parsed = new URL(normalizedUrl);
+
+    if (parsed.pathname.includes("/storage/v1/render/image/public/")) {
+      parsed.pathname = parsed.pathname.replace("/storage/v1/render/image/public/", "/storage/v1/object/public/");
+      parsed.search = "";
+      return parsed.toString();
+    }
+
+    return parsed.toString();
+  } catch {
+    return normalizedUrl;
+  }
 }
 
 export default function AdminSettings() {
@@ -197,6 +218,7 @@ export default function AdminSettings() {
   const [isUploadingLogo, setIsUploadingLogo] = useState(false);
   const [isUploadingHeroDesktop, setIsUploadingHeroDesktop] = useState(false);
   const [isUploadingHeroMobile, setIsUploadingHeroMobile] = useState(false);
+  const [isUploadingSeoCardImage, setIsUploadingSeoCardImage] = useState(false);
 
   // --- THEME STATES ---
   const [activeTheme, setActiveTheme] = useState("tiertarif");
@@ -722,6 +744,59 @@ export default function AdminSettings() {
     }
   };
 
+  const handleSeoCardImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+
+    if (!file || !localContent) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast({ title: "Ungültige Datei", description: "Bitte lade ein Bild im Format WebP, AVIF, JPG oder PNG hoch.", variant: "destructive" });
+      return;
+    }
+
+    if (file.size > 4 * 1024 * 1024) {
+      toast({ title: "Bild zu groß", description: "Bitte komprimiere das Mission-Bild auf maximal 4 MB. Für Live ideal: unter 300 KB.", variant: "destructive" });
+      return;
+    }
+
+    setIsUploadingSeoCardImage(true);
+
+    try {
+      const fileName = getSafeStorageFileName(file, "mission", "mission");
+      const { error: uploadError } = await supabase.storage
+        .from(HERO_IMAGE_BUCKET)
+        .upload(fileName, file, { cacheControl: "31536000", upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from(HERO_IMAGE_BUCKET)
+        .getPublicUrl(fileName);
+
+      const nextContent = {
+        ...localContent,
+        seo: {
+          ...localContent.seo,
+          card_image_url: publicUrl,
+        }
+      } as typeof defaultHomeContent;
+
+      await persistHomeContent(nextContent, "Mission-Bild gespeichert");
+    } catch (error: any) {
+      toast({
+        title: "Mission-Bild Upload fehlgeschlagen",
+        description: error?.message?.includes("Bucket not found")
+          ? "Storage-Bucket 'branding' fehlt. Bitte zuerst den Branding-Bucket in Supabase anlegen oder statt Upload eine Bild-URL eintragen."
+          : (error?.message || "Bitte Storage-Bucket und Admin-Rechte prüfen oder alternativ eine Bild-URL eintragen."),
+        variant: "destructive"
+      });
+    } finally {
+      setIsUploadingSeoCardImage(false);
+    }
+  };
+
+
   // --- BIG THREE DYNAMISCH ---
   const addBigThreeItem = () => {
     if (!localContent) return;
@@ -1106,7 +1181,7 @@ export default function AdminSettings() {
             </CardHeader>
             <CardContent className="space-y-5">
               <div className="rounded-2xl border border-accent/60 bg-accent/15 p-4 text-sm text-primary">
-                Für TierTarif bleiben Versicherungs-, Seiten-, Ratgeber-, Lead- und Trust-Module aktiv. Gaming, App-Deals, Massen-Generator und Ads bleiben standardmäßig aus.
+                Für TierTarif bleiben Versicherungs-, Seiten-, Ratgeber-, Redirect- und Analytics-Module aktiv. Footer-Links und Leads bleiben bewusst aus, weil Footer und Inhalte sauber über diese Einstellungen gepflegt werden.
               </div>
 
               <div className="grid gap-4 md:grid-cols-2">
@@ -1121,12 +1196,10 @@ export default function AdminSettings() {
                   ["has_amazon", "Amazon Banner", "Amazon-Banner auf Startseite und in Einstellungen erlauben."],
                   ["has_adsense", "Google AdSense", "AdSense-Bereiche auf Startseite und in Einstellungen erlauben."],
                   ["has_scouty", "Scouty Assistent", "Scouty Widget und Admin-Konfiguration aktivieren."],
-                  ["has_leads", "Leads", "Lead-Verwaltung im Admin anzeigen."],
-                  ["has_redirects", "Redirects", "Redirect-Verwaltung im Admin anzeigen."],
-                  ["has_footer_links", "Footer-Links", "Footer-Link-Verwaltung im Admin anzeigen."],
                   ["has_about", "Über uns", "Über-uns-Verwaltung im Admin anzeigen."],
-                  ["has_indexing_tools", "Indexing Tools", "Google-Ping und Sitemap-Aktionen in den Settings anzeigen."],
-                  ["has_analytics", "Analytics/API", "Analytics- und API-Einstellungen anzeigen."]
+                  ["has_redirects", "Redirects", "Tracking-Links und SEO-Redirect-Verwaltung im Admin anzeigen."],
+                  ["has_analytics", "Daily Stats", "Tägliche Seitenaufrufe und Länder-Statistiken im Dashboard anzeigen."],
+                  ["has_indexing_tools", "Indexing Tools", "Google-Ping und Sitemap-Aktionen in den Settings anzeigen."]
                 ].map(([key, label, description]) => (
                   <div key={key} className="flex items-center justify-between gap-4 rounded-2xl border border-border bg-muted/35 p-4">
                     <div className="space-y-1">
@@ -1848,16 +1921,20 @@ export default function AdminSettings() {
                                 onChange={e => updateBigThreeItem(idx, "image_url", e.target.value)}
                               />
                               <p className="text-xs leading-relaxed text-muted-foreground">
-                                Empfohlen für die Schwerpunkt-Karten: 900 × 520 px, 16:9, WebP/AVIF, ideal unter 180 KB. Feld leer lassen nutzt das TierTarif-Fallbackbild.
+                                Empfohlen für die Schwerpunkt-Karten: 1200 × 540 px, ca. 2.2:1 Wide-Format, WebP/AVIF, ideal unter 180 KB. Motiv mittig platzieren, weil die Card mit object-cover arbeitet.
                               </p>
                               {item.image_url && (
                                 <div className="flex flex-col gap-3 rounded-xl border border-border bg-background p-3 sm:flex-row sm:items-center sm:justify-between">
                                   <div className="flex items-center gap-3">
                                     <img
-                                      src={item.image_url}
+                                      src={normalizeAdminImageUrl(item.image_url)}
                                       alt=""
                                       className="h-16 w-24 rounded-lg border border-border object-cover"
                                       loading="lazy"
+                                      referrerPolicy="no-referrer"
+                                      onError={(event) => {
+                                        event.currentTarget.src = "/big-threes/tiertarif-tierversicherung-startseitenbild.webp";
+                                      }}
                                     />
                                     <div>
                                       <p className="text-sm font-semibold text-foreground">Bildvorschau</p>
@@ -1976,25 +2053,92 @@ export default function AdminSettings() {
                 </AccordionItem>
 
                 <AccordionItem value="seo">
-                  <AccordionTrigger className="font-semibold">SEO Texte (Unten)</AccordionTrigger>
-                  <AccordionContent className="space-y-4 pt-4">
+                  <AccordionTrigger className="font-semibold">Unsere Mission / SEO-Text unten</AccordionTrigger>
+                  <AccordionContent className="space-y-5 pt-4">
+                    <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-950">
+                      <strong>Wichtig:</strong> Diese Felder steuern den unteren Block „Unsere Mission“ inklusive Text und Bildkarte. Wenn „Deep Content“ leer ist, baut das Frontend den Text automatisch aus Headline, Intro und den zwei Blöcken.
+                    </div>
+
                     <div className="grid md:grid-cols-2 gap-4">
-                      <div className="space-y-2"><Label>SEO Headline</Label><Input value={localContent.seo?.headline || ""} onChange={e => updateContent("seo", "headline", e.target.value)} /></div>
-                      <div className="space-y-2 md:col-span-2"><Label>Intro Text</Label><Textarea value={localContent.seo?.intro || ""} onChange={e => updateContent("seo", "intro", e.target.value)} rows={2} /></div>
-                       
+                      <div className="space-y-2"><Label>Badge / Label</Label><Input value={(localContent.seo as any)?.badge || ""} placeholder="Unsere Mission" onChange={e => updateContent("seo", "badge", e.target.value)} /></div>
+                      <div className="space-y-2"><Label>Headline</Label><Input value={localContent.seo?.headline || ""} onChange={e => updateContent("seo", "headline", e.target.value)} /></div>
+                      <div className="space-y-2 md:col-span-2"><Label>Intro Text</Label><Textarea value={localContent.seo?.intro || ""} onChange={e => updateContent("seo", "intro", e.target.value)} rows={3} /></div>
+
                       <div className="space-y-2"><Label>Block 1 Titel</Label><Input value={localContent.seo?.block1_title || ""} onChange={e => updateContent("seo", "block1_title", e.target.value)} /></div>
-                      <div className="space-y-2"><Label>Block 1 Text</Label><Textarea value={localContent.seo?.block1_text || ""} onChange={e => updateContent("seo", "block1_text", e.target.value)} rows={2} /></div>
+                      <div className="space-y-2"><Label>Block 1 Text</Label><Textarea value={localContent.seo?.block1_text || ""} onChange={e => updateContent("seo", "block1_text", e.target.value)} rows={3} /></div>
 
                       <div className="space-y-2"><Label>Block 2 Titel</Label><Input value={localContent.seo?.block2_title || ""} onChange={e => updateContent("seo", "block2_title", e.target.value)} /></div>
-                      <div className="space-y-2"><Label>Block 2 Text</Label><Textarea value={localContent.seo?.block2_text || ""} onChange={e => updateContent("seo", "block2_text", e.target.value)} rows={2} /></div>
+                      <div className="space-y-2"><Label>Block 2 Text</Label><Textarea value={localContent.seo?.block2_text || ""} onChange={e => updateContent("seo", "block2_text", e.target.value)} rows={3} /></div>
                     </div>
-                     
-                    <div className="space-y-2 pt-4 border-t">
-                      <Label>Deep Content (Langer SEO Text)</Label>
-                      <Textarea className="min-h-[400px] font-mono text-sm bg-slate-50" value={seoLongText} onChange={(e) => {
+
+                    <div className="space-y-4 rounded-2xl border border-border bg-slate-50 p-4">
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div className="space-y-2 md:col-span-2">
+                          <Label>Mission-Bild URL</Label>
+                          <Input
+                            value={(localContent.seo as any)?.card_image_url || ""}
+                            placeholder="https://.../bild.webp oder /big-threes/dateiname.webp"
+                            onChange={e => updateContent("seo", "card_image_url", e.target.value)}
+                          />
+                          <p className="text-xs leading-relaxed text-muted-foreground">
+                            Empfohlen: WebP/AVIF, 600 × 920 px oder ähnliches Hochformat, ideal unter 300 KB. Supabase public Storage-URLs funktionieren direkt.
+                          </p>
+                        </div>
+
+                        <div className="space-y-2"><Label>Bild Alt-Text</Label><Input value={(localContent.seo as any)?.card_image_alt || ""} onChange={e => updateContent("seo", "card_image_alt", e.target.value)} /></div>
+                        <div className="space-y-2"><Label>Karten-Label oben</Label><Input value={(localContent.seo as any)?.card_eyebrow || ""} onChange={e => updateContent("seo", "card_eyebrow", e.target.value)} /></div>
+                        <div className="space-y-2"><Label>Karten-Titel unten</Label><Input value={(localContent.seo as any)?.card_title || ""} onChange={e => updateContent("seo", "card_title", e.target.value)} /></div>
+                        <div className="space-y-2"><Label>Karten-Label groß oben</Label><Input value={(localContent.seo as any)?.card_tier_label || ""} onChange={e => updateContent("seo", "card_tier_label", e.target.value)} /></div>
+                        <div className="space-y-2"><Label>Karten-Metrik links</Label><Input value={(localContent.seo as any)?.card_metric_left || ""} onChange={e => updateContent("seo", "card_metric_left", e.target.value)} /></div>
+                        <div className="space-y-2"><Label>Karten-Metrik rechts</Label><Input value={(localContent.seo as any)?.card_metric_right || ""} onChange={e => updateContent("seo", "card_metric_right", e.target.value)} /></div>
+                      </div>
+
+                      <div className="flex flex-col gap-3 rounded-xl border border-border bg-background p-3 sm:flex-row sm:items-center sm:justify-between">
+                        <div className="flex items-center gap-3">
+                          <img
+                            src={normalizeAdminImageUrl((localContent.seo as any)?.card_image_url || "/big-threes/tiertarif-tierversicherung-startseitenbild.webp")}
+                            alt=""
+                            className="h-24 w-16 rounded-lg border border-border object-cover"
+                            loading="lazy"
+                            onError={(event) => {
+                              event.currentTarget.src = "/big-threes/tiertarif-tierversicherung-startseitenbild.webp";
+                            }}
+                          />
+                          <div>
+                            <p className="text-sm font-semibold text-foreground">Mission-Bild Vorschau</p>
+                            <p className="max-w-[32rem] truncate text-xs text-muted-foreground">{(localContent.seo as any)?.card_image_url || "Fallback-Bild aktiv"}</p>
+                          </div>
+                        </div>
+                        <div className="flex flex-col gap-2 sm:flex-row">
+                          <Button type="button" variant="outline" size="sm" asChild disabled={isUploadingSeoCardImage}>
+                            <label className="cursor-pointer">
+                              {isUploadingSeoCardImage ? <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" /> : <Upload className="mr-2 h-3.5 w-3.5" />}
+                              Bild hochladen
+                              <input type="file" accept="image/*" className="hidden" onChange={handleSeoCardImageUpload} />
+                            </label>
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => updateContent("seo", "card_image_url", "")}
+                          >
+                            <X className="mr-2 h-3.5 w-3.5" />
+                            Bild entfernen
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2 border-t pt-4">
+                      <Label>Deep Content / HTML Override</Label>
+                      <Textarea className="min-h-[320px] font-mono text-sm bg-slate-50" value={seoLongText} onChange={(e) => {
                         setSeoLongText(e.target.value);
                         updateContent("seo", "long_text", e.target.value);
                       }} />
+                      <p className="text-xs text-muted-foreground">
+                        Optional: Wenn hier HTML/Text steht, wird genau dieser Content für „Unsere Mission“ genutzt. Leer lassen, wenn die strukturierten Felder oben greifen sollen.
+                      </p>
                     </div>
                   </AccordionContent>
                 </AccordionItem>

@@ -4,15 +4,13 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
   LayoutDashboard,
-  Link2,
-  Mail,
+  BarChart3,
   Settings,
   LogOut,
   Loader2,
   Menu,
   X,
   UploadCloud,
-  BarChart3,
   Globe,
   BookOpen,
   Smartphone,
@@ -43,9 +41,7 @@ const navItems: AdminNavItem[] = [
   { label: "Ratgeber / Magazin", icon: BookOpen, path: "/admin/forum", feature: "has_magazine" },
   { label: "Massen-Generator", icon: UploadCloud, path: "/admin/multi-publisher", feature: "has_mass_generator" },
   { label: "Redirects", icon: BarChart3, path: "/admin/redirects", feature: "has_redirects" },
-  { label: "Footer-Links", icon: Link2, path: "/admin/footer-links", feature: "has_footer_links" },
   { label: "Über uns", icon: Users, path: "/admin/about", feature: "has_about" },
-  { label: "Leads", icon: Mail, path: "/admin/leads", feature: "has_leads" },
   { label: "Einstellungen", icon: Settings, path: "/admin/settings" },
 ];
 

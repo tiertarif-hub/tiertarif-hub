@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useProjects, useCreateProject, useUpdateProject, useDeleteProject, type ProjectWithCategory } from "@/hooks/useProjects";
-import { useCategories } from "@/hooks/useCategories";
+import { useCategoryOptions } from "@/hooks/useCategories";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { projectSchema, type ProjectInput } from "@/lib/schemas";
@@ -11,14 +11,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, Loader2, ExternalLink, ArrowUp, ArrowDown } from "lucide-react";
 
 export default function AdminProjects() {
   const { data: projects = [], isLoading } = useProjects(true);
-  const { data: categories = [] } = useCategories(true);
+  const { data: categories = [], isLoading: isCategoriesLoading } = useCategoryOptions(true);
   const createProject = useCreateProject();
   const updateProject = useUpdateProject();
   const deleteProject = useDeleteProject();
@@ -179,14 +179,6 @@ export default function AdminProjects() {
     }
   }
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-4">
@@ -195,9 +187,9 @@ export default function AdminProjects() {
           <p className="text-muted-foreground">Verwalte deine Vergleichsportale und Anbieter.</p>
         </div>
         <div className="flex items-center gap-4">
-          <Select value={filterCategory} onValueChange={setFilterCategory}>
+          <Select value={filterCategory} onValueChange={setFilterCategory} disabled={isCategoriesLoading}>
             <SelectTrigger className="w-48">
-              <SelectValue placeholder="Alle Kategorien" />
+              <SelectValue placeholder={isCategoriesLoading ? "Kategorien laden..." : "Alle Kategorien"} />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Alle Kategorien</SelectItem>
@@ -221,6 +213,9 @@ export default function AdminProjects() {
                 <DialogTitle className="font-display">
                   {editingProject ? "Projekt bearbeiten" : "Neues Projekt"}
                 </DialogTitle>
+                <DialogDescription>
+                  Verwalte Anbieter-Daten, Ziel-URL, Kategorie, Region und Sichtbarkeit für dein Vergleichsportal.
+                </DialogDescription>
               </DialogHeader>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
@@ -281,6 +276,7 @@ export default function AdminProjects() {
                     <Select 
                       value={categoryId || "none"} 
                       onValueChange={(v) => setValue("category_id", v === "none" ? null : v)}
+                      disabled={isCategoriesLoading}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Wählen..." />
@@ -366,7 +362,16 @@ export default function AdminProjects() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredProjects.length === 0 ? (
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="py-8">
+                    <div className="flex items-center justify-center gap-3 text-muted-foreground">
+                      <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                      Partner & Angebote werden geladen...
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ) : filteredProjects.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
                     Keine Projekte vorhanden. Erstelle dein erstes Projekt.

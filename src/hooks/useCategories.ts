@@ -78,6 +78,33 @@ const CATEGORY_PUBLIC_LIST_SELECT = `
   custom_css
 `;
 
+
+export type CategoryOption = Pick<Category, "id" | "name" | "icon" | "sort_order" | "is_active">;
+
+export const useCategoryOptions = (includeInactive: boolean = false) => {
+  return useQuery({
+    queryKey: ["category_options", includeInactive],
+    queryFn: async () => {
+      let query = supabase
+        .from("categories")
+        .select("id, name, icon, sort_order, is_active")
+        .order("sort_order");
+
+      if (!includeInactive) {
+        query = query.eq("is_active", true);
+      }
+
+      const { data, error } = await query;
+      if (error) throw error;
+      return data as CategoryOption[];
+    },
+    staleTime: 5 * 60 * 1000,
+    gcTime: 15 * 60 * 1000,
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
+};
+
 export const useCategories = (includeInactive: boolean = false) => {
   return useQuery({
     queryKey: ["categories_v3", includeInactive],
@@ -97,6 +124,10 @@ export const useCategories = (includeInactive: boolean = false) => {
       if (error) throw error;
       return data as Category[];
     },
+    staleTime: 5 * 60 * 1000,
+    gcTime: 15 * 60 * 1000,
+    retry: 1,
+    refetchOnWindowFocus: false,
   });
 };
 

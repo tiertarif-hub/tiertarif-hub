@@ -447,6 +447,64 @@ export type Database = {
           user_agent?: string | null
         }
       }
+      daily_stats: {
+        Row: {
+          count: number
+          created_at: string
+          id: string
+          item_id: string
+          stat_date: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          count?: number
+          created_at?: string
+          id?: string
+          item_id: string
+          stat_date?: string
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          count?: number
+          created_at?: string
+          id?: string
+          item_id?: string
+          stat_date?: string
+          type?: string
+          updated_at?: string
+        }
+      }
+      page_views_analytics: {
+        Row: {
+          country: string
+          created_at: string
+          id: string
+          page_name: string
+          page_type: string
+          view_date: string
+          visitor_hash: string
+        }
+        Insert: {
+          country?: string
+          created_at?: string
+          id?: string
+          page_name: string
+          page_type: string
+          view_date?: string
+          visitor_hash: string
+        }
+        Update: {
+          country?: string
+          created_at?: string
+          id?: string
+          page_name?: string
+          page_type?: string
+          view_date?: string
+          visitor_hash?: string
+        }
+      }
       profiles: {
         Row: {
           avatar_url: string | null

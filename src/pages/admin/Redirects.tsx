@@ -19,7 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -212,6 +212,9 @@ function TrackingLinksTab() {
                 <DialogTitle className="font-display">
                   {editingRedirect ? "Tracking-Link bearbeiten" : "Neuen Tracking-Link erstellen"}
                 </DialogTitle>
+                <DialogDescription>
+                  Lege saubere Tracking-Slugs für Affiliate-Weiterleitungen an. Klicks werden über die Edge Function gezählt.
+                </DialogDescription>
               </DialogHeader>
 
               <form onSubmit={handleSubmit} className="space-y-4">

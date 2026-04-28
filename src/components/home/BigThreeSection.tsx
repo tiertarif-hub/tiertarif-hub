@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, type SyntheticEvent } from "react";
 import {
   ArrowRight,
   Bot,
@@ -141,8 +141,13 @@ const hubHasActiveComparisonChildren = (hub: Category, categoriesBySlug: Map<str
 };
 
 const getOptimizedImageUrl = (url: string | undefined, title: string, width = 720, quality = 75) => {
-  const finalUrl = url && url.trim() !== "" ? url.trim() : (CATEGORY_IMAGES[title] || DEFAULT_CATEGORY_IMAGE);
+  const cleanUrl = String(url ?? "").trim();
+  const finalUrl = cleanUrl !== "" ? cleanUrl : (CATEGORY_IMAGES[title] || DEFAULT_CATEGORY_IMAGE);
   if (!finalUrl) return "";
+
+  if (finalUrl.startsWith("//")) {
+    return `https:${finalUrl}`;
+  }
 
   try {
     const parsed = new URL(finalUrl);
@@ -155,16 +160,16 @@ const getOptimizedImageUrl = (url: string | undefined, title: string, width = 72
       return parsed.toString();
     }
 
-    if (parsed.pathname.includes("/storage/v1/object/public/")) {
-      parsed.pathname = parsed.pathname.replace("/object/public/", "/render/image/public/");
-      parsed.searchParams.set("width", String(width));
-      parsed.searchParams.set("quality", String(quality));
+    // Supabase public Storage-Bilder stabilisieren:
+    // /render/image/public/ kann je nach Bucket/Transform-Limit 400/404/429 liefern.
+    // Für Admin-Bilder nutzen wir deshalb die direkte /object/public/-URL ohne Transform-Query.
+    if (parsed.pathname.includes("/storage/v1/render/image/public/")) {
+      parsed.pathname = parsed.pathname.replace("/storage/v1/render/image/public/", "/storage/v1/object/public/");
+      parsed.search = "";
       return parsed.toString();
     }
 
-    if (parsed.pathname.includes("/storage/v1/render/image/public/")) {
-      parsed.searchParams.set("width", String(width));
-      parsed.searchParams.set("quality", String(quality));
+    if (parsed.pathname.includes("/storage/v1/object/public/")) {
       return parsed.toString();
     }
   } catch {
@@ -172,6 +177,18 @@ const getOptimizedImageUrl = (url: string | undefined, title: string, width = 72
   }
 
   return finalUrl;
+};
+
+const handleCategoryImageError = (event: SyntheticEvent<HTMLImageElement>, title: string) => {
+  const fallbackUrl = CATEGORY_IMAGES[title] || DEFAULT_CATEGORY_IMAGE;
+  const image = event.currentTarget;
+
+  if (!fallbackUrl || image.src.endsWith(fallbackUrl)) {
+    image.style.display = "none";
+    return;
+  }
+
+  image.src = fallbackUrl;
 };
 
 const getChecklistItems = (item: BigThreeItem) => {
@@ -351,7 +368,9 @@ export const BigThreeSection = () => {
                         src={imageUrl}
                         alt=""
                         loading="lazy"
-                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        referrerPolicy="no-referrer"
+                        onError={(event) => handleCategoryImageError(event, item.title)}
+                        className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-primary/20 via-secondary/10 to-transparent" />
                     </div>

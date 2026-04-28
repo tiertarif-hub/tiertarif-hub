@@ -130,9 +130,8 @@ export const HeroSection = () => {
             <div className="absolute inset-0 bg-gradient-to-b from-[#FAF7F0]/70 via-transparent to-white" />
           </>
         ) : (
-          <div className="absolute inset-0 opacity-[0.55] [background-image:linear-gradient(rgba(11,75,69,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(11,75,69,0.045)_1px,transparent_1px)] [background-size:34px_34px]" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[#FAF7F0] via-white to-[#EEF7F3]" />
         )}
-        <div className="absolute inset-0 opacity-[0.36] [background-image:linear-gradient(rgba(11,75,69,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(11,75,69,0.045)_1px,transparent_1px)] [background-size:34px_34px]" />
         <div className="absolute left-[-8rem] top-24 h-72 w-72 rounded-full bg-secondary/10 blur-3xl" />
         <div className="absolute right-[-10rem] top-20 h-80 w-80 rounded-full bg-primary/10 blur-3xl" />
         <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-white to-transparent" />

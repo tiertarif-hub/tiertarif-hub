@@ -105,11 +105,11 @@ export const defaultFeatureToggles: FeatureToggles = {
   has_adsense: false,
   has_scouty: true,
   has_leads: false,
-  has_redirects: false,
-  has_footer_links: true,
+  has_redirects: true,
+  has_footer_links: false,
   has_about: true,
   has_indexing_tools: false,
-  has_analytics: false,
+  has_analytics: true,
   has_magazine: true,
 };
 
