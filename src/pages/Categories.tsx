@@ -12,9 +12,9 @@ import { getCategoriesCanonicalUrl, getCategoryRoute } from "@/lib/routes";
 
 
 const CATEGORY_FALLBACK_LINKS = [
-  { label: "Forum", to: "/forum" },
-  { label: "Top Apps", to: "/top-apps" },
-  { label: "Kontakt", to: "/kontakt" },
+  { label: "Hundekrankenversicherung", to: "/hundekrankenversicherung-vergleich" },
+  { label: "Katzenversicherung", to: "/katzenversicherung-vergleich" },
+  { label: "Pferde OP Versicherung", to: "/pferde-op-versicherung-vergleich" },
   { label: "Wie wir vergleichen", to: "/wie-wir-vergleichen" },
 ];
 
@@ -88,8 +88,8 @@ export default function Categories() {
   return (
     <div className="min-h-screen flex flex-col bg-background font-sans">
       <Helmet>
-        <title>Alle Kategorien 2026 im Überblick | Standard Portal</title>
-        <meta name="description" content="Alle Standard Portal Kategorien im Überblick: Versicherungen, Finanzen, Energie, Internet, KI, Apps und weitere Themen sachlich geordnet." />
+        <title>TierTarif Vergleiche: Hunde, Katzen & Pferde | TierTarif</title>
+        <meta name="description" content="TierTarif Vergleiche im Überblick: Hundekrankenversicherung, Katzenversicherung und Pferde OP Versicherung sachlich prüfen." />
         <link rel="canonical" href={getCategoriesCanonicalUrl()} />
       </Helmet>
 
@@ -102,10 +102,10 @@ export default function Categories() {
               Unsere Vergleiche
             </h1>
             <p className="text-lg text-muted-foreground mb-6">
-              Wähle eine Kategorie, um passende Angebote, Vergleiche und Hintergrundinformationen im Überblick zu sehen.
+              Wähle einen Vergleich, um Tarifmerkmale, Kostenpunkte, Wartezeiten und Leistungen strukturiert zu prüfen.
             </p>
 
-            <nav aria-label="Beliebte Kategorien" className="flex flex-wrap justify-center gap-3 mb-8">
+            <nav aria-label="Beliebte Vergleiche" className="flex flex-wrap justify-center gap-3 mb-8">
               {CATEGORY_FALLBACK_LINKS.map((link) => (
                 <Link
                   key={link.to}
@@ -123,7 +123,7 @@ export default function Categories() {
               </div>
               <Input
                 type="text"
-                placeholder="Kategorie suchen..."
+                placeholder="Vergleich suchen..."
                 className="pl-10 h-12 rounded-xl bg-white shadow-sm border-slate-200 focus:border-primary"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -195,7 +195,7 @@ export default function Categories() {
 
                         <div className="flex items-center justify-between mt-auto pt-4 border-t border-border/50">
                           <span className={`text-sm font-medium ${theme.text}`}>
-                            {projectCount} Anbieter
+                            {projectCount > 0 ? `${projectCount} Angebote` : "Vergleich öffnen"}
                           </span>
                           <ArrowRight className={`w-5 h-5 ${theme.text} opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all`} />
                         </div>
