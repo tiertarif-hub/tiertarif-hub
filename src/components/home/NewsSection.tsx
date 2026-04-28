@@ -55,9 +55,23 @@ const getExcerpt = (primary: string | null, secondary: string | null, fallback: 
 
 const optimizeImageUrl = (url: string | null, width = 1536) => {
   if (!url) return "";
-  if (url.includes(".supabase.co/storage/v1/object/public/")) {
-    return url.replace('/object/public/', '/render/image/public/') + `?width=${width}&quality=82`;
+
+  try {
+    const parsed = new URL(url);
+
+    if (parsed.pathname.includes("/storage/v1/render/image/public/")) {
+      parsed.pathname = parsed.pathname.replace("/render/image/public/", "/object/public/");
+      ["width", "height", "quality", "resize", "format"].forEach((key) => parsed.searchParams.delete(key));
+      return parsed.toString();
+    }
+
+    if (parsed.pathname.includes("/storage/v1/object/public/")) {
+      return parsed.toString();
+    }
+  } catch {
+    return url;
   }
+
   return url;
 };
 

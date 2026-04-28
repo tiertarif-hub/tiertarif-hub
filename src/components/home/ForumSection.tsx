@@ -53,9 +53,23 @@ export function ForumSection() {
 // KYRA UPDATE: Supabase Bild-Kompressor
   const optimizeImageUrl = (url: string, width = 600) => {
     if (!url) return "";
-    if (url.includes(".supabase.co/storage/v1/object/public/")) {
-      return url.replace('/object/public/', '/render/image/public/') + `?width=${width}&quality=80`;
+
+    try {
+      const parsed = new URL(url);
+
+      if (parsed.pathname.includes("/storage/v1/render/image/public/")) {
+        parsed.pathname = parsed.pathname.replace("/render/image/public/", "/object/public/");
+        ["width", "height", "quality", "resize", "format"].forEach((key) => parsed.searchParams.delete(key));
+        return parsed.toString();
+      }
+
+      if (parsed.pathname.includes("/storage/v1/object/public/")) {
+        return parsed.toString();
+      }
+    } catch {
+      return url;
     }
+
     return url;
   };
   // 1:1 Parität mit der NewsSection (Magazin Edge-to-Edge Kartendesign)

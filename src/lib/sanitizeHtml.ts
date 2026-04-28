@@ -181,7 +181,19 @@ function buildSupabaseImageUrl(base: string, rawQuery: string, hash: string, wid
   params.set("quality", String(quality));
 
   const query = params.toString();
-  return `${base}${query ? `?${query}` : ""}${hash}`;
+  return base + (query ? "?" + query : "") + hash;
+}
+
+function buildSupabasePublicObjectUrl(base: string, rawQuery: string, hash: string) {
+  const normalizedBase = base.includes(RENDER_SEGMENT)
+    ? base.replace(RENDER_SEGMENT, STORAGE_SEGMENT)
+    : base;
+
+  const params = new URLSearchParams(rawQuery);
+  ["width", "height", "quality", "resize", "format"].forEach((key) => params.delete(key));
+
+  const query = params.toString();
+  return normalizedBase + (query ? "?" + query : "") + hash;
 }
 
 function rewriteImageSrcset(srcset: string, width: number, quality: number) {
@@ -312,12 +324,11 @@ export function optimizeSupabaseImageUrl(url?: string | null, width = 800, quali
 
   const { base, query, hash } = splitUrlParts(trimmedUrl);
 
-  if (base.includes(RENDER_SEGMENT)) {
-    return buildSupabaseImageUrl(base, query, hash, width, quality);
-  }
-
-  if (base.includes(STORAGE_SEGMENT)) {
-    return buildSupabaseImageUrl(base.replace(STORAGE_SEGMENT, RENDER_SEGMENT), query, hash, width, quality);
+  // TierTarif: Supabase Image-Transform (/render/image/public/) liefert im Live-Projekt
+  // bei Branding-Bucket-Bildern 403. Deshalb nutzen Frontend-Karten und CMS-Bilder
+  // wieder die direkte /object/public/-URL und entfernen Transform-Parameter.
+  if (base.includes(RENDER_SEGMENT) || base.includes(STORAGE_SEGMENT)) {
+    return buildSupabasePublicObjectUrl(base, query, hash);
   }
 
   return trimmedUrl;
