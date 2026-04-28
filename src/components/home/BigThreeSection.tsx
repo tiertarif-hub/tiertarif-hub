@@ -1,4 +1,4 @@
-import { useMemo, useRef, type SyntheticEvent } from "react";
+import { useMemo, useRef } from "react";
 import {
   ArrowRight,
   Bot,
@@ -43,6 +43,12 @@ const getIcon = (type: string | undefined) => {
 
 // Helle TierTarif-Fallbacks, falls Admin-Feld leer ist.
 const DEFAULT_CATEGORY_IMAGE = "/big-threes/tiertarif-tierversicherung-startseitenbild.webp";
+
+// MARKUS-HINWEIS: Hier kannst du die Bild-/Kartenhöhe selbst feinjustieren.
+// Bildhöhe ändern: z. B. "h-60 sm:h-64 lg:h-72" für noch höhere Bilder.
+// Kartenhöhe ändern: z. B. "min-h-[590px]" für insgesamt höhere Cards.
+const CATEGORY_IMAGE_HEIGHT_CLASS = "h-56 sm:h-60 lg:h-64";
+const CATEGORY_CARD_MIN_HEIGHT_CLASS = "min-h-[560px]";
 
 const CATEGORY_IMAGES: Record<string, string> = {
   "Versicherungen": "/big-threes/tiertarif-versicherungen-startseitenbild.webp",
@@ -141,13 +147,8 @@ const hubHasActiveComparisonChildren = (hub: Category, categoriesBySlug: Map<str
 };
 
 const getOptimizedImageUrl = (url: string | undefined, title: string, width = 720, quality = 75) => {
-  const cleanUrl = String(url ?? "").trim();
-  const finalUrl = cleanUrl !== "" ? cleanUrl : (CATEGORY_IMAGES[title] || DEFAULT_CATEGORY_IMAGE);
+  const finalUrl = url && url.trim() !== "" ? url.trim() : (CATEGORY_IMAGES[title] || DEFAULT_CATEGORY_IMAGE);
   if (!finalUrl) return "";
-
-  if (finalUrl.startsWith("//")) {
-    return `https:${finalUrl}`;
-  }
 
   try {
     const parsed = new URL(finalUrl);
@@ -160,12 +161,10 @@ const getOptimizedImageUrl = (url: string | undefined, title: string, width = 72
       return parsed.toString();
     }
 
-    // Supabase public Storage-Bilder stabilisieren:
-    // /render/image/public/ kann je nach Bucket/Transform-Limit 400/404/429 liefern.
-    // Für Admin-Bilder nutzen wir deshalb die direkte /object/public/-URL ohne Transform-Query.
     if (parsed.pathname.includes("/storage/v1/render/image/public/")) {
-      parsed.pathname = parsed.pathname.replace("/storage/v1/render/image/public/", "/storage/v1/object/public/");
-      parsed.search = "";
+      parsed.pathname = parsed.pathname.replace("/render/image/public/", "/object/public/");
+      parsed.searchParams.delete("width");
+      parsed.searchParams.delete("quality");
       return parsed.toString();
     }
 
@@ -177,18 +176,6 @@ const getOptimizedImageUrl = (url: string | undefined, title: string, width = 72
   }
 
   return finalUrl;
-};
-
-const handleCategoryImageError = (event: SyntheticEvent<HTMLImageElement>, title: string) => {
-  const fallbackUrl = CATEGORY_IMAGES[title] || DEFAULT_CATEGORY_IMAGE;
-  const image = event.currentTarget;
-
-  if (!fallbackUrl || image.src.endsWith(fallbackUrl)) {
-    image.style.display = "none";
-    return;
-  }
-
-  image.src = fallbackUrl;
 };
 
 const getChecklistItems = (item: BigThreeItem) => {
@@ -273,7 +260,8 @@ export const BigThreeSection = () => {
   };
 
   return (
-    <section id="bereiche" className="relative overflow-hidden bg-white py-20 md:py-28">
+    <section id="schwerpunkte" className="relative overflow-hidden scroll-mt-[88px] bg-white py-20 md:py-28">
+      <span id="bereiche" className="absolute -top-24" aria-hidden="true" />
       <style>{`
         .standard-portal-category-slider {
           scrollbar-width: none;
@@ -350,37 +338,38 @@ export const BigThreeSection = () => {
                 <Link
                   key={item.id}
                   to={normalizeNavigableHref(item.link)}
-                  className="standard-portal-category-card tt-glass-card group relative flex min-h-[460px] snap-start flex-col overflow-hidden rounded-[1.75rem] border border-secondary/20 p-5 pt-7 transition-all duration-500 hover:-translate-y-1.5 hover:border-secondary/50 hover:shadow-2xl hover:shadow-secondary/15"
+                  className={`standard-portal-category-card tt-glass-card group relative flex ${CATEGORY_CARD_MIN_HEIGHT_CLASS} snap-start flex-col overflow-hidden rounded-[1.75rem] border border-secondary/20 p-0 transition-all duration-500 hover:-translate-y-1.5 hover:border-secondary/50 hover:shadow-2xl hover:shadow-secondary/15`}
                 >
-                  <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-primary via-secondary to-primary" />
-                  <div className="mb-5 flex items-start justify-between gap-4">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-secondary/10 text-primary ring-1 ring-secondary/20 transition-all duration-300 group-hover:bg-secondary group-hover:text-secondary-foreground">
-                      {getIcon(item.icon)}
-                    </div>
-                    <div className="rounded-full bg-secondary/10 px-3 py-1 text-xs font-extrabold uppercase tracking-wider text-secondary ring-1 ring-secondary/20">
-                      Prüfen
-                    </div>
-                  </div>
-
                   {imageUrl && (
-                    <div className="relative mb-5 h-36 overflow-hidden rounded-2xl bg-secondary/5 ring-1 ring-secondary/20 sm:h-40">
+                    <div className={`relative mb-0 ${CATEGORY_IMAGE_HEIGHT_CLASS} overflow-hidden rounded-t-[1.75rem] bg-secondary/5`}>
                       <img
                         src={imageUrl}
                         alt=""
                         loading="lazy"
-                        referrerPolicy="no-referrer"
-                        onError={(event) => handleCategoryImageError(event, item.title)}
                         className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+                        onError={(event) => {
+                          event.currentTarget.src = CATEGORY_IMAGES[item.title] || DEFAULT_CATEGORY_IMAGE;
+                        }}
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-primary/20 via-secondary/10 to-transparent" />
                     </div>
                   )}
 
-                  <div className="flex flex-1 flex-col">
-                    <h3 className="text-2xl font-display font-extrabold leading-tight text-primary transition-colors">
-                      {item.title}
-                    </h3>
-                    <p className="mt-3 line-clamp-3 text-sm font-medium leading-relaxed text-muted-foreground">
+                  <div className="flex flex-1 flex-col p-5">
+                    <div className="mb-4 flex items-start justify-between gap-4">
+                      <div className="flex min-w-0 items-center gap-3">
+                        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-secondary/20 bg-secondary/10 text-primary shadow-sm transition-all duration-300 group-hover:-translate-y-0.5 group-hover:bg-secondary group-hover:text-secondary-foreground">
+                          {getIcon(item.icon)}
+                        </span>
+                        <h3 className="min-w-0 text-2xl font-display font-extrabold leading-tight text-primary transition-colors">
+                          {item.title}
+                        </h3>
+                      </div>
+                      <span className="shrink-0 rounded-full border border-secondary/20 bg-secondary/10 px-3 py-1 text-xs font-extrabold uppercase tracking-wider text-secondary transition-all duration-300 group-hover:border-secondary/35 group-hover:bg-secondary/15">
+                        Prüfen
+                      </span>
+                    </div>
+
+                    <p className="line-clamp-3 text-sm font-medium leading-relaxed text-muted-foreground">
                       {item.desc}
                     </p>
 

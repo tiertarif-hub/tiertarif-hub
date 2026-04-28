@@ -404,7 +404,7 @@ export const defaultHomeContent = {
 
 export const defaultHeaderConfig = {
   button_text: "Jetzt vergleichen",
-  button_url: getCategoriesRoute(),
+  button_url: "/#schwerpunkte",
   nav_links: [
     { label: "Hunde", url: getCategoriesRoute() },
     { label: "Katzen", url: getCategoriesRoute() },

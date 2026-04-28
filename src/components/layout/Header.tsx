@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Gamepad2, BrainCircuit, Users, LayoutGrid, ChevronDown, FileText } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, type MouseEvent } from "react";
 import { useHeaderConfig, useSiteBrandName } from "@/hooks/useSettings";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { normalizeNavigableHref } from "@/lib/routes";
@@ -24,6 +24,11 @@ export const Header = ({ transparent = false }: HeaderProps) => {
   const navLinks = config.nav_links || [];
   const hubLinks = config.hub_links || [];
   const toolsLinks = config.tools_links || [];
+  const normalizedButtonUrl = normalizeNavigableHref(config.button_url);
+  const shouldScrollToFocusAreas =
+    String(config.button_text || "").toLowerCase().includes("vergleich") &&
+    ["/kategorien", "/categories", "#bereiche", "/#bereiche", "#schwerpunkte", "/#schwerpunkte"].includes(normalizedButtonUrl);
+  const primaryCtaUrl = shouldScrollToFocusAreas ? "/#schwerpunkte" : normalizedButtonUrl;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -46,6 +51,47 @@ export const Header = ({ transparent = false }: HeaderProps) => {
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [location.pathname]);
+
+  const scrollToAnchor = (anchorId: string) => {
+    const target = document.getElementById(anchorId);
+    if (!target) return false;
+
+    const headerOffset = 82;
+    const targetTop = target.getBoundingClientRect().top + window.scrollY - headerOffset;
+
+    window.scrollTo({
+      top: Math.max(targetTop, 0),
+      behavior: "smooth",
+    });
+
+    return true;
+  };
+
+  const handlePrimaryCtaClick = (event: MouseEvent<HTMLAnchorElement>) => {
+    const hashIndex = primaryCtaUrl.indexOf("#");
+
+    if (hashIndex === -1) {
+      setIsMobileMenuOpen(false);
+      return;
+    }
+
+    const targetPath = primaryCtaUrl.slice(0, hashIndex) || location.pathname;
+    const targetHash = primaryCtaUrl.slice(hashIndex + 1);
+    const isSamePageTarget =
+      (targetPath === "/" && location.pathname === "/") ||
+      targetPath === location.pathname ||
+      targetPath === "";
+
+    setIsMobileMenuOpen(false);
+
+    if (!targetHash || !isSamePageTarget) {
+      return;
+    }
+
+    event.preventDefault();
+    window.history.replaceState(null, "", `${location.pathname}#${targetHash}`);
+    window.setTimeout(() => scrollToAnchor(targetHash), 0);
+  };
 
   const getHeaderStyle = () => {
     return {
@@ -153,8 +199,8 @@ export const Header = ({ transparent = false }: HeaderProps) => {
               );
             })}
             
-            <Link to={normalizeNavigableHref(config.button_url)}>
-              <Button className="tt-coral-shine px-6 font-bold">
+            <Link to={primaryCtaUrl} onClick={handlePrimaryCtaClick}>
+              <Button className="tt-coral-shine tt-header-cta-v2 px-6 font-bold">
                 {config.button_text}
               </Button>
             </Link>
@@ -287,7 +333,7 @@ export const Header = ({ transparent = false }: HeaderProps) => {
                 </Accordion>
             </div>
 
-            <Link to={normalizeNavigableHref(config.button_url)} onClick={() => setIsMobileMenuOpen(false)} className="mt-4">
+            <Link to={primaryCtaUrl} onClick={handlePrimaryCtaClick} className="mt-4">
               <Button className="tt-coral-shine h-14 w-full rounded-xl text-lg font-bold">
                 {config.button_text}
               </Button>
