@@ -5,5 +5,4 @@ Disallow: /login/
 Disallow: /auth/
 Disallow: /my-account/
 
-# WICHTIG: Hier muss der Link zu deiner echten Sitemap hin!
-Sitemap: https://example.com/sitemap.xml
+Sitemap: https://tiertarif.com/sitemap.xml
