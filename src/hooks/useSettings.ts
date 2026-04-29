@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Json } from "@/integrations/supabase/types";
 import type { TrendingLink } from "@/lib/schemas";
 import { getCategoriesRoute, normalizeNavigableHref } from "@/lib/routes";
+import { TIERTARIF_COMPARISON_LINKS, resolveTierTarifComparisonHref } from "@/lib/tiertarifLinks";
 import { ABOUT_PAGE_SETTING_KEY } from "@/lib/aboutContent";
 import { DEFAULT_BRAND_NAME, DEFAULT_SITE_DESCRIPTION } from "@/lib/constants";
 import { useMemo } from "react";
@@ -340,18 +341,18 @@ export const defaultHomeContent = {
     badge: "TierTarif Überblick",
     headline: "Tiergesundheit sachlich vergleichen",
     link_text: "Kategorien ansehen →",
-    subheadline: "Hunde, Katzen und OP-Schutz transparent prüfen"
+    subheadline: "Hunde, Katzen und Pferde transparent prüfen"
   },
   big_three: { 
     headline: "Tierversicherung gezielt prüfen", 
     items: [
-        { id: "1", title: "Tierversicherungen", desc: "Leistungen, Kosten und Erstattung für Hund und Katze sachlich prüfen.", link: getCategoriesRoute(), button_text: "Vergleiche ansehen", theme: "tiertarif", image_url: "/big-threes/tiertarif-versicherungen-startseitenbild.webp", icon: "shield" },
-        { id: "2", title: "Hundeschutz", desc: "Krankenversicherung, OP-Schutz und Selbstbeteiligung übersichtlich einordnen.", link: getCategoriesRoute(), button_text: "Hundetarife prüfen", theme: "tiertarif", image_url: "/big-threes/tiertarif-tierversicherung-startseitenbild.webp", icon: "heart" },
-        { id: "3", title: "Katzenschutz", desc: "FORL, Zahn-OP, Wartezeiten und Erstattungsgrenzen besser verstehen.", link: getCategoriesRoute(), button_text: "Katzentarife prüfen", theme: "tiertarif", image_url: "/big-threes/tiertarif-tierversicherung-startseitenbild.webp", icon: "star" }
+        { id: "1", title: "Hunde", desc: "Kranken- und OP-Schutz für Hunde strukturiert prüfen.", link: TIERTARIF_COMPARISON_LINKS.hunde, button_text: "Hunde prüfen", theme: "tiertarif", image_url: "/big-threes/tiertarif-tierversicherung-startseitenbild.webp", icon: "heart" },
+        { id: "2", title: "Katzen", desc: "FORL, Zahn-OP, Wartezeiten und Erstattungsgrenzen besser verstehen.", link: TIERTARIF_COMPARISON_LINKS.katzen, button_text: "Katzen prüfen", theme: "tiertarif", image_url: "/big-threes/tiertarif-tierversicherung-startseitenbild.webp", icon: "star" },
+        { id: "3", title: "Pferde", desc: "OP-Schutz, Kolik-OP und Pferdehaftpflicht sachlich einordnen.", link: TIERTARIF_COMPARISON_LINKS.pferde, button_text: "Pferde prüfen", theme: "tiertarif", image_url: "/big-threes/tiertarif-tierversicherung-startseitenbild.webp", icon: "shield" }
     ],
-    finance_title: "Hundekrankenversicherung", finance_desc: "Leistungen, Erstattung und Kosten für Hunde prüfen.", finance_link: getCategoriesRoute(), finance_button: "Hundeschutz prüfen", 
-    software_title: "Katzenversicherung", software_desc: "OP-Schutz, Zahn-OP und Wartezeiten für Katzen einordnen.", software_link: getCategoriesRoute(), software_button: "Katzenschutz prüfen", 
-    services_title: "Tierversicherungen", services_desc: "Tarife, Leistungen und Bedingungen für Haustiere sachlich prüfen.", services_link: getCategoriesRoute(), services_button: "Zum Vergleich" 
+    finance_title: "Hundekrankenversicherung", finance_desc: "Leistungen, Erstattung und Kosten für Hunde prüfen.", finance_link: TIERTARIF_COMPARISON_LINKS.hunde, finance_button: "Hundeschutz prüfen", 
+    software_title: "Katzenversicherung", software_desc: "OP-Schutz, Zahn-OP und Wartezeiten für Katzen einordnen.", software_link: TIERTARIF_COMPARISON_LINKS.katzen, software_button: "Katzenschutz prüfen", 
+    services_title: "Pferde OP Versicherung", services_desc: "OP-Schutz, Kolik-OP und Pferdehaftpflicht sachlich prüfen.", services_link: TIERTARIF_COMPARISON_LINKS.pferde, services_button: "Pferde prüfen" 
   },
   why_us: {
     headline: "Warum TierTarif?",
@@ -401,9 +402,9 @@ export const defaultHeaderConfig = {
   button_text: "Jetzt vergleichen",
   button_url: "/#schwerpunkte",
   nav_links: [
-    { label: "Hunde", url: getCategoriesRoute() },
-    { label: "Katzen", url: getCategoriesRoute() },
-    { label: "OP-Schutz", url: getCategoriesRoute() }
+    { label: "Hunde", url: TIERTARIF_COMPARISON_LINKS.hunde },
+    { label: "Katzen", url: TIERTARIF_COMPARISON_LINKS.katzen },
+    { label: "Pferde", url: TIERTARIF_COMPARISON_LINKS.pferde }
   ],
   hub_links: [
     { label: "Alle Kategorien", url: "/kategorien", icon: "LayoutGrid" },
@@ -432,9 +433,9 @@ export const defaultFooterConfig = {
     { label: "Cookie-Einstellungen", url: "/cookie-einstellungen" }
   ], 
   popular_links: [
-    { label: "Hundeversicherung", url: getCategoriesRoute() },
-    { label: "Katzenversicherung", url: getCategoriesRoute() },
-    { label: "Tier-OP-Versicherung", url: getCategoriesRoute() }
+    { label: "Hundekrankenversicherung", url: TIERTARIF_COMPARISON_LINKS.hunde },
+    { label: "Katzenversicherung", url: TIERTARIF_COMPARISON_LINKS.katzen },
+    { label: "Pferde OP Versicherung", url: TIERTARIF_COMPARISON_LINKS.pferde }
   ],
   tools_links: [
     { label: "Alle Vergleiche", url: "/kategorien" },
@@ -458,7 +459,7 @@ function normalizeLinkConfigItems<T extends LinkConfigItem>(items: T[] | undefin
 
   return items.map((item) => ({
     ...item,
-    url: normalizeNavigableHref(String(item?.url ?? "")),
+    url: resolveTierTarifComparisonHref(String(item?.url ?? ""), [item?.label, item?.title, item?.description]),
   }));
 }
 
@@ -486,7 +487,7 @@ export function normalizeBigThreeItemsValue(items: any[] | undefined | null) {
 
   return items.map((item) => ({
     ...item,
-    link: normalizeNavigableHref(String(item?.link ?? "/")),
+    link: resolveTierTarifComparisonHref(String(item?.link ?? ""), [item?.title, item?.desc, item?.button_text]),
   }));
 }
 

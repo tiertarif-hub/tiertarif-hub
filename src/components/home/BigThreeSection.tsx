@@ -20,7 +20,8 @@ import {
 import { Link } from "react-router-dom";
 import { useHomeContent } from "@/hooks/useSettings";
 import { useCategories, type Category } from "@/hooks/useCategories";
-import { getCategoriesRoute, normalizeNavigableHref } from "@/lib/routes";
+import { normalizeNavigableHref } from "@/lib/routes";
+import { TIERTARIF_COMPARISON_LINKS, resolveTierTarifComparisonHref } from "@/lib/tiertarifLinks";
 
 // Icon Mapping für Admin-Typen
 const getIcon = (type: string | undefined) => {
@@ -81,34 +82,34 @@ type BigThreeItem = {
 
 const fallbackItems: BigThreeItem[] = [
   {
-    id: "v1",
-    title: "Tierversicherungen",
-    desc: "Leistungen, Kosten und Erstattung für Hund und Katze sachlich prüfen.",
-    link: getCategoriesRoute(),
-    button_text: "Vergleiche ansehen",
-    theme: "tiertarif",
-    image_url: "/big-threes/tiertarif-versicherungen-startseitenbild.webp",
-    icon: "shield",
-  },
-  {
     id: "h1",
-    title: "Hundeschutz",
-    desc: "Krankenversicherung, OP-Schutz und Selbstbeteiligung übersichtlich einordnen.",
-    link: getCategoriesRoute(),
-    button_text: "Hundetarife prüfen",
+    title: "Hunde",
+    desc: "Hundekrankenversicherung, OP-Schutz und Selbstbeteiligung übersichtlich einordnen.",
+    link: TIERTARIF_COMPARISON_LINKS.hunde,
+    button_text: "Hunde prüfen",
     theme: "tiertarif",
     image_url: "/big-threes/tiertarif-tierversicherung-startseitenbild.webp",
     icon: "heart",
   },
   {
     id: "k1",
-    title: "Katzenschutz",
-    desc: "FORL, Zahn-OP, Wartezeiten und Erstattungsgrenzen besser verstehen.",
-    link: getCategoriesRoute(),
-    button_text: "Katzentarife prüfen",
+    title: "Katzen",
+    desc: "Katzenversicherung, FORL, Zahn-OP und Wartezeiten besser verstehen.",
+    link: TIERTARIF_COMPARISON_LINKS.katzen,
+    button_text: "Katzen prüfen",
     theme: "tiertarif",
     image_url: "/big-threes/tiertarif-tierversicherung-startseitenbild.webp",
     icon: "star",
+  },
+  {
+    id: "p1",
+    title: "Pferde",
+    desc: "Pferde OP Versicherung, Kolik-OP und Pferdehaftpflicht sachlich prüfen.",
+    link: TIERTARIF_COMPARISON_LINKS.pferde,
+    button_text: "Pferde prüfen",
+    theme: "tiertarif",
+    image_url: "/big-threes/tiertarif-tierversicherung-startseitenbild.webp",
+    icon: "shield",
   },
 ];
 
@@ -203,7 +204,12 @@ export const BigThreeSection = () => {
 
   const rawItems = useMemo<BigThreeItem[]>(() => {
     const cmsItems = content?.big_three?.items || [];
-    return cmsItems.length > 0 ? cmsItems : fallbackItems;
+    const sourceItems = cmsItems.length > 0 ? cmsItems : fallbackItems;
+
+    return sourceItems.map((item) => ({
+      ...item,
+      link: resolveTierTarifComparisonHref(item.link, [item.title, item.desc, item.button_text]),
+    }));
   }, [content?.big_three?.items]);
 
   const categoriesBySlug = useMemo(() => {
@@ -221,7 +227,19 @@ export const BigThreeSection = () => {
       const hubSlug = getHubSlugFromItemLink(item.link);
       const hub = categoriesBySlug.get(hubSlug);
 
-      if (!hub || !hub.is_active || hub.template !== "hub_overview") {
+      if (!hub) {
+        return true;
+      }
+
+      if (!hub.is_active) {
+        return false;
+      }
+
+      if (hub.template === "comparison" || hub.template === "review") {
+        return true;
+      }
+
+      if (hub.template !== "hub_overview") {
         return false;
       }
 

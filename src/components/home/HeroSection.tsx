@@ -18,11 +18,28 @@ import {
 } from "lucide-react";
 
 const calculatorFields = [
-  { label: "Tierart", value: "Hund oder Katze", icon: Heart },
-  { label: "Alter", value: "Welpe, erwachsen, Senior", icon: Activity },
-  { label: "Schutzart", value: "Kranken- oder OP-Schutz", icon: ShieldCheck },
-  { label: "Prüffokus", value: "Wartezeit, Erstattung, Selbstbeteiligung", icon: ClipboardCheck },
-];
+  {
+    label: "Hunde",
+    value: "Hundekrankenversicherung Vergleich",
+    helper: "OP-Schutz, Vollschutz & GOT prüfen",
+    icon: Heart,
+    to: "/hundekrankenversicherung-vergleich",
+  },
+  {
+    label: "Katzen",
+    value: "Katzenversicherung Vergleich",
+    helper: "FORL, Zahn-OP & Wartezeiten prüfen",
+    icon: Activity,
+    to: "/katzenversicherung-vergleich",
+  },
+  {
+    label: "Pferde",
+    value: "Pferde OP Versicherung Vergleich",
+    helper: "Kolik-OP, Klinikwahl & Standgeld prüfen",
+    icon: ShieldCheck,
+    to: "/pferde-op-versicherung-vergleich",
+  },
+] as const;
 
 const trustItems = [
   "Tarife sachlich prüfen",
@@ -269,11 +286,11 @@ export const HeroSection = () => {
                   const Icon = field.icon;
 
                   return (
-                    <button
-                      key={field.label}
-                      type="button"
+                    <Link
+                      key={field.to}
+                      to={field.to}
                       className="group flex w-full items-center gap-4 rounded-2xl border border-border bg-background/60 p-4 text-left transition-all hover:-translate-y-0.5 hover:border-secondary/40 hover:bg-secondary/5 hover:shadow-md hover:shadow-secondary/10"
-                      aria-label={`${field.label}: ${field.value}`}
+                      aria-label={`${field.label}: ${field.value} öffnen`}
                     >
                       <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-primary shadow-sm ring-1 ring-border transition-all group-hover:bg-secondary group-hover:text-secondary-foreground">
                         <Icon className="h-5 w-5" />
@@ -285,9 +302,12 @@ export const HeroSection = () => {
                         <span className="mt-1 block text-sm font-extrabold text-foreground md:text-base">
                           {field.value}
                         </span>
+                        <span className="mt-1 block text-xs font-semibold text-muted-foreground">
+                          {field.helper}
+                        </span>
                       </span>
                       <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-secondary" />
-                    </button>
+                    </Link>
                   );
                 })}
               </div>
@@ -297,7 +317,7 @@ export const HeroSection = () => {
                   <div>
                     <div className="text-xs font-extrabold uppercase tracking-wider text-primary/70">Simulation</div>
                     <p className="mt-1 text-lg font-display font-extrabold text-primary">
-                      3 passende Prüfbereiche gefunden
+                      3 direkte Vergleiche verlinkt
                     </p>
                   </div>
                   <div className="rounded-full bg-secondary/10 px-3 py-1 text-xs font-extrabold text-secondary shadow-sm">
@@ -311,19 +331,23 @@ export const HeroSection = () => {
                   <div>
                     <div className="text-sm font-extrabold">Nächster Schritt</div>
                     <p className="mt-1 text-sm text-primary-foreground/75">
-                      Kategorie wählen und Leistungsdetails prüfen.
+                      Hunde, Katzen oder Pferde direkt auswählen.
                     </p>
                   </div>
-                  <Button asChild className="tt-coral-shine">
-                    <Link to="/kategorien">Starten</Link>
-                  </Button>
+                  <div className="flex shrink-0 flex-wrap justify-end gap-2">
+                    {calculatorFields.map((field) => (
+                      <Button key={field.to} asChild size="sm" className="tt-coral-shine rounded-xl px-3 text-xs font-extrabold">
+                        <Link to={field.to}>{field.label}</Link>
+                      </Button>
+                    ))}
+                  </div>
                 </div>
               </div>
 
               <div className="mt-5 flex items-center gap-3 rounded-2xl border border-border bg-muted/60 p-4">
                 <CheckCircle2 className="h-5 w-5 shrink-0 text-primary" />
                 <p className="text-sm font-semibold leading-relaxed text-foreground">
-                  Fokus auf Leistungen, Ausschlüsse, Wartezeiten und Kosten — ohne reißerische Versprechen.
+                  Direkt verlinkt: Hunde, Katzen und Pferde — ohne Sammelroute und ohne reißerische Versprechen.
                 </p>
               </div>
             </div>
