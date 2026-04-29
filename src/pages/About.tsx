@@ -96,7 +96,7 @@ export default function About() {
   const ctaLink = normalizeInternalLink(content.cta_button_link);
   const ctaIsExternal = ctaLink.startsWith("http://") || ctaLink.startsWith("https://") || ctaLink.startsWith("mailto:");
   const aboutPath = getAboutPublicPath(content.slug);
-  const canonicalUrl = `https://example.com${aboutPath}`;
+  const canonicalUrl = buildAbsoluteSiteUrl(aboutPath);
   const heroImage = optimizeSupabaseImageUrl(content.hero_image_url, 1920, 84) || DEFAULT_ABOUT_HERO_IMAGE;
 
   useForceSEO(content.meta_description);

@@ -9,7 +9,7 @@ import { buildAbsoluteSiteUrl } from "@/lib/routes";
 
 export default function HowWeCompare() {
   const location = useLocation();
-  const metaDescription = "So arbeitet Standard Portal: Methodik, Finanzierung, Kennzeichnung von Partnerinhalten und redaktionelle Einordnung transparent erklärt.";
+  const metaDescription = "So arbeitet TierTarif: Methodik, Finanzierung, Kennzeichnung von Partnerinhalten und redaktionelle Einordnung transparent erklärt.";
 
   useForceSEO(metaDescription);
 
@@ -17,14 +17,14 @@ export default function HowWeCompare() {
     <div className="font-sans antialiased text-slate-800 bg-[#fafafa] min-h-screen flex flex-col">
       <Helmet key={location.pathname} prioritizeSeoTags defer={false}>
         <html lang="de" />
-        <title>Wie Standard Portal arbeitet – Transparenz & Vergleich</title>
+        <title>Wie TierTarif arbeitet – Transparenz & Vergleich</title>
         <meta
           name="description"
           content={metaDescription}
         />
         <link rel="canonical" href={buildAbsoluteSiteUrl("/wie-wir-vergleichen")} />
         <meta name="robots" content="index, follow" />
-        <meta property="og:title" content="Wie Standard Portal arbeitet – Transparenz & Vergleich" />
+        <meta property="og:title" content="Wie TierTarif arbeitet – Transparenz & Vergleich" />
         <meta property="og:description" content={metaDescription} />
       </Helmet>
 
@@ -40,7 +40,7 @@ export default function HowWeCompare() {
             Wie wir arbeiten
           </h1>
           <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            Wir möchten komplexe Märkte verständlich einordnen. Hier erfährst du, wie Standard Portal als redaktionelles Informationsportal arbeitet, wie wir uns finanzieren und wie unsere Vergleiche entstehen.
+            Wir möchten komplexe Märkte verständlich einordnen. Hier erfährst du, wie TierTarif als redaktionelles Informationsportal arbeitet, wie wir uns finanzieren und wie unsere Vergleiche entstehen.
           </p>
         </div>
 
@@ -49,7 +49,7 @@ export default function HowWeCompare() {
             <TrendingUp className="w-10 h-10 text-orange-500 mb-5" />
             <h3 className="font-bold text-xl mb-3 text-[#0A0F1C]">Wie wir uns finanzieren</h3>
             <p className="text-slate-600 leading-relaxed text-sm md:text-base">
-              Die Nutzung von Standard Portal ist für dich kostenlos. Zur Finanzierung unseres Angebots nutzen wir unter anderem Affiliate-Links, externe Vergleichsrechner, Formulare oder Partneranbindungen. Wenn du über entsprechend gekennzeichnete Links, Buttons oder Partnerstrecken einen Vertrag abschließt oder eine Anfrage stellst, können wir in der Regel eine Vergütung vom jeweiligen Anbieter oder Partnernetzwerk erhalten. Für dich entstehen dadurch üblicherweise keine zusätzlichen Kosten oder Preisnachteile.
+              Die Nutzung von TierTarif ist für dich kostenlos. Zur Finanzierung unseres Angebots nutzen wir unter anderem Affiliate-Links, externe Vergleichsrechner, Formulare oder Partneranbindungen. Wenn du über entsprechend gekennzeichnete Links, Buttons oder Partnerstrecken einen Vertrag abschließt oder eine Anfrage stellst, können wir in der Regel eine Vergütung vom jeweiligen Anbieter oder Partnernetzwerk erhalten. Für dich entstehen dadurch üblicherweise keine zusätzlichen Kosten oder Preisnachteile.
             </p>
           </div>
 
@@ -84,7 +84,7 @@ export default function HowWeCompare() {
                 Keine individuelle Beratung
               </h3>
               <p className="text-slate-600 leading-relaxed">
-                Standard Portal ist ein redaktionelles Informationsportal. Die auf unserer Website bereitgestellten Inhalte dienen ausschließlich der allgemeinen Information. Wir erbringen keine individuelle Fach-, Vertrags-, Rechts- oder Steuerberatung. Vor dem Abschluss eines Vertrages oder der Nutzung eines Angebots solltest du die konkreten Bedingungen des jeweiligen Anbieters oder Partners eigenständig prüfen.
+                TierTarif ist ein redaktionelles Informationsportal. Die auf unserer Website bereitgestellten Inhalte dienen ausschließlich der allgemeinen Information. Wir erbringen keine individuelle Fach-, Vertrags-, Rechts- oder Steuerberatung. Vor dem Abschluss eines Vertrages oder der Nutzung eines Angebots solltest du die konkreten Bedingungen des jeweiligen Anbieters oder Partners eigenständig prüfen.
               </p>
             </div>
 
@@ -114,8 +114,8 @@ export default function HowWeCompare() {
             <ShieldCheck className="w-4 h-4 text-primary" />
             Weiterführende Bereiche
           </div>
-          <h2 className="text-2xl font-display font-bold text-[#0A0F1C] mb-3">Mehr Orientierung auf Standard Portal</h2>
-          <p className="text-slate-600 mb-6">Wer tiefer in Inhalte und Vergleiche einsteigen möchte, findet auf Standard Portal weitere Einstiegsseiten zu Kategorien, Kontakt und Vergleichsthemen.</p>
+          <h2 className="text-2xl font-display font-bold text-[#0A0F1C] mb-3">Mehr Orientierung auf TierTarif</h2>
+          <p className="text-slate-600 mb-6">Wer tiefer in Inhalte und Vergleiche einsteigen möchte, findet auf TierTarif weitere Einstiegsseiten zu Kategorien, Kontakt und Vergleichsthemen.</p>
           <div className="grid gap-4 md:grid-cols-3">
             <Link to="/kategorien" className="rounded-2xl border border-slate-200 p-5 transition-colors hover:border-primary hover:bg-slate-50">
               <Layers className="w-5 h-5 text-primary mb-3" />
@@ -130,7 +130,7 @@ export default function HowWeCompare() {
             <Link to="/versicherungen" className="rounded-2xl border border-slate-200 p-5 transition-colors hover:border-primary hover:bg-slate-50">
               <ArrowRight className="w-5 h-5 text-primary mb-3" />
               <div className="font-semibold text-slate-900 mb-1">Vergleiche ansehen</div>
-              <div className="text-sm text-slate-600">Direkter Einstieg in Versicherungs- und Vergleichsseiten von Standard Portal.</div>
+              <div className="text-sm text-slate-600">Direkter Einstieg in Versicherungs- und Vergleichsseiten von TierTarif.</div>
             </Link>
           </div>
         </section>

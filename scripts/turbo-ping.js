@@ -11,7 +11,7 @@ const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const KEY_FILE = path.resolve(__dirname, '../service-account.json');
-const DOMAIN = process.env.VITE_SITE_URL || process.env.SITE_URL || 'https://example.com';
+const DOMAIN = process.env.VITE_SITE_URL || process.env.SITE_URL || 'https://tiertarif.com';
 
 // HIER DEINE 10 URLS EINTRAGEN (Das ist Pflicht!)
 const URLS_TO_INDEX = [

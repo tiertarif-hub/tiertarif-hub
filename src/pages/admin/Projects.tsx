@@ -240,7 +240,7 @@ export default function AdminProjects() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="logo_url">Logo URL</Label>
-                    <Input id="logo_url" {...register("logo_url")} placeholder="https://example.com/logo.png" />
+                    <Input id="logo_url" {...register("logo_url")} placeholder="https://tiertarif.com/logo.png" />
                     {errors.logo_url && <p className="text-sm text-destructive mt-1">{errors.logo_url.message}</p>}
                   </div>
                   <div>

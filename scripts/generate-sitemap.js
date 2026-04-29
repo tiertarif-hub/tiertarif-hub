@@ -15,7 +15,7 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
 // Wir bevorzugen den Service Role Key für vollen Zugriff (umgeht RLS)
 const supabaseKey = process.env.VITE_SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
-const DOMAIN = process.env.VITE_SITE_URL || process.env.SITE_URL || 'https://example.com';
+const DOMAIN = process.env.VITE_SITE_URL || process.env.SITE_URL || 'https://tiertarif.com';
 
 console.log('🔧 Konfiguration prüfen...');
 if (!supabaseUrl || !supabaseKey) {

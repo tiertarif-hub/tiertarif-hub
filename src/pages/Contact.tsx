@@ -18,7 +18,7 @@ import { buildAbsoluteSiteUrl } from "@/lib/routes";
 
 export default function Contact() {
   const location = useLocation();
-  const metaDescription = "Kontakt zu Standard Portal: Hinweise senden, Partnerschaften anfragen oder Feedback zum Portal sachlich und direkt übermitteln.";
+  const metaDescription = "Kontakt zu TierTarif: Hinweise senden, Partnerschaften anfragen oder Feedback zum Portal sachlich und direkt übermitteln.";
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [formData, setFormData] = useState({
@@ -65,10 +65,10 @@ export default function Contact() {
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 font-sans text-slate-900">
       <Helmet key={location.pathname} prioritizeSeoTags defer={false}>
-        <title>Kontakt & Partner werden | Standard Portal</title>
+        <title>Kontakt & Partner werden | TierTarif</title>
         <meta key="description" name="description" content={metaDescription} />
         <link rel="canonical" href={buildAbsoluteSiteUrl("/kontakt")} />
-        <meta property="og:title" content="Kontakt & Partner werden | Standard Portal" />
+        <meta property="og:title" content="Kontakt & Partner werden | TierTarif" />
         <meta property="og:description" content={metaDescription} />
       </Helmet>
 
@@ -113,8 +113,8 @@ export default function Contact() {
                     </div>
                     <div className="pt-6 border-t border-white/10">
                       <p className="text-xs text-slate-500 uppercase tracking-widest font-bold mb-2">E-Mail Kontakt</p>
-                      <a href="mailto:kontakt@example.com" className="text-white hover:text-orange-400 transition-colors font-medium flex items-center gap-2">
-                        <Mail className="w-4 h-4" /> kontakt@example.com
+                      <a href="mailto:kontakt@tiertarif.com" className="text-white hover:text-orange-400 transition-colors font-medium flex items-center gap-2">
+                        <Mail className="w-4 h-4" /> kontakt@tiertarif.com
                       </a>
                     </div>
                   </CardContent>
@@ -214,10 +214,10 @@ export default function Contact() {
           <div className="max-w-5xl mx-auto rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500 mb-4">
               <Compass className="w-4 h-4 text-primary" />
-              Mehr auf Standard Portal
+              Mehr auf TierTarif
             </div>
             <h2 className="text-2xl font-display font-bold text-slate-900 mb-3">Wichtige Bereiche im Überblick</h2>
-            <p className="text-slate-600 mb-6">Neben dem Kontaktbereich findest du auf Standard Portal auch Informationen zur Methodik, zu Kategorien und zu unseren Vergleichsseiten.</p>
+            <p className="text-slate-600 mb-6">Neben dem Kontaktbereich findest du auf TierTarif auch Informationen zur Methodik, zu Kategorien und zu unseren Vergleichsseiten.</p>
             <div className="grid gap-4 md:grid-cols-3">
               <Link to="/wie-wir-vergleichen" className="rounded-2xl border border-slate-200 p-5 transition-colors hover:border-primary hover:bg-slate-50">
                 <ShieldCheck className="w-5 h-5 text-primary mb-3" />
@@ -232,7 +232,7 @@ export default function Contact() {
               <Link to="/versicherungen" className="rounded-2xl border border-slate-200 p-5 transition-colors hover:border-primary hover:bg-slate-50">
                 <ArrowRight className="w-5 h-5 text-primary mb-3" />
                 <div className="font-semibold text-slate-900 mb-1">Vergleiche ansehen</div>
-                <div className="text-sm text-slate-600">Direkter Einstieg in Versicherungs- und Vergleichsseiten von Standard Portal.</div>
+                <div className="text-sm text-slate-600">Direkter Einstieg in Versicherungs- und Vergleichsseiten von TierTarif.</div>
               </Link>
             </div>
           </div>

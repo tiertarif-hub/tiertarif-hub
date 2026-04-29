@@ -1,4 +1,4 @@
-export const DEFAULT_SITE_URL = "https://rank-scout.com";
+export const DEFAULT_SITE_URL = Deno.env.get("SITE_URL")?.trim() || "https://tiertarif.com";
 
 function sanitizeSlug(rawSlug: string): string {
   return String(rawSlug ?? "")
@@ -26,7 +26,7 @@ export function buildAbsoluteSiteUrl(
   path: string,
   siteUrl: string = DEFAULT_SITE_URL,
 ): string {
-  return `${siteUrl.replace(/\/$/, "")}${normalizeRoutePath(path)}`;
+  return `${String(siteUrl || DEFAULT_SITE_URL).replace(/\/+$/, "")}${normalizeRoutePath(path)}`;
 }
 
 export function getCategoriesRoute(): string {

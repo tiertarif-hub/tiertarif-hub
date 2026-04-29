@@ -10,8 +10,8 @@ const Datenschutz = () => {
     <div className="min-h-screen flex flex-col bg-white font-sans text-slate-900">
       {/* KYRA FIX: Unique Title für Datenschutz */}
       <Helmet>
-        <title>Datenschutzerklärung | Standard Portal</title>
-        <meta name="description" content="Informationen zum Datenschutz auf Standard Portal. Wie wir deine Daten schützen." />
+        <title>Datenschutzerklärung | TierTarif</title>
+        <meta name="description" content="Informationen zum Datenschutz auf TierTarif. Wie wir deine Daten schützen." />
         <link rel="canonical" href={buildAbsoluteSiteUrl("/datenschutz")} />
         <meta name="robots" content="noindex, follow" />
       </Helmet>
@@ -53,7 +53,7 @@ const Datenschutz = () => {
                     <p>Leonfeldnerstraße</p>
                     <p>4040 Linz, Österreich</p>
                     <p className="text-secondary font-bold pt-2 flex items-center gap-2">
-                      <Mail className="w-4 h-4" /> kontakt@example.com
+                      <Mail className="w-4 h-4" /> kontakt@tiertarif.com
                     </p>
                   </div>
                 </div>

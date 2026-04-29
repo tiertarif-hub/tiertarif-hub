@@ -87,7 +87,7 @@ export default function AdminLogin() {
               <Input
                 id="email"
                 type="email"
-                placeholder="admin@example.com"
+                placeholder="admin@tiertarif.com"
                 {...register("email")}
                 className="bg-muted/50"
               />

@@ -167,7 +167,7 @@ export function buildAbsoluteSiteUrl(
   path: string,
   siteUrl: string = DEFAULT_SITE_URL,
 ): string {
-  return `${siteUrl.replace(/\/$/, "")}${normalizeRoutePath(path)}`;
+  return `${String(siteUrl || DEFAULT_SITE_URL).replace(/\/+$/, "")}${normalizeRoutePath(path)}`;
 }
 
 export function getCategoriesRoute(): string {

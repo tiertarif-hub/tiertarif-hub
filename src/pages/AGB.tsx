@@ -18,10 +18,10 @@ const AGB = () => {
   return (
     <div className="min-h-screen flex flex-col bg-white font-sans text-slate-900">
       <Helmet>
-        <title>Allgemeine Geschäftsbedingungen (AGB) | Standard Portal</title>
+        <title>Allgemeine Geschäftsbedingungen (AGB) | TierTarif</title>
         <meta
           name="description"
-          content="Allgemeine Geschäftsbedingungen für die Nutzung von Standard Portal sowie Hinweise zu eingebundenen Vergleichsrechnern, Formularen und externen Partnerdiensten."
+          content="Allgemeine Geschäftsbedingungen für die Nutzung von TierTarif sowie Hinweise zu eingebundenen Vergleichsrechnern, Formularen und externen Partnerdiensten."
         />
         <link rel="canonical" href={buildAbsoluteSiteUrl("/agb")} />
         <meta name="robots" content="noindex, follow" />
@@ -38,7 +38,7 @@ const AGB = () => {
             Allgemeine Geschäftsbedingungen
           </h1>
           <p className="text-lg text-slate-300 max-w-2xl mx-auto">
-            Nutzungsbedingungen für das Online-Angebot von Standard Portal.
+            Nutzungsbedingungen für das Online-Angebot von TierTarif.
           </p>
           <p className="text-sm text-secondary font-medium mt-4 flex items-center justify-center gap-2">
             <Info className="w-4 h-4" /> Stand: 19.03.2026
@@ -58,12 +58,12 @@ const AGB = () => {
               </h2>
               <div className="article-content article-content--legal max-w-none text-slate-700">
                 <p>
-                  Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für die Nutzung der Plattform <strong>Standard Portal</strong>
+                  Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für die Nutzung der Plattform <strong>TierTarif</strong>
                   sowie der darüber bereitgestellten Inhalte, Funktionen, Rechner, Formulare, Vergleichsstrecken,
                   redaktionellen Beiträge und sonstigen digitalen Dienste durch Nutzer der Webseite.
                 </p>
                 <p>
-                  Anbieter und Betreiber von Standard Portal ist der jeweils im Impressum genannte Seitenbetreiber.
+                  Anbieter und Betreiber von TierTarif ist der jeweils im Impressum genannte Seitenbetreiber.
                   Maßgeblich ist die zum Zeitpunkt der jeweiligen Nutzung gültige Fassung dieser AGB.
                 </p>
                 <p>
@@ -82,18 +82,18 @@ const AGB = () => {
               </h2>
               <div className="bg-slate-50 p-6 rounded-xl border border-slate-100 text-slate-700 space-y-4">
                 <p>
-                  Standard Portal ist eine redaktionelle Informations-, Recherche- und Vergleichsplattform für ausgewählte
+                  TierTarif ist eine redaktionelle Informations-, Recherche- und Vergleichsplattform für ausgewählte
                   Themenbereiche, insbesondere Versicherungen, Finanzen, Energie, Telekommunikation, Software,
                   digitale Dienstleistungen sowie weitere Verbraucher- und Alltagsthemen.
                 </p>
                 <p>
-                  Standard Portal stellt eigene Inhalte, redaktionelle Übersichten, Ratgeber, FAQ-Inhalte, neutrale
+                  TierTarif stellt eigene Inhalte, redaktionelle Übersichten, Ratgeber, FAQ-Inhalte, neutrale
                   Hilfswerkzeuge, Rechner, Checklisten und Verweise auf externe Partnerangebote bereit. Ein Anspruch auf
                   eine bestimmte Verfügbarkeit, Aktualität oder Vollständigkeit einzelner Inhalte oder Funktionen besteht
                   nicht.
                 </p>
                 <p>
-                  Soweit auf Standard Portal Vergleichsrechner, Formulare, iFrames, Tarifstrecken, Kurzrechner,
+                  Soweit auf TierTarif Vergleichsrechner, Formulare, iFrames, Tarifstrecken, Kurzrechner,
                   Angebotsstrecken oder sonstige Partner-Widgets eingebunden sind, werden diese technisch und inhaltlich
                   ganz oder teilweise von externen Partnern bereitgestellt.
                 </p>
@@ -110,7 +110,7 @@ const AGB = () => {
               <div className="space-y-6 text-slate-700">
                 <div className="p-6 rounded-xl border border-slate-100 bg-slate-50 space-y-3">
                   <p>
-                    Standard Portal tritt – soweit nicht ausdrücklich anders angegeben – nicht selbst als Versicherer,
+                    TierTarif tritt – soweit nicht ausdrücklich anders angegeben – nicht selbst als Versicherer,
                     Kreditinstitut, Energieversorger, Telekommunikationsanbieter, Reiseveranstalter, Mietwagenanbieter,
                     Makler oder sonstiger Produktanbieter auf.
                   </p>
@@ -120,7 +120,7 @@ const AGB = () => {
                     dem jeweils verantwortlichen externen Partner zustande.
                   </p>
                   <p>
-                    Standard Portal selbst wird nicht Vertragspartei eines über externe Vergleichsrechner, Formulare oder
+                    TierTarif selbst wird nicht Vertragspartei eines über externe Vergleichsrechner, Formulare oder
                     Partnerstrecken angebahnten oder geschlossenen Vertrags.
                   </p>
                 </div>
@@ -135,7 +135,7 @@ const AGB = () => {
                     Partners, sofern und soweit deren Dienste genutzt werden.
                   </p>
                   <p>
-                    Sofern auf Standard Portal Vergleichsrechner oder Formulare von <strong>TARIFCHECK24 GmbH</strong> bzw.
+                    Sofern auf TierTarif Vergleichsrechner oder Formulare von <strong>TARIFCHECK24 GmbH</strong> bzw.
                     <strong> TARIF CHECK24 / CHECK24-Partnerstrecken</strong> eingesetzt werden, gelten ergänzend deren
                     AGB- und Datenschutzinformationen:
                   </p>
@@ -166,7 +166,7 @@ const AGB = () => {
               </h2>
               <div className="article-content article-content--legal max-w-none text-slate-700">
                 <p>
-                  Die auf Standard Portal bereitgestellten Inhalte dienen der allgemeinen Information, Orientierung und
+                  Die auf TierTarif bereitgestellten Inhalte dienen der allgemeinen Information, Orientierung und
                   eigenständigen Vorbereitung von Entscheidungen. Sie stellen keine Rechts-, Steuer-, Finanz-,
                   Versicherungs- oder Anlageberatung dar.
                 </p>
@@ -177,7 +177,7 @@ const AGB = () => {
                   eingebundenen Partners.
                 </p>
                 <p>
-                  Standard Portal ist nicht verpflichtet, den gesamten Markt, alle Anbieter, sämtliche Tarife oder jede am
+                  TierTarif ist nicht verpflichtet, den gesamten Markt, alle Anbieter, sämtliche Tarife oder jede am
                   Markt verfügbare Produktvariante abzubilden, zu vergleichen oder aktuell zu halten.
                 </p>
               </div>
@@ -218,7 +218,7 @@ const AGB = () => {
                 <div className="p-6 rounded-xl border border-red-100 bg-red-50/50">
                   <h3 className="font-bold text-red-900 mb-2">Inhaltliche Richtigkeit</h3>
                   <p className="text-sm text-red-800">
-                    Standard Portal bemüht sich um aktuelle und sorgfältig aufbereitete Inhalte. Eine Gewähr für Richtigkeit,
+                    TierTarif bemüht sich um aktuelle und sorgfältig aufbereitete Inhalte. Eine Gewähr für Richtigkeit,
                     Vollständigkeit, Aktualität, Eignung oder fortlaufende Verfügbarkeit der bereitgestellten Inhalte,
                     Rechnergebnisse oder Drittinformationen wird jedoch nicht übernommen.
                   </p>
@@ -234,7 +234,7 @@ const AGB = () => {
               </div>
               <div className="article-content article-content--legal max-w-none text-slate-700 mt-6">
                 <p>
-                  Soweit gesetzlich zulässig, ist die Haftung von Standard Portal für leichte Fahrlässigkeit ausgeschlossen.
+                  Soweit gesetzlich zulässig, ist die Haftung von TierTarif für leichte Fahrlässigkeit ausgeschlossen.
                   Dies gilt nicht bei Schäden aus der Verletzung des Lebens, des Körpers oder der Gesundheit, bei
                   zwingender gesetzlicher Haftung sowie bei der Verletzung wesentlicher Vertragspflichten.
                 </p>
@@ -245,8 +245,8 @@ const AGB = () => {
                   gesetzlich zulässig.
                 </p>
                 <p>
-                  Standard Portal schuldet keinen bestimmten wirtschaftlichen, finanziellen, versicherungsbezogenen oder
-                  vertraglichen Erfolg. Insbesondere übernimmt Standard Portal keine Haftung dafür, dass über eingebundene
+                  TierTarif schuldet keinen bestimmten wirtschaftlichen, finanziellen, versicherungsbezogenen oder
+                  vertraglichen Erfolg. Insbesondere übernimmt TierTarif keine Haftung dafür, dass über eingebundene
                   Rechner, Formulare oder Partnerstrecken dargestellte oder angebahnte Tarife, Verträge,
                   Versicherungsleistungen oder sonstige Angebote den individuellen Bedürfnissen des Nutzers entsprechen,
                   von einem Anbieter angenommen werden oder im Leistungsfall eine bestimmte Deckung, Auszahlung oder
@@ -297,11 +297,11 @@ const AGB = () => {
                   unserer Datenschutzerklärung und im Impressum.
                 </p>
                 <a
-                  href="mailto:kontakt@example.com"
+                  href="mailto:kontakt@tiertarif.com"
                   className="inline-flex w-fit items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-secondary shadow-sm transition-colors hover:border-secondary/30 hover:text-primary md:justify-self-end"
                 >
                   <Mail className="w-4 h-4 shrink-0" />
-                  <span className="whitespace-nowrap">kontakt@example.com</span>
+                  <span className="whitespace-nowrap">kontakt@tiertarif.com</span>
                 </a>
               </div>
             </section>

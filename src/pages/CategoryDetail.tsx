@@ -263,7 +263,7 @@ export default function CategoryDetail() {
       return (
           <div className="flex flex-col h-screen items-center justify-center space-y-4 bg-slate-50">
               <Helmet>
-                  <title>404 - Seite nicht gefunden | Standard Portal</title>
+                  <title>404 - Seite nicht gefunden | TierTarif</title>
                   <meta name="robots" content="noindex, nofollow" />
               </Helmet>
               <h1 className="text-4xl font-black text-[#0A0F1C]">404</h1>

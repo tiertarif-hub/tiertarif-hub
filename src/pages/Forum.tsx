@@ -62,9 +62,9 @@ interface PublicForumThread {
   } | null;
 }
 
-const DEFAULT_META_TITLE = "Forum & Ratgeber 2026 | Standard Portal";
+const DEFAULT_META_TITLE = "Forum & Ratgeber 2026 | TierTarif";
 const DEFAULT_META_DESCRIPTION =
-  "Standard Portal Forum mit Ratgebern, Vergleichen und Analysen. Beiträge nach Themen durchsuchen und aktuelle Artikel schnell finden.";
+  "TierTarif Forum mit Ratgebern, Vergleichen und Analysen. Beiträge nach Themen durchsuchen und aktuelle Artikel schnell finden.";
 
 const truncate = (value: string, maxLength: number) => {
   if (value.length <= maxLength) return value;
@@ -94,7 +94,7 @@ const optimizeThreadImage = (url?: string | null) => {
 const ForumThreadCard = ({ thread }: { thread: PublicForumThread }) => {
   const excerpt =
     thread.seo_description?.trim() ||
-    "Lies den vollständigen Beitrag mit kompakten Fakten, Vergleichen und Einordnung in unserem Standard Portal Forum.";
+    "Lies den vollständigen Beitrag mit kompakten Fakten, Vergleichen und Einordnung in unserem TierTarif Forum.";
 
   return (
     <article className="group h-full">
@@ -163,7 +163,7 @@ const ForumThreadCard = ({ thread }: { thread: PublicForumThread }) => {
               <p className="truncate text-sm font-bold text-[#0A0F1C]">
                 {thread.author_name || "Redaktion"}
               </p>
-              <p className="text-xs text-slate-500">Standard Portal Redaktion</p>
+              <p className="text-xs text-slate-500">TierTarif Redaktion</p>
             </div>
           </div>
 
@@ -338,12 +338,12 @@ export default function Forum() {
   }, [searchQuery, threads]);
 
   const metaTitle = selectedCategory
-    ? truncate(`${selectedCategory.name} Forum & Ratgeber | Standard Portal`, 60)
+    ? truncate(`${selectedCategory.name} Forum & Ratgeber | TierTarif`, 60)
     : DEFAULT_META_TITLE;
 
   const metaDescription = selectedCategory
     ? truncate(
-        `${selectedCategory.name} Beiträge, Vergleiche und Analysen im Standard Portal Forum. Mobil optimiert, schnell filterbar und direkt lesbar.`,
+        `${selectedCategory.name} Beiträge, Vergleiche und Analysen im TierTarif Forum. Mobil optimiert, schnell filterbar und direkt lesbar.`,
         155,
       )
     : DEFAULT_META_DESCRIPTION;
@@ -500,7 +500,7 @@ export default function Forum() {
                 </Badge>
 
                 <h1 className="max-w-4xl text-3xl font-black leading-[1.05] tracking-tight text-white sm:text-4xl lg:text-5xl">
-                  {selectedCategory ? `${selectedCategory.name} Forum & Ratgeber` : "Standard Portal Forum & Ratgeber"}
+                  {selectedCategory ? `${selectedCategory.name} Forum & Ratgeber` : "TierTarif Forum & Ratgeber"}
                 </h1>
 
                 <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-200 sm:text-base">

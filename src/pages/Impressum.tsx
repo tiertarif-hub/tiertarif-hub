@@ -10,8 +10,8 @@ const Impressum = () => {
     <div className="min-h-screen flex flex-col bg-white font-sans text-slate-900">
       {/* KYRA FIX: Unique Title für Impressum */}
       <Helmet>
-        <title>Impressum | Standard Portal</title>
-        <meta name="description" content="Impressum und rechtliche Hinweise von Standard Portal." />
+        <title>Impressum | TierTarif</title>
+        <meta name="description" content="Impressum und rechtliche Hinweise von TierTarif." />
         <link rel="canonical" href={buildAbsoluteSiteUrl("/impressum")} />
         <meta name="robots" content="noindex, follow" />
       </Helmet>
@@ -45,7 +45,7 @@ const Impressum = () => {
                 <p><strong className="text-primary block mb-1">Medieninhaber & Herausgeber:</strong> Media-Bro</p>
                 <p>Leonfeldnerstraße<br />4040 Linz, Österreich</p>
                 <p className="flex items-center gap-2 mt-6 text-secondary font-bold">
-                  <Mail className="w-4 h-4" /> kontakt@example.com
+                  <Mail className="w-4 h-4" /> kontakt@tiertarif.com
                 </p>
               </div>
             </div>
@@ -65,13 +65,13 @@ const Impressum = () => {
           <div className="article-content article-content--lg article-content--legal max-w-none text-slate-700 space-y-12">
             <section>
               <h3 className="text-primary font-display font-bold text-2xl mb-4 underline decoration-secondary decoration-4 underline-offset-8">Haftungsausschluss & Hinweise</h3>
-              <p><strong>Transparenzhinweis (Affiliate):</strong> Standard Portal finanziert sich teilweise über Affiliate-Links. Bei qualifizierten Käufen über unsere Partnerlinks erhalten wir eine Vergütung. Dies hat keinen Einfluss auf unsere Bewertungen oder den Preis für Sie.</p>
+              <p><strong>Transparenzhinweis (Affiliate):</strong> TierTarif finanziert sich teilweise über Affiliate-Links. Bei qualifizierten Käufen über unsere Partnerlinks erhalten wir eine Vergütung. Dies hat keinen Einfluss auf unsere Bewertungen oder den Preis für Sie.</p>
               <p><strong>Haftung für Inhalte & Links:</strong> Trotz sorgfältiger Prüfung übernehmen wir keine Haftung für die Inhalte externer Links. Für den Inhalt der verlinkten Seiten sind ausschließlich deren Betreiber verantwortlich.</p>
 
               {/* NEU: Tarifcheck Compliance Block */}
               <div className="mt-8 p-6 bg-slate-50 border border-slate-200 rounded-xl text-sm">
                 <h4 className="font-bold text-slate-800 mb-2">Hinweis zu Versicherungs- und Finanzvergleichen</h4>
-                <p className="mb-4">Standard Portal tritt bei Versicherungs- und Finanzvergleichen ausschließlich als Tippgeber auf und ist nicht der Versicherungsvermittler.</p>
+                <p className="mb-4">TierTarif tritt bei Versicherungs- und Finanzvergleichen ausschließlich als Tippgeber auf und ist nicht der Versicherungsvermittler.</p>
                 <p className="font-semibold mb-2">Einzelne Vergleichsrechner und Formulare werden von externen Partnern wie TARIFCHECK24 GmbH oder CHECK24 bereitgestellt.</p>
                 <p>Zollstr. 11b<br/>21465 Wentorf bei Hamburg<br/>Tel. 040 - 73098288<br/>Fax 040 - 73098289<br/>E-Mail: info@tarifcheck.de</p>
                 <div className="mt-6 w-full overflow-hidden">

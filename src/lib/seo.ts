@@ -2,7 +2,7 @@ import { DEFAULT_SITE_URL } from "@/lib/constants";
 import { normalizeRoutePath } from "@/lib/routes";
 
 export function buildCanonicalUrl(path: string, siteUrl: string = DEFAULT_SITE_URL): string {
-  return `${siteUrl.replace(/\/$/, "")}${normalizeRoutePath(path)}`;
+  return `${String(siteUrl || DEFAULT_SITE_URL).replace(/\/+$/, "")}${normalizeRoutePath(path)}`;
 }
 
 export function buildCanonicalUrlFromLocation(pathname?: string | null): string {

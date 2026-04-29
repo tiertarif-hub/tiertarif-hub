@@ -220,8 +220,8 @@ export default function ForumThread() {
 
   useForceSEO(seoDescription);
   const canonicalUrl = buildCanonicalUrlFromLocation(location.pathname);
-  const featuredImageAlt = thread?.featured_image_alt?.trim() || thread?.title || "Standard Portal Forum Beitrag";
-  const adImageAlt = thread?.ad_image_alt?.trim() || thread?.title || "Standard Portal Anzeige";
+  const featuredImageAlt = thread?.featured_image_alt?.trim() || thread?.title || "TierTarif Forum Beitrag";
+  const adImageAlt = thread?.ad_image_alt?.trim() || thread?.title || "TierTarif Anzeige";
 
   const discussionSchemaJson = useMemo(() => {
     if (!thread) return "";
@@ -238,7 +238,7 @@ export default function ForumThread() {
       author: {
         "@type": "Person",
         name: reply.author_name || "Unbekannt",
-        url: "https://example.com/ueber-uns",
+        url: "https://tiertarif.com/ueber-uns",
       },
     }));
 
@@ -252,7 +252,7 @@ export default function ForumThread() {
       author: {
         "@type": "Person",
         name: thread.author_name || "Unbekannt",
-        url: "https://example.com/ueber-uns",
+        url: "https://tiertarif.com/ueber-uns",
       },
       datePublished: thread.created_at,
       dateModified: thread.updated_at || thread.created_at,
@@ -404,7 +404,7 @@ export default function ForumThread() {
         <meta property="og:description" content={seoDescription} />
         <meta property="og:url" content={canonicalUrl} />
         <meta property="og:type" content="article" />
-        <meta property="og:site_name" content="Standard Portal" />
+        <meta property="og:site_name" content="TierTarif" />
         <meta property="og:locale" content="de_DE" />
         <meta name="twitter:card" content={thread.featured_image_url ? "summary_large_image" : "summary"} />
         <meta name="twitter:title" content={seoTitle} />

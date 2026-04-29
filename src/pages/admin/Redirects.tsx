@@ -248,7 +248,7 @@ function TrackingLinksTab() {
                         target_url: event.target.value,
                       }))
                     }
-                    placeholder="https://tracking.example.com/go/..."
+                    placeholder="https://tracking.tiertarif.com/go/..."
                   />
                 </div>
 
