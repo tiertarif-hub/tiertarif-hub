@@ -42,10 +42,10 @@ const calculatorFields = [
 ] as const;
 
 const trustItems = [
-  "Tarife sachlich prüfen",
-  "Keine Anbieter-Versprechen",
-  "Wartezeiten & Selbstbeteiligung beachten",
-  "Für Hunde & Katzen",
+  "Kostenlos Vergleichen",
+  "Versteckte Kosten vermeiden",
+  "Wartezeiten & Selbstbeteiligung transparent prüfen",
+  "Für Hunde, Katzen & Pferde",
 ];
 
 const isLegacyHeroText = (value: string | undefined, legacyNeedles: string[]) => {
@@ -274,7 +274,7 @@ export const HeroSection = () => {
               </div>
 
               <div className="mb-4 grid grid-cols-3 gap-2 rounded-2xl bg-secondary/5 p-2">
-                {["1. Tier", "2. Schutz", "3. Ergebnis"].map((step) => (
+                {["1. Tier wählen", "2. Tarife vergleichen", "3. Vertrag wählen"].map((step) => (
                   <div key={step} className="rounded-xl border border-secondary/25 bg-white px-3 py-2 text-center text-[11px] font-extrabold uppercase tracking-wider text-primary">
                     {step}
                   </div>
@@ -315,13 +315,13 @@ export const HeroSection = () => {
               <div className="mt-5 rounded-2xl border border-secondary/25 bg-secondary/5 p-4">
                 <div className="flex items-center justify-between gap-4">
                   <div>
-                    <div className="text-xs font-extrabold uppercase tracking-wider text-primary/70">Simulation</div>
+                    <div className="text-xs font-extrabold uppercase tracking-wider text-primary/70">Tarif-Check</div>
                     <p className="mt-1 text-lg font-display font-extrabold text-primary">
-                      3 direkte Vergleiche verlinkt
+                      Direkter Zugang zu den Rechnern
                     </p>
                   </div>
                   <div className="rounded-full bg-secondary/10 px-3 py-1 text-xs font-extrabold text-secondary shadow-sm">
-                    neutral
+                    kostenfrei
                   </div>
                 </div>
               </div>
@@ -331,7 +331,7 @@ export const HeroSection = () => {
                   <div>
                     <div className="text-sm font-extrabold">Nächster Schritt</div>
                     <p className="mt-1 text-sm text-primary-foreground/75">
-                      Hunde, Katzen oder Pferde direkt auswählen.
+                      Wähle dein Tier und starte den passenden Vergleich.
                     </p>
                   </div>
                   <div className="flex shrink-0 flex-wrap justify-end gap-2">
@@ -347,7 +347,7 @@ export const HeroSection = () => {
               <div className="mt-5 flex items-center gap-3 rounded-2xl border border-border bg-muted/60 p-4">
                 <CheckCircle2 className="h-5 w-5 shrink-0 text-primary" />
                 <p className="text-sm font-semibold leading-relaxed text-foreground">
-                  Direkt verlinkt: Hunde, Katzen und Pferde — ohne Sammelroute und ohne reißerische Versprechen.
+                  Nutze unsere Partner-Rechner, um passende Tarife direkt und objektiv zu prüfen.
                 </p>
               </div>
             </div>
