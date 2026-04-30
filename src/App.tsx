@@ -15,6 +15,7 @@ import { isBotLikeRuntime } from "@/lib/runtimeFlags";
 // --- LAYOUT KOMPONENTEN ---
 import { CookieBanner } from "./components/layout/CookieBanner";
 import { ScrollToTopHandler } from "@/components/ScrollToTopHandler";
+import { ScrollToAnchor } from "@/components/ScrollToAnchor";
 import { MascotWidget } from "@/components/layout/MascotWidget";
 
 // --- KRITISCHE SEITE ---
@@ -257,6 +258,7 @@ const App = () => {
                 <CookieBanner />
                 <ScoutyWrapper />
                 <ScrollToTopHandler />
+                <ScrollToAnchor />
 
                 <Suspense fallback={suspenseFallback}>
                   <Routes>

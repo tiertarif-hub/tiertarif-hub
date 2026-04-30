@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Search, ArrowRight, Loader2 } from "lucide-react";
 import { Helmet } from "react-helmet-async"; 
 import { useTrackView } from "@/hooks/useTrackView";
-import { getCategoriesCanonicalUrl, getCategoryRoute } from "@/lib/routes";
+import { getCategoriesCanonicalUrl, getCategoryComparisonRoute, getCategoryRoute } from "@/lib/routes";
 
 
 const CATEGORY_FALLBACK_LINKS = [
@@ -171,36 +171,52 @@ export default function Categories() {
                   const projectCount = getProjectCount(category.id);
 
                   return (
-                    <Link 
-                      key={category.id} 
-                      to={getCategoryRoute(category.slug)}
+                    <article
+                      key={category.id}
                       className="group block h-full"
                     >
                       <div className={`h-full bg-white rounded-3xl p-6 border transition-all duration-300 relative overflow-hidden flex flex-col ${theme.border} hover:shadow-lg`}>
                         <div className={`absolute inset-0 bg-gradient-to-br ${theme.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-                        
-                        <div className={`w-14 h-14 rounded-2xl ${theme.bg} ${theme.text} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform`}>
-                          <span className="text-3xl">{category.icon || "📊"}</span>
-                        </div>
 
-                        <h2 className="font-display font-bold text-xl text-foreground mb-2 group-hover:text-primary transition-colors">
-                          {category.name}
-                        </h2>
-                        
-                        {category.description && (
-                          <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
-                            {category.description}
-                          </p>
-                        )}
+                        <Link
+                          to={getCategoryRoute(category.slug)}
+                          className="relative z-10 block focus:outline-none"
+                          aria-label={category.name + " öffnen"}
+                        >
+                          <div className={`w-14 h-14 rounded-2xl ${theme.bg} ${theme.text} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform`}>
+                            <span className="text-3xl">{category.icon || "📊"}</span>
+                          </div>
 
-                        <div className="flex items-center justify-between mt-auto pt-4 border-t border-border/50">
-                          <span className={`text-sm font-medium ${theme.text}`}>
-                            {projectCount > 0 ? `${projectCount} Angebote` : "Vergleich öffnen"}
-                          </span>
-                          <ArrowRight className={`w-5 h-5 ${theme.text} opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all`} />
+                          <h2 className="font-display font-bold text-xl text-foreground mb-2 group-hover:text-primary transition-colors">
+                            {category.name}
+                          </h2>
+
+                          {category.description && (
+                            <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
+                              {category.description}
+                            </p>
+                          )}
+                        </Link>
+
+                        <div className="relative z-10 flex flex-col gap-3 mt-auto pt-4 border-t border-border/50">
+                          <div className="flex items-center justify-between">
+                            <span className={`text-sm font-medium ${theme.text}`}>
+                              {projectCount > 0 ? `${projectCount} Angebote` : "Vergleich öffnen"}
+                            </span>
+                            <ArrowRight className={`w-5 h-5 ${theme.text} opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all`} />
+                          </div>
+
+                          <Link
+                            to={getCategoryComparisonRoute(category.slug)}
+                            className="inline-flex w-full items-center justify-center rounded-xl bg-secondary px-4 py-2.5 text-sm font-bold text-white shadow-sm transition-colors hover:bg-secondary/90 focus:outline-none focus:ring-2 focus:ring-secondary/40"
+                            aria-label={category.name + " direkt zum Vergleich öffnen"}
+                          >
+                            Direkt zum Vergleich
+                            <ArrowRight className="ml-2 h-4 w-4" />
+                          </Link>
                         </div>
                       </div>
-                    </Link>
+                    </article>
                   );
                 })}
               </div>

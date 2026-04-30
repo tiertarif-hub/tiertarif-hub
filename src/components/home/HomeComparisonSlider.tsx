@@ -10,7 +10,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { getCategoryRoute } from "@/lib/routes";
+import { getCategoryComparisonRoute, getCategoryRoute } from "@/lib/routes";
 import { optimizeSupabaseImageUrl } from "@/lib/sanitizeHtml";
 import type { Category } from "@/hooks/useCategories";
 
@@ -130,33 +130,33 @@ function getTeaser(category: HomeComparisonCategory): string {
 }
 
 function HomeComparisonCard({ category }: { category: HomeComparisonCategory }) {
+  const route = getCategoryRoute(category.slug);
+  const comparisonRoute = getCategoryComparisonRoute(category.slug);
   const imageUrl = getOptimizedImageUrl(category, 768);
   const title = getShortTitle(category);
   const teaser = getTeaser(category);
 
   return (
-    <Link
-      to={getCategoryRoute(category.slug)}
-      className="group flex h-full min-h-[242px] flex-col overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-[0_16px_45px_rgba(15,31,83,0.08)] transition-all duration-300 hover:-translate-y-1 hover:border-orange-300 hover:shadow-[0_20px_60px_rgba(255,132,0,0.16)] focus:outline-none focus:ring-4 focus:ring-orange-500/15 sm:min-h-[256px] lg:min-h-[272px]"
-      aria-label={`${category.name} öffnen`}
-    >
-      <div
-        className="relative h-32 w-full overflow-hidden bg-slate-100 bg-cover bg-center bg-no-repeat transition-transform duration-700 group-hover:scale-[1.02] sm:h-36 lg:h-40 xl:h-44"
-        style={imageUrl ? { backgroundImage: `url(${imageUrl})` } : undefined}
-        role={imageUrl ? "img" : undefined}
-        aria-label={imageUrl ? `${category.name} Vergleich` : undefined}
-      >
-        {imageUrl ? (
-          <div
-            className="absolute inset-0 bg-gradient-to-t from-[#0E1F53]/20 via-transparent to-transparent opacity-60 transition-opacity duration-300 group-hover:opacity-40"
-            aria-hidden="true"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center text-slate-300">
-            <LayoutGrid className="h-9 w-9 opacity-30" aria-hidden="true" />
-          </div>
-        )}
-      </div>
+    <article className="group flex h-full min-h-[242px] flex-col overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-[0_16px_45px_rgba(15,31,83,0.08)] transition-all duration-300 hover:-translate-y-1 hover:border-orange-300 hover:shadow-[0_20px_60px_rgba(255,132,0,0.16)] focus-within:ring-4 focus-within:ring-orange-500/15 sm:min-h-[256px] lg:min-h-[272px]">
+      <Link to={route} className="block focus:outline-none" aria-label={category.name + " öffnen"}>
+        <div
+          className="relative h-32 w-full overflow-hidden bg-slate-100 bg-cover bg-center bg-no-repeat transition-transform duration-700 group-hover:scale-[1.02] sm:h-36 lg:h-40 xl:h-44"
+          style={imageUrl ? { backgroundImage: `url(${imageUrl})` } : undefined}
+          role={imageUrl ? "img" : undefined}
+          aria-label={imageUrl ? category.name + " Vergleich" : undefined}
+        >
+          {imageUrl ? (
+            <div
+              className="absolute inset-0 bg-gradient-to-t from-[#0E1F53]/20 via-transparent to-transparent opacity-60 transition-opacity duration-300 group-hover:opacity-40"
+              aria-hidden="true"
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center text-slate-300">
+              <LayoutGrid className="h-9 w-9 opacity-30" aria-hidden="true" />
+            </div>
+          )}
+        </div>
+      </Link>
 
       <div className="flex flex-1 flex-col p-4 sm:p-5">
         <div className="mb-3 flex items-center justify-between gap-3">
@@ -178,20 +178,26 @@ function HomeComparisonCard({ category }: { category: HomeComparisonCategory }) 
           />
         </div>
 
-        <h3 className="text-base font-bold leading-snug text-slate-950 transition-colors duration-300 line-clamp-2 group-hover:text-primary sm:text-lg">
-          {title}
-        </h3>
+        <Link to={route} className="focus:outline-none">
+          <h3 className="text-base font-bold leading-snug text-slate-950 transition-colors duration-300 line-clamp-2 hover:text-primary sm:text-lg">
+            {title}
+          </h3>
+        </Link>
 
         <p className="mt-2 text-sm leading-6 text-slate-500 line-clamp-2">
           {teaser}
         </p>
 
-        <span className="mt-auto inline-flex items-center gap-2 pt-4 text-sm font-bold text-[#0E1F53] transition-colors duration-300 group-hover:text-orange-600">
-          Zum Vergleich
+        <Link
+          to={comparisonRoute}
+          className="mt-auto inline-flex items-center gap-2 pt-4 text-sm font-bold text-[#0E1F53] transition-colors duration-300 hover:text-orange-600 focus:outline-none"
+          aria-label={category.name + " direkt zum Vergleich öffnen"}
+        >
+          Direkt zum Vergleich
           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
-        </span>
+        </Link>
       </div>
-    </Link>
+    </article>
   );
 }
 

@@ -1,41 +1,71 @@
-import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+
+const MAX_ANCHOR_LOOKUP_MS = 5000;
+const ANCHOR_LOOKUP_INTERVAL_MS = 100;
+
+function getDecodedAnchorId(hash: string): string {
+  const rawId = hash.replace(/^#/, "");
+
+  try {
+    return decodeURIComponent(rawId);
+  } catch {
+    return rawId;
+  }
+}
 
 export function ScrollToAnchor() {
   const location = useLocation();
 
   useEffect(() => {
-    if (location.hash) {
-      // Wir entfernen das # um die ID zu bekommen
-      const id = location.hash.slice(1);
-      
-      // Wir versuchen es mehrfach (Polling), da die Inhalte aus der DB geladen werden
-      // und beim ersten Versuch vielleicht noch nicht da sind.
-      let retries = 0;
-      
-      const intervalId = setInterval(() => {
-        const element = document.getElementById(id);
-        
-        if (element) {
-          // Element gefunden! Scrollen.
-          element.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'start' 
-          });
-          clearInterval(intervalId); // Job erledigt, aufhören zu suchen.
-        }
-        
-        retries++;
-        // Wir suchen ca. 5 Sekunden lang (50 * 100ms), dann geben wir auf.
-        if (retries > 50) {
-          clearInterval(intervalId);
-        }
-      }, 100);
+    if (!location.hash) return;
 
-      // Aufräumen, wenn die Komponente entladen wird
-      return () => clearInterval(intervalId);
-    }
-  }, [location]); // Feuert bei jeder Änderung (Pfad oder Hash)
+    const anchorId = getDecodedAnchorId(location.hash);
+    if (!anchorId) return;
+
+    let elapsedMs = 0;
+    let intervalId: number | null = null;
+    let rafId: number | null = null;
+
+    const cleanup = () => {
+      if (intervalId !== null) {
+        window.clearInterval(intervalId);
+        intervalId = null;
+      }
+
+      if (rafId !== null) {
+        window.cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+    };
+
+    const scrollWhenReady = () => {
+      const element = document.getElementById(anchorId);
+
+      if (!element) {
+        elapsedMs += ANCHOR_LOOKUP_INTERVAL_MS;
+
+        if (elapsedMs >= MAX_ANCHOR_LOOKUP_MS) {
+          cleanup();
+        }
+
+        return;
+      }
+
+      cleanup();
+      rafId = window.requestAnimationFrame(() => {
+        element.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      });
+    };
+
+    scrollWhenReady();
+    intervalId = window.setInterval(scrollWhenReady, ANCHOR_LOOKUP_INTERVAL_MS);
+
+    return cleanup;
+  }, [location.pathname, location.hash]);
 
   return null;
 }

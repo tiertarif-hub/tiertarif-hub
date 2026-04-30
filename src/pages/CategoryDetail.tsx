@@ -30,6 +30,7 @@ import { useTrackView } from "@/hooks/useTrackView";
 
 import { AffiliateDisclaimer } from "@/components/AffiliateDisclaimer";
 import { StarRatingWidget } from "@/components/StarRatingWidget";
+import { StickyComparisonCTA } from "@/components/ui/StickyComparisonCTA";
 import { RelatedComparisons } from "@/components/comparison/RelatedComparisons";
 import { sanitizeCmsHtml, sanitizeCmsHtmlWithBreaks } from "@/lib/sanitizeHtml";
 import { buildAbsoluteSiteUrl, getCategoryCanonicalUrl } from "@/lib/routes";
@@ -257,6 +258,15 @@ export default function CategoryDetail() {
     };
   }, [isCatLoading, isProjLoading, jsonLd, location.pathname]);
 
+  const handleScrollToComparison = () => {
+    const comparisonElement = document.getElementById("vergleich");
+
+    if (!comparisonElement) return;
+
+    window.history.replaceState(null, "", "#vergleich");
+    comparisonElement.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   if (isCatLoading || isProjLoading) return <div className="flex h-screen items-center justify-center bg-slate-50"><Loader2 className="w-12 h-12 animate-spin text-[#0A0F1C]" /></div>;
   
   if (!category || category.is_active === false) {
@@ -333,25 +343,44 @@ export default function CategoryDetail() {
             <div className="absolute inset-0 z-0"><img src={heroImage} alt="Background" className="w-full h-full object-cover object-center opacity-60" /><div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-black/50 to-transparent"></div></div>
             <div className="container relative z-20 mx-auto px-4 max-w-5xl text-center pt-32 pb-16 md:pt-40 md:pb-20 flex flex-col items-center justify-center">
               <div className="flex justify-center mb-6 md:mb-8"><div className="inline-flex items-center gap-2 bg-white/5 backdrop-blur-md border border-white/10 text-orange-400 px-5 py-2 rounded-full shadow-lg text-[10px] md:text-xs font-bold uppercase tracking-widest"><ShieldCheck className="w-4 h-4 text-orange-500" />{category.hero_pretitle || "Redaktioneller Überblick"}</div></div>
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white tracking-tighter mb-6 md:mb-8 leading-tight md:leading-[1.1] drop-shadow-2xl px-2">{category.h1_title || category.name}</h1>
+              <h1 lang="de" className="mx-auto w-full max-w-full text-[clamp(2rem,9vw,3rem)] sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white tracking-tight sm:tracking-tighter mb-6 md:mb-8 leading-[1.08] md:leading-[1.1] drop-shadow-2xl px-2 break-words [overflow-wrap:anywhere] hyphens-auto">{category.h1_title || category.name}</h1>
               {category.hero_headline && (<p className="text-lg sm:text-xl md:text-2xl text-slate-300 font-medium mb-10 md:mb-12 leading-relaxed max-w-3xl mx-auto antialiased px-4">{category.hero_headline}</p>)}
-              <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 md:gap-4 bg-white/5 backdrop-blur-sm p-3 rounded-3xl border border-white/10 shadow-2xl max-w-4xl mx-auto w-full sm:w-auto">
-                <div className="flex items-center gap-3 px-5 md:px-6 py-3 rounded-2xl bg-white border border-slate-100 shadow-sm w-full sm:w-auto">
-                  <div className="p-2 bg-green-50 rounded-full text-green-600">
-                    <ShieldCheck className="w-5 h-5" />
-                  </div>
-                  <div className="text-left text-slate-800">
-                    <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Markt-Überblick</div>
-                    <div className="text-sm font-bold">Aktualisiert</div>
-                  </div>
+              <div className="flex flex-col items-center gap-4">
+                <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 md:gap-4 bg-white/5 backdrop-blur-sm p-3 rounded-3xl border border-white/10 shadow-2xl max-w-4xl mx-auto w-full sm:w-auto">
+                  <Button
+                    type="button"
+                    size="lg"
+                    onClick={handleScrollToComparison}
+                    className="h-14 rounded-2xl bg-secondary px-8 text-base font-extrabold text-white shadow-xl shadow-secondary/25 hover:bg-secondary/90"
+                  >
+                    Tarife prüfen <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                  <a
+                    href="#content-top"
+                    className="inline-flex h-14 items-center justify-center rounded-2xl border border-white/15 bg-white px-8 text-base font-bold text-[#0A0F1C] shadow-sm transition-colors hover:bg-slate-50"
+                  >
+                    Infos ansehen
+                  </a>
                 </div>
-                <div className="flex items-center gap-3 px-5 md:px-6 py-3 rounded-2xl bg-white border border-slate-100 shadow-sm w-full sm:w-auto">
-                  <div className="p-2 bg-blue-50 rounded-full text-blue-600">
-                    <Clock className="w-5 h-5" />
+
+                <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 md:gap-4 max-w-4xl mx-auto w-full sm:w-auto">
+                  <div className="flex items-center gap-3 px-5 md:px-6 py-3 rounded-2xl bg-white border border-slate-100 shadow-sm w-full sm:w-auto">
+                    <div className="p-2 bg-green-50 rounded-full text-green-600">
+                      <ShieldCheck className="w-5 h-5" />
+                    </div>
+                    <div className="text-left text-slate-800">
+                      <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Markt-Überblick</div>
+                      <div className="text-sm font-bold">Aktualisiert</div>
+                    </div>
                   </div>
-                  <div className="text-left text-slate-800">
-                    <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Letzter Check</div>
-                    <div className="text-sm font-bold">{currentMonthYear}</div>
+                  <div className="flex items-center gap-3 px-5 md:px-6 py-3 rounded-2xl bg-white border border-slate-100 shadow-sm w-full sm:w-auto">
+                    <div className="p-2 bg-blue-50 rounded-full text-blue-600">
+                      <Clock className="w-5 h-5" />
+                    </div>
+                    <div className="text-left text-slate-800">
+                      <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Letzter Check</div>
+                      <div className="text-sm font-bold">{currentMonthYear}</div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -474,6 +503,7 @@ export default function CategoryDetail() {
               </aside>
           </div>
         </main>
+        <StickyComparisonCTA label="Tarife prüfen" helperText="Direkt zum Vergleich" />
         <Footer />
       </div>
     );

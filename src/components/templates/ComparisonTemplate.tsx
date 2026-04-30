@@ -7,6 +7,7 @@ import { RelatedComparisons } from '@/components/comparison/RelatedComparisons';
 import RelatedForumThreads from '@/components/forum/RelatedForumThreads';
 import { buildAbsoluteSiteUrl } from "@/lib/routes";
 import { useSiteBrandName } from "@/hooks/useSettings";
+import { StickyComparisonCTA } from "@/components/ui/StickyComparisonCTA";
 
 // --- Typen definieren (für Sicherheit & Autocomplete) ---
 interface Project {
@@ -234,19 +235,19 @@ export const ComparisonTemplate: React.FC<TemplateProps> = ({
         {/* HERO SECTION */}
         <section className="hero-gradient py-16 md:py-24 relative overflow-hidden text-center">
             <div className="max-w-4xl mx-auto px-4 relative z-10">
-                <p className="text-brand-gold text-sm md:text-base tracking-widest uppercase mb-4 font-heading">
+                <p className="text-brand-gold text-sm md:text-base tracking-widest uppercase mb-4 font-heading break-words [overflow-wrap:anywhere] hyphens-auto">
                     <i className="fas fa-award mr-2"></i>{category.h1_title?.replace(/2026/g, year.toString()) || category.name}
                 </p>
-                <h1 className="font-heading font-bold text-3xl md:text-5xl lg:text-6xl text-white leading-tight mb-6">
-                    {category.hero_pretitle || 'Empfehlungen und Tarife'} <br/>
+                <h1 lang="de" className="font-heading font-bold text-3xl md:text-5xl lg:text-6xl text-white leading-tight mb-6 break-words [overflow-wrap:anywhere] hyphens-auto">
+                    {category.hero_pretitle || 'Tarife sachlich prüfen'} <br/>
                     <span className="text-brand-gold">{category.hero_headline || 'im redaktionellen Überblick'}</span>
                 </h1>
                 <p className="text-gray-300 text-base md:text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
-                    {category.description || 'Wir haben Anbieter und Tarife verglichen. Finde jetzt das für dich passende Angebot.'}
+                    {category.description || 'Prüfe Anbieter, Leistungen und Tarifmerkmale strukturiert im Überblick.'}
                 </p>
                 <a href="#vergleich" className="inline-flex items-center gap-2 bg-brand-gold hover:bg-brand-luxury text-brand-black font-bold py-3 px-8 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105">
                     <i className="fas fa-search"></i>
-                    <span>{category.hero_cta_text || 'Jetzt vergleichen'}</span>
+                    <span>{category.hero_cta_text || 'Tarife prüfen'}</span>
                 </a>
                 <p className="text-gray-400 text-xs mt-6">
                     <i className="fas fa-check-circle text-green-400 mr-1"></i>
@@ -290,7 +291,7 @@ export const ComparisonTemplate: React.FC<TemplateProps> = ({
         </section>
 
         {/* COMPARISON LIST */}
-        <section id="vergleich" className="py-16 bg-gradient-to-b from-gray-50 to-white">
+        <section id="vergleich" className="scroll-mt-28 py-16 bg-gradient-to-b from-gray-50 to-white">
             <div className="max-w-4xl mx-auto px-4">
                 <div className="text-center mb-10">
                     <h2 className="font-heading font-bold text-2xl md:text-3xl text-gray-900 mb-2">
@@ -418,6 +419,8 @@ export const ComparisonTemplate: React.FC<TemplateProps> = ({
                 </p>
             </div>
         </footer>
+
+        <StickyComparisonCTA label="Tarife prüfen" helperText="Direkt zum Vergleich" />
 
         {/* analytics_code entfernt – Tracking läuft zentral und consent-basiert */}
 

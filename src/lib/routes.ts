@@ -178,6 +178,10 @@ export function getCategoryRoute(slug: string): string {
   return normalizeRoutePath(`/${sanitizeSlug(slug)}`);
 }
 
+export function getCategoryComparisonRoute(slug: string): string {
+  return `${getCategoryRoute(slug)}#vergleich`;
+}
+
 export function getCategoryCanonicalUrl(
   slug: string,
   siteUrl: string = DEFAULT_SITE_URL,
