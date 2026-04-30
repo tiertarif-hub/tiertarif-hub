@@ -322,9 +322,9 @@ export const defaultHomeContent = {
   desktop_image_url: "",
   mobile_image_url: "",
   stats: [
-    { title: "Transparent", label: "Leistungen prüfen" },
-    { title: "Sachlich", label: "Kosten einordnen" },
-    { title: "Sicher", label: "Wartezeiten beachten" }
+    { title: "Hunde", label: "Kranken- und OP-Schutz" },
+    { title: "Katzen", label: "OP, Zahn und Wartezeit" },
+    { title: "Pferde", label: "OP und Haftpflicht" }
   ]
 },
   how_it_works: {
@@ -341,7 +341,12 @@ export const defaultHomeContent = {
     badge: "TierTarif Überblick",
     headline: "Tiergesundheit sachlich vergleichen",
     link_text: "Kategorien ansehen →",
-    subheadline: "Hunde, Katzen und Pferde transparent prüfen"
+    subheadline: "Hunde, Katzen und Pferde sachlich prüfen"
+  },
+  mission: {
+    image_enabled: true,
+    image_url: "/big-threes/tiertarif-tierversicherung-startseitenbild.webp",
+    image_alt: "Hund, Katze und Pferd als Symbol für sachliche Tierversicherungsvergleiche"
   },
   big_three: { 
     headline: "Tierversicherung gezielt prüfen", 
@@ -675,6 +680,7 @@ export function useHomeContent() {
     content.news = { ...defaultHomeContent.news, ...content.news }; 
     content.news.button_url = normalizeNavigableHref(String(content.news.button_url || defaultHomeContent.news.button_url || getCategoriesRoute()));
     content.trust = { ...defaultHomeContent.trust, ...content.trust }; 
+    content.mission = { ...defaultHomeContent.mission, ...(content.mission || {}) };
     content.hero = { ...defaultHomeContent.hero, ...content.hero };
     content.hero.stats = Array.isArray(content.hero.stats) && content.hero.stats.length > 0
       ? content.hero.stats

@@ -1777,6 +1777,8 @@ export default function AdminSettings() {
                   </AccordionContent>
                 </AccordionItem>
 
+
+
                 <AccordionItem value="how_it_works">
                   <AccordionTrigger className="font-semibold">So funktioniert TierTarif</AccordionTrigger>
                   <AccordionContent className="space-y-4 pt-4">
@@ -1918,6 +1920,90 @@ export default function AdminSettings() {
                       <div className="space-y-2"><Label>Block 2 Text</Label><Textarea value={localContent.seo?.block2_text || ""} onChange={e => updateContent("seo", "block2_text", e.target.value)} rows={2} /></div>
                     </div>
                      
+                    <div className="space-y-4 border-t pt-4">
+                      <div>
+                        <Label className="font-semibold text-base">Mission-Bild</Label>
+                        <p className="text-xs text-muted-foreground mt-1">Dieses Bild erscheint links im Bereich „Unsere Mission / SEO-Text“.</p>
+                      </div>
+                      <div className="rounded-2xl border border-secondary/30 bg-secondary/5 p-4">
+                      <div className="flex items-start gap-3">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary/15 text-secondary">
+                          <ImageIcon className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <Label className="text-base font-bold text-primary">Bild im Mission-Bereich</Label>
+                          <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                            Empfohlen: Hochformat 1080 × 1350 px oder 900 × 1200 px, WebP/AVIF, ruhiges Motiv ohne Text, ideal unter 350 KB.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="mt-4 grid gap-4 lg:grid-cols-[1fr_1.15fr]">
+                        <div className="relative flex min-h-80 items-center justify-center overflow-hidden rounded-2xl border border-dashed border-border bg-white/80 lg:min-h-[26rem]">
+                          {localContent.mission?.image_url ? (
+                            <img
+                              src={localContent.mission.image_url}
+                              alt="Mission-Bild Vorschau"
+                              className="h-full max-h-[32rem] w-full object-cover"
+                              loading="lazy"
+                            />
+                          ) : (
+                            <div className="px-4 text-center text-xs text-muted-foreground">
+                              <ImageIcon className="mx-auto mb-2 h-7 w-7 opacity-50" />
+                              Noch kein Mission-Bild gesetzt
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between rounded-xl border border-border bg-white p-3">
+                            <div>
+                              <Label className="font-bold text-primary">Bild anzeigen</Label>
+                              <p className="text-xs text-muted-foreground">Schaltet das Mission-Bild auf der Startseite ein oder aus.</p>
+                            </div>
+                            <Switch
+                              checked={localContent.mission?.image_enabled !== false}
+                              onCheckedChange={(value) => updateContent("mission", "image_enabled", value)}
+                            />
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary">
+                              <LinkIcon className="h-3.5 w-3.5 text-secondary" /> Bild-URL
+                            </Label>
+                            <Input
+                              value={localContent.mission?.image_url || ""}
+                              onChange={(event) => updateContent("mission", "image_url", event.target.value)}
+                              placeholder="https://...supabase.co/storage/v1/object/public/... oder /big-threes/bild.webp"
+                              className="bg-white text-xs"
+                            />
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label>Alt-Text</Label>
+                            <Input
+                              value={localContent.mission?.image_alt || ""}
+                              onChange={(event) => updateContent("mission", "image_alt", event.target.value)}
+                              placeholder="Kurze Beschreibung des Bildmotivs"
+                              className="bg-white text-xs"
+                            />
+                          </div>
+
+                          {localContent.mission?.image_url && (
+                            <Button
+                              type="button"
+                              variant="outline"
+                              className="border-destructive/30 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                              onClick={() => updateContent("mission", "image_url", "")}
+                            >
+                              <Trash2 className="mr-2 h-4 w-4" /> Bild-Link entfernen
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    </div>
+
                     <div className="space-y-2 pt-4 border-t">
                       <Label>Deep Content (Langer SEO Text)</Label>
                       <Textarea className="min-h-[400px] font-mono text-sm bg-slate-50" value={seoLongText} onChange={(e) => {

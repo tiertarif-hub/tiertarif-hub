@@ -5,6 +5,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { toast } from "sonner";
 import { useHomeContent } from "@/hooks/useSettings";
 import { useGlobalSearch } from "@/hooks/useGlobalSearch";
+import { TIERTARIF_HOME_TRUST_ITEMS } from "@/lib/tiertarifHomeContent";
 import {
   Activity,
   ArrowRight,
@@ -40,13 +41,6 @@ const calculatorFields = [
     to: "/pferde-op-versicherung-vergleich",
   },
 ] as const;
-
-const trustItems = [
-  "Kostenlos Vergleichen",
-  "Versteckte Kosten vermeiden",
-  "Wartezeiten & Selbstbeteiligung transparent prüfen",
-  "Für Hunde, Katzen & Pferde",
-];
 
 const isLegacyHeroText = (value: string | undefined, legacyNeedles: string[]) => {
   const normalized = String(value ?? "").toLowerCase();
@@ -119,9 +113,9 @@ export const HeroSection = () => {
   const heroStats = Array.isArray(content.hero?.stats) && content.hero.stats.length > 0
     ? content.hero.stats.slice(0, 3)
     : [
-        { title: "Transparent", label: "Leistungen prüfen" },
-        { title: "Sachlich", label: "Kosten einordnen" },
-        { title: "Sicher", label: "Wartezeiten beachten" },
+        { title: "Hunde", label: "Kranken- und OP-Schutz" },
+        { title: "Katzen", label: "OP, Zahn und Wartezeit" },
+        { title: "Pferde", label: "OP und Haftpflicht" },
       ];
 
   return (
@@ -263,18 +257,23 @@ export const HeroSection = () => {
             <div className="tt-glass-card relative overflow-hidden rounded-[2rem] border border-secondary/25 p-5 backdrop-blur-sm md:p-7">
               <div className="mb-6 flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-[0.22em] text-primary">Vergleichsrechner</p>
+                  <p className="text-xs font-bold uppercase tracking-[0.22em] text-primary">Tarif-Check</p>
                   <h2 className="mt-2 text-2xl font-display font-extrabold text-primary md:text-3xl">
-                    Schutz passend eingrenzen
+                    Starte einen Vergleichsrechner
                   </h2>
                 </div>
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-secondary/15 text-primary ring-1 ring-secondary/20 shadow-sm">
-                  <ClipboardCheck className="h-6 w-6" />
+                <div className="flex shrink-0 flex-col items-end gap-2">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-secondary/15 text-primary ring-1 ring-secondary/20 shadow-sm">
+                    <ClipboardCheck className="h-6 w-6" />
+                  </div>
+                  <span className="rounded-full bg-secondary/10 px-3 py-1 text-xs font-extrabold text-secondary shadow-sm">
+                    kostenfrei
+                  </span>
                 </div>
               </div>
 
               <div className="mb-4 grid grid-cols-3 gap-2 rounded-2xl bg-secondary/5 p-2">
-                {["1. Tier wählen", "2. Tarife vergleichen", "3. Vertrag wählen"].map((step) => (
+                {["1. Tier wählen", "2. Tarife prüfen", "3. Vertrag wählen"].map((step) => (
                   <div key={step} className="rounded-xl border border-secondary/25 bg-white px-3 py-2 text-center text-[11px] font-extrabold uppercase tracking-wider text-primary">
                     {step}
                   </div>
@@ -312,20 +311,6 @@ export const HeroSection = () => {
                 })}
               </div>
 
-              <div className="mt-5 rounded-2xl border border-secondary/25 bg-secondary/5 p-4">
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <div className="text-xs font-extrabold uppercase tracking-wider text-primary/70">Tarif-Check</div>
-                    <p className="mt-1 text-lg font-display font-extrabold text-primary">
-                      Direkter Zugang zu den Rechnern
-                    </p>
-                  </div>
-                  <div className="rounded-full bg-secondary/10 px-3 py-1 text-xs font-extrabold text-secondary shadow-sm">
-                    kostenfrei
-                  </div>
-                </div>
-              </div>
-
               <div className="tt-teal-shine mt-5 rounded-2xl p-5 text-primary-foreground">
                 <div className="flex items-center justify-between gap-4">
                   <div>
@@ -347,7 +332,7 @@ export const HeroSection = () => {
               <div className="mt-5 flex items-center gap-3 rounded-2xl border border-border bg-muted/60 p-4">
                 <CheckCircle2 className="h-5 w-5 shrink-0 text-primary" />
                 <p className="text-sm font-semibold leading-relaxed text-foreground">
-                  Nutze unsere Partner-Rechner, um passende Tarife direkt und objektiv zu prüfen.
+                  Prüfe Leistungen, Kostenpunkte und Tarifdetails sachlich im Vergleich.
                 </p>
               </div>
             </div>
@@ -356,7 +341,7 @@ export const HeroSection = () => {
 
         <div className="mt-10 rounded-[1.5rem] border border-primary/10 bg-white/95 p-4 shadow-lg shadow-primary/5 backdrop-blur-sm md:mt-14">
           <div className="grid gap-3 md:grid-cols-4">
-            {trustItems.map((item) => (
+            {TIERTARIF_HOME_TRUST_ITEMS.map((item) => (
               <div key={item} className="flex items-center gap-3 rounded-2xl border border-secondary/20 bg-white/80 px-4 py-3 text-sm font-bold text-primary shadow-sm transition-all hover:-translate-y-0.5 hover:border-secondary/35 hover:bg-secondary/10">
                 <CheckCircle2 className="h-4 w-4 shrink-0 text-secondary" />
                 <span>{item}</span>

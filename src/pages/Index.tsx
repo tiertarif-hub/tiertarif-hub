@@ -9,15 +9,15 @@ import { NewsSection } from "@/components/home/NewsSection";
 import { ScrollToTop } from "@/components/ui/ScrollToTop";
 import { LoadingScreen } from "@/components/ui/LoadingScreen";
 import { useGlobalAnalyticsCode } from "@/hooks/useGlobalAnalytics";
-import { useSettings, useHomeContent, useHomeLayout, useSiteTitle, useSiteDescription } from "@/hooks/useSettings";
+import { useSettings, useHomeLayout, useSiteTitle, useSiteDescription } from "@/hooks/useSettings";
 import { Helmet } from "react-helmet-async";
 import { HowItWorksSection } from "@/components/home/HowItWorksSection";
-import { HomeSEOText } from "@/components/home/HomeSEOText";
-import { HomeFAQSection } from "@/components/home/HomeFAQSection";
+import { MissionSection } from "@/components/home/MissionSection";
+import { FaqSection } from "@/components/home/FaqSection";
 import { useForceSEO } from "@/hooks/useForceSEO";
 import { useTrackView } from "@/hooks/useTrackView";
 import { isBotLikeRuntime } from "@/lib/runtimeFlags";
-import { buildCanonicalUrl, stripHtmlToPlainText } from "@/lib/seo";
+import { buildCanonicalUrl } from "@/lib/seo";
 import { setPrerenderBlocked, setPrerenderReady } from "@/lib/prerender";
 import { DEFAULT_BRAND_NAME, DEFAULT_SITE_DESCRIPTION, DEFAULT_AUTHOR_NAME } from "@/lib/constants";
 
@@ -26,7 +26,6 @@ const Index = () => {
 
   const analyticsCode = useGlobalAnalyticsCode();
   const { data: settings, isLoading: isLoadingSettings } = useSettings();
-  const { content } = useHomeContent();
   const siteTitle = useSiteTitle();
   const siteDescription = useSiteDescription();
   const { sections } = useHomeLayout();
@@ -45,17 +44,6 @@ const Index = () => {
 
   const safeKeywords = (settings?.seo_keywords as string) || `Vergleich, Ratgeber, Rechner, ${DEFAULT_BRAND_NAME}, Überblick`;
   const canonicalUrl = buildCanonicalUrl("/");
-
-  const homeFaqSection = sections.find((section) => section.id === "home_faq");
-  const homeFaqItems = useMemo(() => {
-    const items = Array.isArray(content?.home_faq?.items) ? content.home_faq.items : [];
-    return items
-      .map((item: any) => ({
-        question: String(item?.question || "").trim(),
-        answer: stripHtmlToPlainText(String(item?.answer || ""), 2000),
-      }))
-      .filter((item) => item.question.length > 0 && item.answer.length > 0);
-  }, [content]);
 
   const schemaPayloads = useMemo(() => {
     const payloads: Array<Record<string, unknown>> = [
@@ -92,23 +80,8 @@ const Index = () => {
       },
     ];
 
-    if (homeFaqSection?.enabled !== false && homeFaqItems.length > 0) {
-      payloads.push({
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        mainEntity: homeFaqItems.map((item) => ({
-          "@type": "Question",
-          name: item.question,
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: item.answer,
-          },
-        })),
-      });
-    }
-
     return payloads;
-  }, [canonicalUrl, homeFaqItems, homeFaqSection?.enabled, safeDescription, safeTitle]);
+  }, [canonicalUrl, safeDescription, safeTitle]);
 
   useForceSEO(safeDescription);
 
@@ -172,8 +145,8 @@ const Index = () => {
     news: <NewsSection />,
     big_three: <BigThreeSection />,
     categories: <CategoriesSection />,
-    home_faq: <HomeFAQSection />,
-    seo: <HomeSEOText />,
+    home_faq: <FaqSection />,
+    seo: <MissionSection />,
   };
 
   if (shouldShowInitialLoader) {
