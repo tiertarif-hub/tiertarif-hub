@@ -53,6 +53,8 @@ export const Header = ({ transparent = false }: HeaderProps) => {
   }, [location.pathname]);
 
   const scrollToAnchor = (anchorId: string) => {
+    document.body.style.overflow = "unset";
+
     const target = document.getElementById(anchorId);
     if (!target) return false;
 

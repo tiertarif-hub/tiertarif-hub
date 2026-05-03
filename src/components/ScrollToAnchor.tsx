@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 
 const MAX_ANCHOR_LOOKUP_MS = 5000;
 const ANCHOR_LOOKUP_INTERVAL_MS = 100;
+const HEADER_OFFSET_PX = 88;
 
 function getDecodedAnchorId(hash: string): string {
   const rawId = hash.replace(/^#/, "");
@@ -12,6 +13,21 @@ function getDecodedAnchorId(hash: string): string {
   } catch {
     return rawId;
   }
+}
+
+function scrollToElement(element: HTMLElement) {
+  document.body.style.overflow = "unset";
+
+  const targetTop = Math.max(
+    element.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET_PX,
+    0,
+  );
+
+  window.scrollTo({
+    top: targetTop,
+    left: 0,
+    behavior: "smooth",
+  });
 }
 
 export function ScrollToAnchor() {
@@ -54,10 +70,7 @@ export function ScrollToAnchor() {
 
       cleanup();
       rafId = window.requestAnimationFrame(() => {
-        element.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
+        scrollToElement(element);
       });
     };
 

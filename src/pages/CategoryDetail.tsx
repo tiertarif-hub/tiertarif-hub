@@ -339,14 +339,14 @@ export default function CategoryDetail() {
           </div>
 
           {/* Hero */}
-          <section className="relative w-full min-h-[500px] md:min-h-[60vh] overflow-hidden rounded-b-[3.5rem] shadow-2xl shadow-slate-300/50 z-20 flex items-center justify-center bg-[#0a0a0a]">
+          <section className="relative w-full min-h-[500px] md:min-h-[430px] lg:min-h-[460px] xl:min-h-[480px] overflow-hidden rounded-b-[2.75rem] md:rounded-b-[3rem] shadow-2xl shadow-slate-300/50 z-20 flex items-center justify-center bg-[#0a0a0a]">
             <div className="absolute inset-0 z-0"><img src={heroImage} alt="Background" className="w-full h-full object-cover object-center opacity-60" /><div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-black/50 to-transparent"></div></div>
-            <div className="container relative z-20 mx-auto px-4 max-w-5xl text-center pt-32 pb-16 md:pt-40 md:pb-20 flex flex-col items-center justify-center">
-              <div className="flex justify-center mb-6 md:mb-8"><div className="inline-flex items-center gap-2 bg-white/5 backdrop-blur-md border border-white/10 text-orange-400 px-5 py-2 rounded-full shadow-lg text-[10px] md:text-xs font-bold uppercase tracking-widest"><ShieldCheck className="w-4 h-4 text-orange-500" />{category.hero_pretitle || "Redaktioneller Überblick"}</div></div>
-              <h1 lang="de" className="mx-auto w-full max-w-full text-[clamp(2rem,9vw,3rem)] sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white tracking-tight sm:tracking-tighter mb-6 md:mb-8 leading-[1.08] md:leading-[1.1] drop-shadow-2xl px-2 break-words [overflow-wrap:anywhere] hyphens-auto">{category.h1_title || category.name}</h1>
-              {category.hero_headline && (<p className="text-lg sm:text-xl md:text-2xl text-slate-300 font-medium mb-10 md:mb-12 leading-relaxed max-w-3xl mx-auto antialiased px-4">{category.hero_headline}</p>)}
+            <div className="container relative z-20 mx-auto px-4 max-w-4xl text-center pt-32 pb-16 md:pt-16 md:pb-12 lg:pt-20 lg:pb-14 flex flex-col items-center justify-center">
+              <div className="flex justify-center mb-5 md:mb-5"><div className="inline-flex items-center gap-2 bg-white/5 backdrop-blur-md border border-white/10 text-orange-400 px-5 py-2 rounded-full shadow-lg text-[10px] md:text-xs font-bold uppercase tracking-widest"><ShieldCheck className="w-4 h-4 text-orange-500" />{category.hero_pretitle || "Redaktioneller Überblick"}</div></div>
+              <h1 lang="de" className="mx-auto w-full max-w-full text-[clamp(2rem,9vw,3rem)] sm:text-5xl md:text-5xl lg:text-5xl xl:text-5xl font-extrabold text-white tracking-tight sm:tracking-tighter mb-5 md:mb-5 leading-[1.08] md:leading-[1.08] drop-shadow-2xl px-2 break-words [overflow-wrap:anywhere] hyphens-auto">{category.h1_title || category.name}</h1>
+              {category.hero_headline && (<p className="text-base sm:text-lg md:text-lg text-slate-300 font-medium mb-6 md:mb-7 leading-relaxed max-w-2xl mx-auto antialiased px-4">{category.hero_headline}</p>)}
               <div className="flex flex-col items-center gap-4">
-                <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 md:gap-4 bg-white/5 backdrop-blur-sm p-3 rounded-3xl border border-white/10 shadow-2xl max-w-4xl mx-auto w-full sm:w-auto">
+                <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 md:gap-3 bg-white/5 backdrop-blur-sm p-3 rounded-3xl border border-white/10 shadow-2xl max-w-4xl mx-auto w-full sm:w-auto">
                   <Button
                     type="button"
                     size="lg"
@@ -363,7 +363,7 @@ export default function CategoryDetail() {
                   </a>
                 </div>
 
-                <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 md:gap-4 max-w-4xl mx-auto w-full sm:w-auto">
+                <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 md:gap-3 max-w-4xl mx-auto w-full sm:w-auto">
                   <div className="flex items-center gap-3 px-5 md:px-6 py-3 rounded-2xl bg-white border border-slate-100 shadow-sm w-full sm:w-auto">
                     <div className="p-2 bg-green-50 rounded-full text-green-600">
                       <ShieldCheck className="w-5 h-5" />

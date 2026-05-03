@@ -31,7 +31,7 @@ const getBrowserNavigationType = (): BrowserNavigationType => {
 };
 
 export const ScrollToTopHandler = () => {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
   const navigationType = useNavigationType();
 
   const isRestoring = useRef(false);
@@ -57,6 +57,10 @@ export const ScrollToTopHandler = () => {
   }, [pathname]);
 
   useEffect(() => {
+    if (hash) {
+      return;
+    }
+
     const storageKey = `scroll-pos-${pathname}`;
     const browserNavigationType = getBrowserNavigationType();
     const isInitialDocumentLoad = isFirstRender.current;
@@ -167,7 +171,7 @@ export const ScrollToTopHandler = () => {
     }, 3500);
 
     return cleanup;
-  }, [pathname, navigationType]);
+  }, [pathname, hash, navigationType]);
 
   return null;
 };

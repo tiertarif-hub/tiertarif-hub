@@ -280,6 +280,8 @@ export const BigThreeSection = () => {
   return (
     <section id="schwerpunkte" className="relative overflow-hidden scroll-mt-[88px] bg-white py-20 md:py-28">
       <span id="bereiche" className="absolute -top-24" aria-hidden="true" />
+      <span id="vergleiche" className="absolute -top-24" aria-hidden="true" />
+      <span id="categories" className="absolute -top-24" aria-hidden="true" />
       <style>{`
         .standard-portal-category-slider {
           scrollbar-width: none;
